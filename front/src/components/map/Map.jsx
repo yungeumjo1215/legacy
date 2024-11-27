@@ -39,13 +39,13 @@ const Map = () => {
       <h1>문화재 위치 지도</h1>
       {error && <p>{error}</p>}
 
-      <div style={{ height: "500px", marginTop: "20px" }}>
+      <div style={{ height: "500px", marginTop: "20px", height: "800px" }}>
         <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API}>
           <GoogleMap
             id="google-map"
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={{ lat: 37.5665, lng: 126.978 }} // 기본 서울 설정
-            zoom={14}
+            zoom={16}
           >
             {heritageData.map((heritage, index) => {
               const latitude = heritage.latitude;
