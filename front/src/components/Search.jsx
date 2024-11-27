@@ -40,7 +40,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div style={{ paddingTop: "4rem", display: "flex" }}>
+    <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
       {/* Sidebar 컴포넌트 */}
       <div
         style={{
@@ -89,66 +89,6 @@ const SearchPage = () => {
           </button>
         </div>
 
-        {/* 에러 메시지 (팝업 형태로 띄우기) */}
-        {error && (
-          <div
-            style={{
-              position: "fixed", // 화면 중앙에 고정
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.5)", // 배경 어둡게
-              zIndex: 9998, // 팝업보다 아래에 표시되게
-            }}
-          >
-            <div
-              style={{
-                position: "fixed", // 화면 중앙에 고정
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "#e2e2e2",
-                color: "black",
-                padding: "20px",
-                borderRadius: "8px",
-                zIndex: 9999, // 팝업이 다른 요소 위에 표시되게
-                width: "400px", // 가로 크기 적당히 줄임
-                height: "200px", // 세로 크기 적당히 줄임
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center", // 수직 중앙 정렬
-                alignItems: "center", // 수평 중앙 정렬
-                textAlign: "center",
-              }}
-            >
-              <p
-                style={{
-                  fontWeight: "bold", // 에러 문구 굵게 처리
-                  fontSize: "18px", // 폰트 크기 살짝 증가
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {error}
-              </p>
-              <button
-                onClick={closeError} // 에러 메시지 닫기
-                style={{
-                  backgroundColor: "#121a35",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 16px", // 버튼 내부 여백 줄이기
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  marginTop: "40px",
-                }}
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* 나머지 콘텐츠 영역 */}
         <div
           style={{
@@ -185,6 +125,70 @@ const SearchPage = () => {
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
         <Map />
       </div>
+
+      {/* 에러 메시지 및 오버레이 */}
+      {error && (
+        <>
+          {/* 오버레이 */}
+          <div
+            style={{
+              position: "fixed", // 화면 전체를 차지
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // 어두운 반투명 배경
+              zIndex: 9999, // 팝업보다 아래에 표시
+            }}
+            onClick={closeError} // 클릭 시 에러 팝업 닫기
+          />
+          {/* 팝업 */}
+          <div
+            style={{
+              position: "fixed", // 화면 중앙에 고정
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "#e2e2e2",
+              color: "black",
+              padding: "20px",
+              borderRadius: "8px",
+              zIndex: 10000, // 오버레이 위에 표시
+              width: "400px", // 가로 크기 적당히 줄임
+              height: "200px", // 세로 크기 적당히 줄임
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center", // 수직 중앙 정렬
+              alignItems: "center", // 수평 중앙 정렬
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                fontWeight: "bold", // 에러 문구 굵게 처리
+                fontSize: "18px", // 폰트 크기 살짝 증가
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {error}
+            </p>
+            <button
+              onClick={closeError} // 에러 메시지 닫기
+              style={{
+                backgroundColor: "#121a35",
+                color: "white",
+                border: "none",
+                padding: "8px 16px", // 버튼 내부 여백 줄이기
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "40px",
+              }}
+            >
+              닫기
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
