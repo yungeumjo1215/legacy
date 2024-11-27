@@ -18,7 +18,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { name: "홈", path: "/home", image: "/home-hero.jpg" },
+    { name: "홈", path: "/", image: "/home-hero.jpg" },
     { name: "챗봇", path: "/chatbot", image: "/Chatbot-hero.jpg" },
     { name: "국가유산 위치 검색", path: "/search", image: "/Search-hero.jpg" },
     {
@@ -39,7 +39,7 @@ const Navbar = () => {
   const handleLoginLogout = () => {
     if (isLoggedIn) {
       setIsLoggedIn(false);
-      navigate("/home"); // 로그아웃 후 홈으로 이동
+      navigate("/"); // 로그아웃 후 홈으로 이동
     } else {
       setIsLoggedIn(true);
       navigate("/login"); // 로그인 후 로그인 페이지로 이동
@@ -76,7 +76,7 @@ const Navbar = () => {
           <div className="flex justify-between h-16">
             {/* 로고 */}
             <div className="flex items-center">
-              <Link to="/home" className="flex-shrink-0 flex items-center">
+              <Link to="/" className="flex-shrink-0 flex items-center">
                 <img src={a1} alt="Logo" className="h-8 w-8 mr-2" />
                 <span className="text-2xl font-bold">유산지기</span>
               </Link>
