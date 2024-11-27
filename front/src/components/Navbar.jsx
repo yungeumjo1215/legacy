@@ -45,8 +45,8 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // 현재 경로가 로그인 페이지인지 확인
-  const isLoginPage = location.pathname === "/login";
+  // 현재 경로가 회원가입 페이지인지 확인
+  const isSignUpPage = location.pathname === "/signup";
 
   return (
     <main>
@@ -80,44 +80,45 @@ const Navbar = () => {
             </div>
 
             {/* 로그인/회원가입/마이페이지 */}
-            {!isLoginPage && (
-              <div className="hidden md:flex items-center space-x-4">
-                {isLoggedIn ? (
-                  <>
-                    <Link
-                      to="/mypage"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      <UserCircleIcon className="h-4 w-4 mr-2" />
-                      마이페이지
-                    </Link>
-                    <button
-                      onClick={handleLoginLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      <LogOutIcon className="h-4 w-4 mr-2" />
-                      로그아웃
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={handleLoginLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      <LogInIcon className="h-4 w-4 mr-2" />
-                      로그인
-                    </button>
+            <div className="hidden md:flex items-center space-x-4">
+              {isLoggedIn ? (
+                <>
+                  <Link
+                    to="/mypage"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                  >
+                    <UserCircleIcon className="h-4 w-4 mr-2" />
+                    마이페이지
+                  </Link>
+                  <button
+                    onClick={handleLoginLogout}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                  >
+                    <LogOutIcon className="h-4 w-4 mr-2" />
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleLoginLogout}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                  >
+                    <LogInIcon className="h-4 w-4 mr-2" />
+                    로그인
+                  </button>
+                  {/* 회원가입 버튼은 회원가입 페이지에서는 표시하지 않음 */}
+                  {!isSignUpPage && (
                     <Link
                       to="/signup"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       회원가입
                     </Link>
-                  </>
-                )}
-              </div>
-            )}
+                  )}
+                </>
+              )}
+            </div>
 
             {/* 모바일 메뉴 버튼 */}
             <div className="flex items-center md:hidden">
@@ -151,35 +152,43 @@ const Navbar = () => {
               ))}
             </div>
             <div className="pt-4 pb-3 border-t border-blue-700">
-              {!isLoginPage && (
-                <div className="flex items-center justify-around px-4">
-                  {!isLoggedIn && (
-                    <Link
-                      to="/signup"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      회원가입
-                    </Link>
-                  )}
-                  {isLoggedIn && (
+              <div className="flex items-center justify-around px-4">
+                {isLoggedIn ? (
+                  <>
                     <Link
                       to="/mypage"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       <UserCircleIcon className="h-4 w-4 mr-2" />
                       마이페이지
                     </Link>
-                  )}
-                  <button
-                    onClick={handleLoginLogout}
-                    className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                      isLoggedIn ? "text-white" : "text-white"
-                    }`}
-                  >
-                    {isLoggedIn ? "로그아웃" : "로그인"}
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={handleLoginLogout}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      로그아웃
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleLoginLogout}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      로그인
+                    </button>
+                    {/* 모바일 메뉴에서도 회원가입 버튼 숨기기 */}
+                    {!isSignUpPage && (
+                      <Link
+                        to="/signup"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                      >
+                        회원가입
+                      </Link>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
