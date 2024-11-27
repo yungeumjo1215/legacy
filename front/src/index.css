@@ -60,7 +60,12 @@ code {
 }
 
 .Gyeongsang {
-  margin-left: 74px;
+  margin-left: 76px;
+}
+
+.seoul,
+.incheon {
+  padding: 3px 17px;
 }
 
 .Event-sc {
