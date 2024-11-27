@@ -36,9 +36,6 @@ const Map = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h1>문화재 위치 지도</h1>
-      {error && <p>{error}</p>}
-
       <div style={{ height: "500px", marginTop: "20px", height: "800px" }}>
         <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API}>
           <GoogleMap
