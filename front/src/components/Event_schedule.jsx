@@ -49,7 +49,7 @@ const Event_schedule = () => {
               <li key={idx} className="mr-10">
                 <button
                   to={item.to}
-                  className={`border border-slate-500 rounded-md p-1 font-semibold px-3 ${
+                  className={`border hover:bg-blue-800 hover:text-white border-slate-500 rounded-md p-1 font-semibold px-3 ${
                     item.label === "경상" ? "Gyeongsang" : ""
                   }`}
                 >
