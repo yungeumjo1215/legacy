@@ -4,8 +4,9 @@ import Chatbot from "./components/Chatbot";
 import Event_schedule from "./components/Event_schedule";
 import Header from "./components/Header";
 import Search from "./components/Search";
-import Signup from "./signup/Signup";
-import Login from "./login/Login";
+import Login from "./user/Login";
+import Mypage from "./user/Mypage";
+import Signup from "./user/Signup";
 
 const App = () => {
   return (
@@ -18,6 +19,8 @@ const App = () => {
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/search" element={<Search />} />
           <Route path="/event_schedule" element={<Event_schedule />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
         </Routes>
