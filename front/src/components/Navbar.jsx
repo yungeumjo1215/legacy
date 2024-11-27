@@ -11,9 +11,8 @@ import a1 from "../assets/a1.png"; // 로고 이미지
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState("Home");
-  const [currentImage, setCurrentImage] = useState("/home-hero.jpg");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // 모바일 메뉴 상태
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -31,7 +30,6 @@ const Navbar = () => {
   // 네비게이션 클릭 핸들러
   const handleNavClick = (name, image) => {
     setActiveTab(name);
-    setCurrentImage(image);
     setIsMobileMenuOpen(false); // 모바일 메뉴 닫기
   };
 
@@ -42,29 +40,10 @@ const Navbar = () => {
       navigate("/"); // 로그아웃 후 홈으로 이동
     } else {
       setIsLoggedIn(true);
-      navigate("/login"); // 로그인 후 로그인 페이지로 이동
+      navigate("/login"); // 로그인 페이지로 이동
     }
     setIsMobileMenuOpen(false);
   };
-
-  // 모바일 및 데스크톱 메뉴 렌더링 함수
-  const renderNavItems = () =>
-    navigationItems.map((item) => (
-      <Link
-        key={item.name}
-        to={item.path}
-        onClick={() => handleNavClick(item.name, item.image)}
-        className={`block px-3 py-2 rounded-md text-base font-medium
-          ${
-            activeTab === item.name
-              ? "bg-blue-700 text-white"
-              : "text-gray-300 hover:text-white hover:bg-blue-700"
-          }
-        `}
-      >
-        {item.name}
-      </Link>
-    ));
 
   // 현재 경로가 로그인 페이지인지 확인
   const isLoginPage = location.pathname === "/login";
@@ -84,47 +63,59 @@ const Navbar = () => {
 
             {/* 데스크톱 네비게이션 */}
             <div className="hidden md:flex md:space-x-8">
-              {renderNavItems()}
-            </div>
-
-            {/* 로그인/로그아웃 및 마이페이지 버튼 (로그인 페이지에서는 숨김) */}
-            {!isLoginPage && (
-              <div className="hidden md:flex md:items-center md:space-x-4">
-                {isLoggedIn && (
-                  <Link
-                    to="/mypage"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                  >
-                    <UserCircleIcon className="h-4 w-4 mr-2" />
-                    마이페이지
-                  </Link>
-                )}
-                <button
-                  onClick={handleLoginLogout}
-                  className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                    isLoggedIn ? "text-white" : "text-white"
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => handleNavClick(item.name, item.image)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    activeTab === item.name
+                      ? "bg-blue-700 text-white"
+                      : "text-gray-300 hover:text-white hover:bg-blue-700"
                   }`}
                 >
-                  {isLoggedIn ? (
-                    <>
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+
+            {/* 로그인/회원가입/마이페이지 */}
+            {!isLoginPage && (
+              <div className="hidden md:flex md:items-center md:space-x-4">
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      to="/mypage"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      <UserCircleIcon className="h-4 w-4 mr-2" />
+                      마이페이지
+                    </Link>
+                    <button
+                      onClick={handleLoginLogout}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md  text-white"
+                    >
                       <LogOutIcon className="h-4 w-4 mr-2" />
                       로그아웃
-                    </>
-                  ) : (
-                    <>
-                      <LogInIcon className="h-4 w-4 mr-2" />
-                      로그인
-                    </>
-                  )}
-                  {!isLoggedIn && (
+                    </button>
+                  </>
+                ) : (
+                  <>
                     <Link
                       to="/signup"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       회원가입
                     </Link>
-                  )}
-                </button>
+                    <button
+                      onClick={handleLoginLogout}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <LogInIcon className="h-4 w-4 mr-2" />
+                      로그인
+                    </button>
+                  </>
+                )}
               </div>
             )}
 
@@ -147,14 +138,33 @@ const Navbar = () => {
         {/* 모바일 메뉴 */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-blue-800">
-            <div className="pt-2 pb-3 space-y-1">{renderNavItems()}</div>
+            <div className="pt-2 pb-3 space-y-1">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => handleNavClick(item.name, item.image)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-blue-700"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
             <div className="pt-4 pb-3 border-t border-blue-700">
               {!isLoginPage && (
                 <div className="flex items-center justify-around px-4">
+                  {!isLoggedIn && (
+                    <Link
+                      to="/signup"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      회원가입
+                    </Link>
+                  )}
                   {isLoggedIn && (
                     <Link
                       to="/mypage"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                     >
                       <UserCircleIcon className="h-4 w-4 mr-2" />
                       마이페이지
@@ -163,20 +173,12 @@ const Navbar = () => {
                   <button
                     onClick={handleLoginLogout}
                     className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                      isLoggedIn ? "text-white " : "text-white"
+                      isLoggedIn
+                        ? "bg-red-600 hover:bg-red-700 text-white"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
                     }`}
                   >
-                    {isLoggedIn ? (
-                      <>
-                        <LogOutIcon className="h-4 w-4 mr-2" />
-                        로그아웃
-                      </>
-                    ) : (
-                      <>
-                        <LogInIcon className="h-4 w-4 mr-2" />
-                        로그인
-                      </>
-                    )}
+                    {isLoggedIn ? "로그아웃" : "로그인"}
                   </button>
                 </div>
               )}
