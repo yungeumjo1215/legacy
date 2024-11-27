@@ -1,5 +1,5 @@
 export const navItems = [
-  { label: "Home", to: "/home" },
+  { label: "Home", to: "/" },
   { label: "Chatbot", to: "/chatbot" },
   { label: "Search", to: "/search" },
   { label: "Event_schedule", to: "/event_schedule" },

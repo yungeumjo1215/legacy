@@ -1,7 +1,7 @@
 import React from "react";
 
 const search = () => {
-  return <div>search</div>;
+  return <div style={{ paddingTop: "4rem" }}>search</div>;
 };
 
 export default search;
