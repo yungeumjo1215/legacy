@@ -55,7 +55,7 @@ const Navbar = () => {
             {/* Left side - Logo and Nav Links */}
             <div className="flex items-center">
               {/* Logo and Text */}
-              <Link to="/home" className="flex-shrink-0 flex items-center">
+              <Link to="/" className="flex-shrink-0 flex items-center">
                 <img
                   src={a1} // Logo image path
                   alt="Logo"
