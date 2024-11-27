@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { AiTwotoneStar } from "react-icons/ai";
+import { TiStarFullOutline } from "react-icons/ti";
 import Map from "./map/Map";
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
   const [selectedItems, setSelectedItems] = useState([]); // 선택된 항목 상태
   const [error, setError] = useState(""); // 에러 메시지 상태
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 임의로 설정
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태 임의로 설정
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value); // 검색어 입력 시 상태 업데이트
@@ -42,20 +42,22 @@ const SearchPage = () => {
   return (
     <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
       {/* Sidebar 컴포넌트 */}
-      <div
-        style={{
-          width: "25%", // 사이드바 너비
-          height: "100vh", // 전체 화면 높이
-          backgroundColor: "#fff", // 배경색
-          color: "black", // 텍스트 색상
-          padding: "20px", // 내부 여백
-          boxSizing: "border-box", // 테두리와 패딩 포함 크기 계산
-          position: "fixed", // 화면에 고정
-          top: "4rem", // 상단 여백
-          left: 0, // 화면 왼쪽에 맞춤
-          borderRight: "1px solid #e2e2e2", // 오른쪽 테두리
-        }}
-      >
+       <div
+    style={{
+      width: "25%", // 사이드바 너비
+      height: "100vh", // 전체 화면 높이
+      backgroundColor: "#fff", // 배경색
+      color: "black", // 텍스트 색상
+      padding: "20px", // 내부 여백
+      boxSizing: "border-box", // 테두리와 패딩 포함 크기 계산
+      position: "fixed", // 화면에 고정
+      top: "4rem", // 상단 여백
+      left: "10px", // 왼쪽 여백으로 띄움
+      borderRight: "1px solid #e2e2e2", // 오른쪽 테두리
+      borderRadius: "0px", // 둥근 모서리
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // 그림자 효과
+    }}
+  >
         {/* 검색창 */}
         <div style={{ marginBottom: "20px", display: "flex" }}>
           <input
@@ -67,14 +69,14 @@ const SearchPage = () => {
               width: "80%",
               padding: "10px",
               borderRadius: "5px",
-              border: "1px solid black",
+              border: "1px solid #77767c",
               outline: "none",
               fontSize: "16px",
               color: "black",
             }}
           />
           <button
-            className="border-solid border-2 p-1.5 ml-2 hover:bg-black hover:text-white"
+            className="border-solid border-2 p-1.5 ml-2 hover:bg-[#191934] hover:text-white"
             style={{
               height: "45px", // input 높이와 동일하게 설정
               padding: "20px", // 동일한 내부 여백
@@ -82,7 +84,7 @@ const SearchPage = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid black",
+              border: "1px solid #77767c",
             }}
           >
             <FaSearch className="text-2xl" />
@@ -98,9 +100,9 @@ const SearchPage = () => {
         >
           <ul>
             {/* 문화재 목록 */}
-            {["문화재 1", "문화재 2", "문화재 3", "문화재 4", "문화재 5"].map(
+            {["문화재 1", "문화재 2", "문화재 3", "문화재 4", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5", "문화재 5"].map(
               (item, index) => (
-                <li key={index} style={{ margin: "10px 0", display: "flex" }}>
+                <li key={index} style={{ margin: "20px 0", display: "flex" }}>
                   {/* 아이콘과 텍스트 */}
                   <div
                     onClick={() => handleStarClick(index)} // 아이콘 클릭 시 색상 변경
@@ -108,10 +110,10 @@ const SearchPage = () => {
                       cursor: "pointer", // 마우스 커서가 손 모양으로 바뀌게
                       marginRight: "10px", // 아이콘과 텍스트 간격
                       display: "inline-block",
-                      color: selectedItems.includes(index) ? "yellow" : "gray", // 선택된 항목은 노란색
+                      color: selectedItems.includes(index) ? "#FFD700" : "#DCDCDC", // 선택된 항목은 노란색
                     }}
                   >
-                    <AiTwotoneStar className="text-3xl" />
+                    <TiStarFullOutline className="text-3xl" />
                   </div>
                   <div>{item}</div>
                 </li>
@@ -142,7 +144,7 @@ const SearchPage = () => {
             }}
             onClick={closeError} // 클릭 시 에러 팝업 닫기
           />
-          {/* 팝업 */}
+          {/* 에러팝업 */}
           <div
             style={{
               position: "fixed", // 화면 중앙에 고정
@@ -168,6 +170,7 @@ const SearchPage = () => {
                 fontWeight: "bold", // 에러 문구 굵게 처리
                 fontSize: "18px", // 폰트 크기 살짝 증가
                 whiteSpace: "pre-wrap",
+                marginTop:"20px"
               }}
             >
               {error}
@@ -181,7 +184,7 @@ const SearchPage = () => {
                 padding: "8px 16px", // 버튼 내부 여백 줄이기
                 borderRadius: "5px",
                 cursor: "pointer",
-                marginTop: "40px",
+                marginTop: "25px",
               }}
             >
               닫기
