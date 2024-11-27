@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&family=Do+Hyeon&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/* Heading Styles */
+.main-text {
+  margin-top: 40px;
+  margin-left: 20px;
+  font-size: 2.5rem;
+  color: #333;
+  font-family: "Do Hyeon";
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* ImageSlider.css */
+.slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  margin: 20px auto;
+  position: relative;
+  padding-bottom: 100px; /* 하단 여백을 더욱 넓게 설정 */
+}
+
+.slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  gap: 20px; /* 이미지 간격 조정 */
+}
+
+.slide {
+  flex: 0 0 30%; /* 각 슬라이드 크기를 30%로 고정 */
+  text-align: center;
+  opacity: 0.5;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide.active {
+  /* transform: scale(1.1); 활성화된 슬라이드를 강조 */
+  opacity: 1;
+}
+
+.slider-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px; /* 이미지와 텍스트 박스 사이의 간격 */
+}
+
+.slider-textbox {
+  background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+  padding: 20px; /* 텍스트 박스에 여유 공간 추가 */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+  margin-top: 30px; /* 이미지와 텍스트 박스 사이의 간격을 넓히기 */
+}
+
+.slider-text {
+  font-size: 18px; /* 텍스트 크기 확대 */
+  color: #333;
+  line-height: 1.5; /* 가독성을 위한 줄 간격 */
+  margin: 0;
+  text-align: left; /* 텍스트 정렬 */
+}
