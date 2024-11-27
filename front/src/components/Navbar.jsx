@@ -101,12 +101,6 @@ const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    <Link
-                      to="/signup"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      회원가입
-                    </Link>
                     <button
                       onClick={handleLoginLogout}
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
@@ -114,6 +108,12 @@ const Navbar = () => {
                       <LogInIcon className="h-4 w-4 mr-2" />
                       로그인
                     </button>
+                    <Link
+                      to="/signup"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      회원가입
+                    </Link>
                   </>
                 )}
               </div>
