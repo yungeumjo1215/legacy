@@ -45,7 +45,7 @@ const Map = () => {
             id="google-map"
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={{ lat: 37.5665, lng: 126.978 }} // 기본 서울 설정
-            zoom={12}
+            zoom={14}
           >
             {heritageData.map((heritage, index) => {
               const latitude = heritage.latitude;
