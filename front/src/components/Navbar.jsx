@@ -4,8 +4,8 @@ import {
   UserCircleIcon,
   LogInIcon,
   LogOutIcon,
-  MenuIcon, // 햄버거 아이콘 추가
-  XIcon, // 닫기 아이콘 추가
+  MenuIcon,
+  XIcon,
 } from "lucide-react";
 import a1 from "../assets/a1.png"; // 로고 이미지
 
@@ -28,7 +28,7 @@ const Navbar = () => {
   ];
 
   // 네비게이션 클릭 핸들러
-  const handleNavClick = (name, image) => {
+  const handleNavClick = (name) => {
     setActiveTab(name);
     setIsMobileMenuOpen(false); // 모바일 메뉴 닫기
   };
@@ -52,7 +52,7 @@ const Navbar = () => {
     <main>
       <nav className="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between items-center h-16">
             {/* 로고 */}
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
@@ -62,13 +62,13 @@ const Navbar = () => {
             </div>
 
             {/* 데스크톱 네비게이션 */}
-            <div className="hidden md:flex md:space-x-8">
+            <div className="hidden md:flex flex-grow justify-center space-x-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={() => handleNavClick(item.name, item.image)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  onClick={() => handleNavClick(item.name)}
+                  className={`px-3 py-2 rounded-md text-base font-medium ${
                     activeTab === item.name
                       ? "bg-blue-700 text-white"
                       : "text-gray-300 hover:text-white hover:bg-blue-700"
@@ -81,7 +81,7 @@ const Navbar = () => {
 
             {/* 로그인/회원가입/마이페이지 */}
             {!isLoginPage && (
-              <div className="hidden md:flex md:items-center md:space-x-4">
+              <div className="hidden md:flex items-center space-x-4">
                 {isLoggedIn ? (
                   <>
                     <Link
@@ -93,7 +93,7 @@ const Navbar = () => {
                     </Link>
                     <button
                       onClick={handleLoginLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md  text-white"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       <LogOutIcon className="h-4 w-4 mr-2" />
                       로그아웃
@@ -109,7 +109,7 @@ const Navbar = () => {
                     </Link>
                     <button
                       onClick={handleLoginLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       <LogInIcon className="h-4 w-4 mr-2" />
                       로그인
@@ -143,7 +143,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={() => handleNavClick(item.name, item.image)}
+                  onClick={() => handleNavClick(item.name)}
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-blue-700"
                 >
                   {item.name}
@@ -173,9 +173,7 @@ const Navbar = () => {
                   <button
                     onClick={handleLoginLogout}
                     className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                      isLoggedIn
-                        ? "bg-red-600 hover:bg-red-700 text-white"
-                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                      isLoggedIn ? "text-white" : "text-white"
                     }`}
                   >
                     {isLoggedIn ? "로그아웃" : "로그인"}
