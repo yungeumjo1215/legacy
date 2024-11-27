@@ -77,3 +77,7 @@ code {
   max-height: 280px; /* 높이를 제한 */
   overflow-y: auto; /* 스크롤 추가 */
 }
+
+.Event-information {
+  margin-top: 1.875rem !important;
+}

@@ -39,7 +39,7 @@ const Event_schedule = () => {
     // 실제 검색 로직 수행 (API 호출 등)
   };
   return (
-    <div className="w-full h-auto fixed mt-10" style={{ paddingTop: "4rem" }}>
+    <div className="w-full h-auto mt-10" style={{ paddingTop: "4rem" }}>
       <div className="container">
         <h1 className="MainFont font-semibold text-5xl pb-5">행사 정보</h1>
       </div>
@@ -68,7 +68,7 @@ const Event_schedule = () => {
               <li key={idx} className="mr-8">
                 <button
                   to={item.to}
-                  className={`border hover:bg-blue-800 hover:text-white border-slate-500 rounded-md p-1 font-semibold px-2 ${
+                  className={` border hover:bg-blue-800 hover:text-white border-slate-500 rounded-md p-1 font-semibold px-2 shadow-md ${
                     item.label === "경상도" ? "Gyeongsang" : ""
                   } ${item.label === "서울" ? "seoul" : ""}
                   ${item.label === "인천" ? "incheon" : ""}`}
@@ -87,10 +87,12 @@ const Event_schedule = () => {
           />
         </div>
       </div>
-      <div className="Event-information border-2 border-blue-800 px-[1rem] w-full h-auto max-h-72  mt-10 max-w-[1280px] ml-[11.6rem] rounded-md ">
-        <h2 className="MainFont text-3xl font-semibold pb-5">
-          {date.toLocaleDateString("ko-KR")} 행사 정보
-        </h2>
+      <div className="Event-information MC w-full h-[200px] max-h-72 rounded-md ">
+        <div className="w-full">
+          <h2 className="MainFont w-full py-3 px-6 border-b-2 border-blue-100 text-3xl font-semibold mb-8">
+            {date.toLocaleDateString("ko-KR")} 행사 정보
+          </h2>
+        </div>
         <ul>
           {events.length > 0 ? (
             events.map((event, idx) => (
@@ -99,7 +101,7 @@ const Event_schedule = () => {
               </li>
             ))
           ) : (
-            <p className="SubFont text-xl">해당 날짜에 행사가 없습니다.</p>
+            <p className="SubFont text-xl px-6">해당 날짜에 행사가 없습니다.</p>
           )}
         </ul>
       </div>
