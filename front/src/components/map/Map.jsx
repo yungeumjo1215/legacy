@@ -9,13 +9,13 @@ import {
 
 const Map = () => {
   const [heritageData, setHeritageData] = useState([]);
-  const [getHeritageData, setgetHeritageData] = useState(null);
+  const [fetchGetHeritageData, setfetchGetHeritageData] = useState(null);
   const [error, setError] = useState("");
 
   // 문화재 정보를 가져오는 함수
   const fetchHeritageData = async () => {
     try {
-      const response = await axios.get(getHeritageData);
+      const response = await axios.get(fetchHeritageData);
 
       const data = response.fetchGetHeritageData;
       setHeritageData(data);
@@ -54,24 +54,24 @@ const Map = () => {
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude),
                   }}
-                  onClick={() => setgetHeritageData(heritage)}
+                  onClick={() => setfetchGetHeritageData(heritage)}
                 />
               );
             })}
-            console.log(fetchGetHeritageData);
-            {getHeritageData && (
+
+            {fetchGetHeritageData && (
               <InfoWindow
                 position={{
-                  lat: parseFloat(getHeritageData.latitude),
-                  lng: parseFloat(getHeritageData.longitude),
+                  lat: parseFloat(fetchGetHeritageData.latitude),
+                  lng: parseFloat(fetchGetHeritageData.longitude),
                 }}
-                onCloseClick={() => setgetHeritageData(null)}
+                onCloseClick={() => setfetchGetHeritageData(null)}
               >
                 <div>
-                  <h2>{getHeritageData.culturalPropertyName}</h2>
-                  <p>{getHeritageData.sido}</p>
-                  <p>{getHeritageData.sigungu}</p>
-                  <p>{getHeritageData.kind}</p>
+                  <h2>{fetchGetHeritageData.culturalPropertyName}</h2>
+                  <p>{fetchGetHeritageData.sido}</p>
+                  <p>{fetchGetHeritageData.sigungu}</p>
+                  <p>{fetchGetHeritageData.kind}</p>
                 </div>
               </InfoWindow>
             )}
