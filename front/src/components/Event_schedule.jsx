@@ -1,13 +1,40 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { TiStarFullOutline } from "react-icons/ti";
 import { areaLink } from "../constans/data";
 
 const Event_schedule = () => {
   const [date, setDate] = useState(new Date()); // 선택된 날짜를 상태로 관리
   const [events, setEvents] = useState([]); // API에서 가져온 데이터를 저장
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태 임의로 설정
+  const [selectedItems, setSelectedItems] = useState([]); // 선택된 항목 상태
   const [search, setSearch] = useState(""); // 검색창 상태 관리
   console.log(events);
+
+  const [error, setError] = useState(""); // 에러 메시지 상태
+
+  const handleStarClick = (index) => {
+    if (!isLoggedIn) {
+      // 로그인하지 않은 상태에서 클릭 시 에러 메시지 표시
+      setError(
+        "로그인 후 사용하실 수 있습니다.\n회원가입 또는 로그인해주세요."
+      );
+      return; // 에러가 발생하면 더 이상 클릭하지 않음
+    }
+
+    setError(""); // 로그인 상태일 경우 에러 메시지 초기화
+
+    setSelectedItems((prevSelectedItems) => {
+      // 항목이 이미 선택되었으면 제거, 아니면 추가
+      if (prevSelectedItems.includes(index)) {
+        return prevSelectedItems.filter((item) => item !== index); // 선택된 항목을 취소 (false로 변경)
+      } else {
+        return [...prevSelectedItems, index]; // 새 항목을 선택 (true로 설정)
+      }
+    });
+  };
+
   //날짜 선택 시 실행되는 함수
   const handleDateChange = async (newDate) => {
     setDate(newDate);
@@ -63,7 +90,7 @@ const Event_schedule = () => {
         </div>
         <div className="btn flex  items-center pl-10">
           <ul className="w-full flex flex-wrap gap-5 pl-10">
-            <span className="font-semibold text-2xl">위치:</span>
+            <span className="font-semibold text-2xl">지역:</span>
             {areaLink.map((item, idx) => (
               <li key={idx} className="mr-8">
                 <button
@@ -97,7 +124,23 @@ const Event_schedule = () => {
           {events.length > 0 ? (
             events.map((event, idx) => (
               <li key={idx} className="pb-2">
-                {event.title} - {event.location}
+                <div className="border">
+                  <button
+                    className=""
+                    onClick={() => handleStarClick(idx)}
+                    style={{
+                      cursor: "pointer", // 마우스 커서가 손 모양으로 바뀌게
+                      marginRight: "10px", // 아이콘과 텍스트 간격
+                      display: "inline-block",
+                      color: selectedItems.includes(idx)
+                        ? "#FFD700"
+                        : "#DCDCDC", // 선택된 항목은 노란색
+                    }}
+                  >
+                    <TiStarFullOutline className="text-3xl" />
+                  </button>
+                  {event.title} - {event.location}
+                </div>
               </li>
             ))
           ) : (
