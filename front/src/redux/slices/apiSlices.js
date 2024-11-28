@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, getHeritageFetchThunk } from "@reduxjs/toolkit";
+import { GET_HERITAGE_API_URL } from "../../utils/apiUrl";
 
 const getHeritageFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (userId) => {
