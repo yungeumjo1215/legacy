@@ -38,8 +38,7 @@ const Map = () => {
             id="google-map"
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={{ lat: 37.5665, lng: 126.978 }} // 기본 서울 설정
-            zoom={16}
-          >
+            zoom={16}>
             {heritageData.map((heritage, index) => {
               const latitude = heritage.latitude;
               const longitude = heritage.longitude;
@@ -65,8 +64,7 @@ const Map = () => {
                   lat: parseFloat(fetchGetHeritageData.latitude),
                   lng: parseFloat(fetchGetHeritageData.longitude),
                 }}
-                onCloseClick={() => setfetchGetHeritageData(null)}
-              >
+                onCloseClick={() => setfetchGetHeritageData(null)}>
                 <div>
                   <h2>{fetchGetHeritageData.culturalPropertyName}</h2>
                   <p>{fetchGetHeritageData.sido}</p>

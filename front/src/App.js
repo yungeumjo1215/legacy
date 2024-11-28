@@ -7,6 +7,8 @@ import Search from "./components/Search";
 import Login from "./user/Login";
 import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
+import ComTest from "./components/Comtest";
+import FestivalTable from "./components/FestivalTable";
 
 const App = () => {
   return (
@@ -16,6 +18,8 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/ComTest" element={<ComTest />} />
+          <Route path="/FestivalTable" element={<FestivalTable />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/search" element={<Search />} />
           <Route path="/event_schedule" element={<Event_schedule />} />

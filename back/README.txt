@@ -30,6 +30,6 @@ back/
 
 
 빨리가기 버튼 
-├── http://localhost:8000/heritage
+├── http://localhost:8000/heritage  
 └── http://localhost:8000/festival
 └── http://localhost:8000/pgdb   (먼저 포트 8000 다죽이고 테스트하세요)
