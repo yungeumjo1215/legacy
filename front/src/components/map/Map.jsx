@@ -9,22 +9,18 @@ import {
 
 const Map = () => {
   const [heritageData, setHeritageData] = useState([]);
-  const [selectedHeritage, setSelectedHeritage] = useState(null);
+  const [getHeritageData, setgetHeritageData] = useState(null);
   const [error, setError] = useState("");
-
-  const heritageApiKey = "http://www.khs.go.kr/cha/SearchKindOpenapiDt.do"; // 국가유산청 API 키
 
   // 문화재 정보를 가져오는 함수
   const fetchHeritageData = async () => {
     try {
-      const response = await axios.get(
-        `http://apis.data.go.kr/6290000/culturalheritage/search?serviceKey=${heritageApiKey}&numOfRows=10&pageNo=1`
-      );
+      const response = await axios.get(getHeritageData);
 
-      const data = response.data.response.body.items.item;
+      const data = response.fetchGetHeritageData;
       setHeritageData(data);
       setError("");
-    } catch (err) {
+    } catch (error) {
       setError("문화재 정보를 불러오는 데 실패했습니다.");
     }
   };
@@ -58,24 +54,24 @@ const Map = () => {
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude),
                   }}
-                  onClick={() => setSelectedHeritage(heritage)}
+                  onClick={() => setgetHeritageData(heritage)}
                 />
               );
             })}
-
-            {selectedHeritage && (
+            console.log(fetchGetHeritageData);
+            {getHeritageData && (
               <InfoWindow
                 position={{
-                  lat: parseFloat(selectedHeritage.latitude),
-                  lng: parseFloat(selectedHeritage.longitude),
+                  lat: parseFloat(getHeritageData.latitude),
+                  lng: parseFloat(getHeritageData.longitude),
                 }}
-                onCloseClick={() => setSelectedHeritage(null)}
+                onCloseClick={() => setgetHeritageData(null)}
               >
                 <div>
-                  <h2>{selectedHeritage.culturalPropertyName}</h2>
-                  <p>{selectedHeritage.sido}</p>
-                  <p>{selectedHeritage.sigungu}</p>
-                  <p>{selectedHeritage.kind}</p>
+                  <h2>{getHeritageData.culturalPropertyName}</h2>
+                  <p>{getHeritageData.sido}</p>
+                  <p>{getHeritageData.sigungu}</p>
+                  <p>{getHeritageData.kind}</p>
                 </div>
               </InfoWindow>
             )}
