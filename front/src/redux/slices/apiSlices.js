@@ -11,7 +11,7 @@ const getHeritageFetchThunk = (actionType, apiURL) => {
 
 // get items data
 export const fetchGetHeritageData = getHeritageFetchThunk(
-  "fetchgetHeritage", //action type
+  "fetcHgetHeritage", //action type
   GET_HERITAGE_API_URL // 요청 url
 ); // thunk 함수 호출
 
