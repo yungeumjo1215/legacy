@@ -7,8 +7,10 @@ export const fetchFestivalData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("http://localhost:8000/festival"); // API endpoint
+      // console.log("API Response:", response.data);
       return response.data.data; // Directly return the raw data from the API response
     } catch (error) {
+      console.error("API Fetch Error:", error.message);
       return rejectWithValue(error.message || "Failed to fetch festival data");
     }
   }
@@ -29,10 +31,12 @@ const festivalDetailSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchFestivalData.fulfilled, (state, action) => {
+        // console.log("Data fetched successfully:", action.payload);
         state.loading = false;
         state.festivalList = action.payload; // Store the raw data directly
       })
       .addCase(fetchFestivalData.rejected, (state, action) => {
+        // console.error("Fetch failed:", action.payload); // 에러 확인
         state.loading = false;
         state.error = action.payload;
       });

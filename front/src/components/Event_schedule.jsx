@@ -1,70 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { areaLink } from "../constans/data";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 
 const Event_schedule = () => {
-  const [date, setDate] = useState(new Date()); // 선택된 날짜를 상태로 관리
-  const [events, setEvents] = useState([]); // API에서 가져온 데이터를 저장
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태 임의로 설정
+  const dispatch = useDispatch();
+  const { festivalList, loading, error } = useSelector(
+    (state) => state.festival
+  );
+  const [date, setDate] = useState(new Date()); // 선택된 날짜
+  const [selectedRegion, setSelectedRegion] = useState(""); // 선택된 지역
+  const [search, setSearch] = useState(""); // 검색창 상태
   const [selectedItems, setSelectedItems] = useState([]); // 선택된 항목 상태
-  const [search, setSearch] = useState(""); // 검색창 상태 관리
-  console.log(events);
 
-  const [error, setError] = useState(""); // 에러 메시지 상태
+  useEffect(() => {
+    dispatch(fetchFestivalData());
+  }, [dispatch]);
 
+  // 날짜 필터링
+  const filteredByDate = festivalList.filter((event) => {
+    const eventDate = new Date(event.date).toISOString().split("T")[0];
+    const selectedDate = date.toISOString().split("T")[0];
+    return eventDate === selectedDate;
+  });
+  // 지역 필터링
+  const filteredByRegion = selectedRegion
+    ? filteredByDate.filter((event) => event.region === selectedRegion)
+    : filteredByDate;
+
+  // 검색 필터링
+  const filteredBySearch = search
+    ? filteredByRegion.filter((event) =>
+        event.region.toLowerCase().includes(search.toLowerCase())
+      )
+    : filteredByRegion;
+
+  // 즐겨찾기
   const handleStarClick = (index) => {
-    if (!isLoggedIn) {
-      // 로그인하지 않은 상태에서 클릭 시 에러 메시지 표시
-      setError(
-        "로그인 후 사용하실 수 있습니다.\n회원가입 또는 로그인해주세요."
-      );
-      return; // 에러가 발생하면 더 이상 클릭하지 않음
-    }
-
-    setError(""); // 로그인 상태일 경우 에러 메시지 초기화
-
-    setSelectedItems((prevSelectedItems) => {
-      // 항목이 이미 선택되었으면 제거, 아니면 추가
-      if (prevSelectedItems.includes(index)) {
-        return prevSelectedItems.filter((item) => item !== index); // 선택된 항목을 취소 (false로 변경)
-      } else {
-        return [...prevSelectedItems, index]; // 새 항목을 선택 (true로 설정)
-      }
-    });
+    setSelectedItems((prevSelectedItems) =>
+      prevSelectedItems.includes(index)
+        ? prevSelectedItems.filter((item) => item !== index)
+        : [...prevSelectedItems, index]
+    );
   };
+  // 날짜 변경
+  const handleDateChange = (newDate) => {
+    // console.log("Selected Date (raw):", newDate);
+    // newDate가 유효한 Date 객체인지 확인
+    if (!(newDate instanceof Date) || isNaN(newDate.getTime())) {
+      console.error("Invalid date selected:", newDate); // 잘못된 값이 들어오면 에러 로그 출력
+      return;
+    }
+    // 정상적인 Date 객체일 때
+    // const formattedDate = newDate.toISOString().split("T")[0];
+    // console.log("Formatted Date:", formattedDate);
 
-  //날짜 선택 시 실행되는 함수
-  const handleDateChange = async (newDate) => {
     setDate(newDate);
-
-    //날짜를 적절한 형식으로 변환
-    const formattedDate = newDate.toISOString().split("T")[0];
-
-    try {
-      //API 호출
-      const response = await fetch(
-        `http://www.cha.go.kr/cha/openapi/selectEventListOpenapi.do=${formattedDate}`
-      );
-      const data = await response.json();
-      setEvents(data); // 가져온 데이터 저장
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      setEvents([]); //에러 발생 시 빈 데이터로 설정
-    }
   };
-
-  // 검색어 변경 시 실행될 함수
-  const handleChange = (e) => {
+  // 지역 버튼 클릭
+  const handleRegionClick = (region) => {
+    setSelectedRegion(region);
+  };
+  // 검색창 입력
+  const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
-  // 검색 버튼 클릭 시 실행될 함수 (예시)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("검색어:", search);
-    // 실제 검색 로직 수행 (API 호출 등)
-  };
+  useEffect(() => {
+    // console.log("Date state has changed to:", date);
+    // 다른 코드로 인해 예기치 않은 상태 변화가 발생하지 않는지 확인
+  }, [date]);
+
+  // const formattedDate =
+  //   date instanceof Date ? date.toISOString().split("T")[0] : "";
+  // console.log("Formatted Date:", formattedDate);
+
+  // console.log("Type of date:", typeof date);
+  // console.log("Is date an instance of Date?", date instanceof Date);
+
   return (
     <div className="w-full h-auto mt-10" style={{ paddingTop: "4rem" }}>
       <div className="container">
@@ -72,12 +87,12 @@ const Event_schedule = () => {
       </div>
       <div className="MC w-full h-auto flex justify-between border-2 rounded-md">
         <div className="search">
-          <form onSubmit={handleSubmit} className="flex m-5 w-full h-auto">
+          <form className="flex m-5 w-full h-auto">
             <input
               type="text"
               placeholder="검색어를 입력하세요"
               value={search}
-              onChange={handleChange}
+              onChange={handleSearchChange}
               className="Event-sc rounded-s-[5px]"
             />
             <button
@@ -94,11 +109,12 @@ const Event_schedule = () => {
             {areaLink.map((item, idx) => (
               <li key={idx} className="mr-8">
                 <button
-                  to={item.to}
-                  className={` border hover:bg-blue-800 hover:text-white border-slate-500 rounded-md p-1 font-semibold px-2 shadow-md ${
-                    item.label === "경상도" ? "Gyeongsang" : ""
-                  } ${item.label === "서울" ? "seoul" : ""}
-                  ${item.label === "인천" ? "incheon" : ""}`}
+                  onClick={() => handleRegionClick(item.label)}
+                  className={`border hover:bg-blue-800 hover:text-white border-slate-500 rounded-md p-1 font-semibold px-2 shadow-md ${
+                    selectedRegion === item.label
+                      ? "bg-blue-800 text-white"
+                      : ""
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -111,6 +127,7 @@ const Event_schedule = () => {
             onChange={handleDateChange}
             value={date}
             className="rounded-md"
+            onClick={() => console.log("Calendar clicked!")}
           />
         </div>
       </div>
@@ -121,25 +138,28 @@ const Event_schedule = () => {
           </h2>
         </div>
         <ul>
-          {events.length > 0 ? (
-            events.map((event, idx) => (
+          {loading ? (
+            <p>로딩 중...</p>
+          ) : error ? (
+            <p className="SubFont text-xl px-6">{error}</p>
+          ) : filteredBySearch.length > 0 ? (
+            filteredBySearch.map((event, idx) => (
               <li key={idx} className="pb-2">
                 <div className="border">
                   <button
-                    className=""
                     onClick={() => handleStarClick(idx)}
                     style={{
-                      cursor: "pointer", // 마우스 커서가 손 모양으로 바뀌게
-                      marginRight: "10px", // 아이콘과 텍스트 간격
+                      cursor: "pointer",
+                      marginRight: "10px",
                       display: "inline-block",
                       color: selectedItems.includes(idx)
                         ? "#FFD700"
-                        : "#DCDCDC", // 선택된 항목은 노란색
+                        : "#DCDCDC",
                     }}
                   >
                     <TiStarFullOutline className="text-3xl" />
                   </button>
-                  {event.title} - {event.location}
+                  {event.title} - {event.region}
                 </div>
               </li>
             ))
