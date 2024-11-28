@@ -9,7 +9,7 @@ const router = express.Router();
 // Route for creating an account
 router.post("/create", createAccount);
 
-// Route for deleting an account by email
-router.delete("/delete/:email", deleteAccount);
+// Route for deleting an account by UUID
+router.delete("/delete/:uuid", deleteAccount);
 
 module.exports = router;
