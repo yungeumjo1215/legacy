@@ -14,18 +14,11 @@ export const fetchGetHeritageData = getHeritageFetchThunk(
   "fetcHgetHeritage", //action type
   GET_HERITAGE_API_URL // 요청 url
 ); // thunk 함수 호출
-// handleFulfilled 함수 정의 : 요청 성공 시 상태 업데이트 로직을 별도의 함수로 분리
-const handleFulfilled = (stateKey) => (state, action) => {
-  state[stateKey] = action.payload; // action.payload에 응답 데이터가 들어있음
-};
-// handleRejected 함수 정의 : 요청 실패 시 상태 업데이트 로직을 별도의 함수로 분리
-const handleRejected = (state, action) => {
-  console.log("Error", action.payload);
-  state.isError = true;
-};
+
 const apiSlices = createSlice({
   name: "apis",
-  initialState: { getHeritageData: null },
+  getHeritageData: null,
+
   extraReducers: (builder) => {
     builder
       .addCase(
