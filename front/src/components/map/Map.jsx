@@ -1,83 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import mapboxgl from "mapbox-gl";
 import axios from "axios";
-import {
-  GoogleMap,
-  LoadScript,
-  Marker,
-  InfoWindow,
-} from "@react-google-maps/api";
+
+// Mapbox access token
+mapboxgl.accessToken = "YOUR_MAPBOX_ACCESS_TOKEN";
 
 const Map = () => {
-  const [heritageData, setHeritageData] = useState([]);
-  const [fetchGetHeritageData, setfetchGetHeritageData] = useState(null);
-  const [error, setError] = useState("");
+  const [heritageList, setHeritageList] = useState([]);
+  const [map, setMap] = useState(null);
 
-  // 문화재 정보를 가져오는 함수
-  const fetchHeritageData = async () => {
-    try {
-      const response = await axios.get(fetchHeritageData);
-
-      const data = response.fetchGetHeritageData;
-      setHeritageData(data);
-      setError("");
-    } catch (error) {
-      setError("문화재 정보를 불러오는 데 실패했습니다.");
-    }
-  };
-
-  // 페이지 로드시 문화재 데이터를 가져옵니다.
+  // Fetch heritage list from the backend
   useEffect(() => {
-    fetchHeritageData();
+    const fetchHeritageList = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/heritage");
+        setHeritageList(response.data);
+      } catch (error) {
+        console.error("Error fetching heritage data:", error);
+      }
+    };
+
+    fetchHeritageList();
   }, []);
 
+  // Initialize map
+  useEffect(() => {
+    const initializeMap = () => {
+      const mapInstance = new mapboxgl.Map({
+        container: "map", // ID of the container div
+        style: "mapbox://styles/mapbox/streets-v11", // Map style
+        center: [127.024612, 37.5326], // Initial center (longitude, latitude)
+        zoom: 10, // Initial zoom level
+      });
+
+      setMap(mapInstance);
+
+      // Cleanup map on unmount
+      return () => mapInstance.remove();
+    };
+
+    initializeMap();
+  }, []);
+
+  // Add markers to the map
+  useEffect(() => {
+    if (map && heritageList.length) {
+      heritageList.forEach((heritage) => {
+        const marker = new mapboxgl.Marker()
+          .setLngLat([heritage.longitude, heritage.latitude]) // Use longitude & latitude
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }).setText(
+              `${heritage.name}\n${heritage.description}`
+            )
+          ) // Add popup with name and description
+          .addTo(map);
+      });
+    }
+  }, [map, heritageList]);
+
   return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ height: "500px", marginTop: "20px", height: "800px" }}>
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API}>
-          <GoogleMap
-            id="google-map"
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-            center={{ lat: 37.5665, lng: 126.978 }} // 기본 서울 설정
-            zoom={16}
-          >
-            {heritageData.map((heritage, index) => {
-              const latitude = heritage.latitude;
-              const longitude = heritage.longitude;
-
-              // 위도, 경도 정보가 없으면 마커를 표시하지 않음
-              if (!latitude || !longitude) return null;
-
-              return (
-                <Marker
-                  key={index}
-                  position={{
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude),
-                  }}
-                  onClick={() => setfetchGetHeritageData(heritage)}
-                />
-              );
-            })}
-
-            {fetchGetHeritageData && (
-              <InfoWindow
-                position={{
-                  lat: parseFloat(fetchGetHeritageData.latitude),
-                  lng: parseFloat(fetchGetHeritageData.longitude),
-                }}
-                onCloseClick={() => setfetchGetHeritageData(null)}
-              >
-                <div>
-                  <h2>{fetchGetHeritageData.culturalPropertyName}</h2>
-                  <p>{fetchGetHeritageData.sido}</p>
-                  <p>{fetchGetHeritageData.sigungu}</p>
-                  <p>{fetchGetHeritageData.kind}</p>
-                </div>
-              </InfoWindow>
-            )}
-          </GoogleMap>
-        </LoadScript>
-      </div>
+    <div>
+      <h1>Heritage Map</h1>
+      <div
+        id="map"
+        style={{ width: "100%", height: "500px", border: "1px solid #ccc" }}
+      ></div>
     </div>
   );
 };
