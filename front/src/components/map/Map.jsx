@@ -6,7 +6,8 @@ const Map = () => {
   useEffect(() => {
     const loadGoogleMapsScript = () => {
       const existingScript = document.getElementById("google-maps-script");
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API;
+      const apiKey = process.env.REACT_APP_GOOGLE_MAP_API;
+      console.log(apiKey);
 
       if (!apiKey) {
         console.error("Google Maps API Key가 설정되지 않았습니다.");
