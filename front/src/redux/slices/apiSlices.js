@@ -41,7 +41,6 @@ export const fetchDeleteItemData = deleteItemFetchThunk(
 const handleFulfilled = (stateKey) => (state, action) => {
   state[stateKey] = action.payload; // action.payload에 응답 데이터가 들어있음
 };
-
 // handleRejected 함수 정의 : 요청 실패 시 상태 업데이트 로직을 별도의 함수로 분리
 const handleRejected = (state, action) => {
   console.log("Error", action.payload);
