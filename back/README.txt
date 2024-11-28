@@ -16,3 +16,8 @@ heritageproject/
 ├── .env                        # Environment variables for secure config
 ├── .gitignore                  # Specifies files to exclude from version control
 └── README.md                   # Documentation for the project
+
+
+빨리가기 버튼 
+├── http://localhost:8000/heritage
+└── http://localhost:8000/festival
