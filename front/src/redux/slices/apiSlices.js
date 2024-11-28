@@ -12,12 +12,21 @@ const getHeritageFetchThunk = (actionType, apiURL) => {
 // get items data
 export const fetchGetHeritageData = getHeritageFetchThunk(
   "fetchgetHeritage", //action type
-  GET_TASKS_API_URL // 요청 url
+  GET_HERITAGE_API_URL // 요청 url
 ); // thunk 함수 호출
 
 const apiSlices = createSlice({
   name: "apis",
   getHeritageData: null,
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(
+        fetchGetHeritageData.fulfilled,
+        handleFulfilled("getHeritageData")
+      )
+      .addCase(fetchGetHeritageData.rejected, handleRejected);
+  },
 });
 
 export default apiSlices.reducer;
