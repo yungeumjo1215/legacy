@@ -11,6 +11,16 @@
   font-style: normal;
 }
 
+.sub-text {
+  margin-top: 40px;
+  margin-left: 20px;
+  font-size: 1.5rem;
+  color: #333;
+  font-family: "Noto Sans Korean";
+  font-weight: 400;
+  font-style: normal;
+}
+
 /* ImageSlider.css */
 .slider-container {
   display: flex;
@@ -61,7 +71,7 @@
 }
 
 .slider-text {
-  font-size: 18px; /* 텍스트 크기 확대 */
+  font-size: 20px; /* 텍스트 크기 확대 */
   color: #333;
   line-height: 1.5; /* 가독성을 위한 줄 간격 */
   margin: 0;
