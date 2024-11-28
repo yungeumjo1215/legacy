@@ -1,7 +1,21 @@
-알림 정보 : back 패키지 json 업데이트함 
 (업데이트 커맨드)
 npm i -g npm-check-updates
 ncu -u
 npm install
 
-back 실행 node app.js 랑 npm run start 따로 있으니 주의바람 
+npm update
+
+ID 생성 규칙 특수문자 1개
+
+ThunderClient account 생성법 ex:
+
+생성
+http://localhost:8000/account/create
+{
+"username": "JohnDoe",
+"email": "johndoe@example.com",
+"password": "password@123"
+}
+
+삭제
+http://localhost:8000//account/delete/ + 해당 uuid
