@@ -56,8 +56,7 @@ const SearchPage = () => {
           borderRight: "1px solid #e2e2e2", // 오른쪽 테두리
           borderRadius: "0px", // 둥근 모서리
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // 그림자 효과
-        }}
-      >
+        }}>
         {/* 검색창 */}
         <div style={{ marginBottom: "20px", display: "flex" }}>
           <input
@@ -85,8 +84,7 @@ const SearchPage = () => {
               alignItems: "center",
               justifyContent: "center",
               border: "1px solid #77767c",
-            }}
-          >
+            }}>
             <FaSearch className="text-2xl" />
           </button>
         </div>
@@ -96,8 +94,7 @@ const SearchPage = () => {
           style={{
             maxHeight: "calc(100vh - 80px)", // 검색창을 제외한 나머지 영역에 스크롤 적용
             overflowY: "auto", // 콘텐츠가 많으면 스크롤
-          }}
-        >
+          }}>
           <ul>
             {/* 문화재 목록 */}
             {[
@@ -136,8 +133,7 @@ const SearchPage = () => {
                     color: selectedItems.includes(index)
                       ? "#FFD700"
                       : "#DCDCDC", // 선택된 항목은 노란색
-                  }}
-                >
+                  }}>
                   <TiStarFullOutline className="text-3xl" />
                 </div>
                 <div>{item}</div>
@@ -187,16 +183,14 @@ const SearchPage = () => {
               justifyContent: "center", // 수직 중앙 정렬
               alignItems: "center", // 수평 중앙 정렬
               textAlign: "center",
-            }}
-          >
+            }}>
             <p
               style={{
                 fontWeight: "bold", // 에러 문구 굵게 처리
                 fontSize: "18px", // 폰트 크기 살짝 증가
                 whiteSpace: "pre-wrap",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               {error}
             </p>
             <button
@@ -209,8 +203,7 @@ const SearchPage = () => {
                 borderRadius: "5px",
                 cursor: "pointer",
                 marginTop: "25px",
-              }}
-            >
+              }}>
               닫기
             </button>
           </div>

@@ -129,8 +129,11 @@ const Map = () => {
       <h1>Google Maps Heritage Map</h1>
       <div
         ref={mapRef}
-        style={{ width: "100%", height: "800px", border: "1px solid #ccc" }}
-      ></div>
+        style={{
+          width: "100%",
+          height: "800px",
+          border: "1px solid #ccc",
+        }}></div>
       {geocodedHeritageData.length > 0 && (
         <div style={{ marginTop: "20px" }}>
           <h2>지오코딩된 유적지 정보</h2>
