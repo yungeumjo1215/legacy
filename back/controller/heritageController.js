@@ -14,7 +14,7 @@ const cleanText = (text) => text?.replace(/\r\n|\n|\r|\t/g, "").trim() || "-";
  * @param {number} limit - Maximum number of heritage items to fetch.
  * @returns {Array<object>} - List of enriched heritage data.
  */
-const fetchHeritageList = async (limit = 1) => {
+const fetchHeritageList = async (limit = 10) => {
   const heritageList = [];
   let totalFetched = 0;
 
