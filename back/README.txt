@@ -21,3 +21,4 @@ heritageproject/
 빨리가기 버튼 
 ├── http://localhost:8000/heritage
 └── http://localhost:8000/festival
+└── http://localhost:8000/pgdb

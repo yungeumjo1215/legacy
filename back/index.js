@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+
 const heritageRoutes = require("./routes/heritageRoutes");
 const festivalRoutes = require("./routes/festivalRoutes");
+const pgdbRoutes = require("./routes/postgreSQLRoutes");
 
 const PORT = 8000;
 const app = express();
@@ -16,5 +18,6 @@ app.get("/", (req, res) => {
 // Heritage and Festival Routes
 app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
+app.use("/pgdb", pgdbRoutes);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
