@@ -1,21 +1,32 @@
-heritageproject/
-├── app.js                      # Main application entry point
-├── controllers/                # Controllers to handle route logic
-│   ├── festivalController.js   # Controller for festival-related logic
-│   ├── heritageController.js   # Controller for heritage-related logic
-├── routes/                     # Routes to define API endpoints
-│   ├── festivalRoutes.js       # Routes for festival endpoints
-│   ├── heritageRoutes.js       # Routes for heritage endpoints
-├── utils/                      # Utilities for shared helper functions
-│   ├── apiUtils.js             # Helper functions for building URLs, etc.
-├── data/                       # Mock data or SQL scripts (optional)
-│   ├── data.sql                # SQL script for database setup
-├── pgClient.js                 # PostgreSQL client for database connections
-├── package.json                # Node.js project metadata and dependencies
-├── package-lock.json           # Exact versioning of installed dependencies
-├── .env                        # Environment variables for secure config
-├── .gitignore                  # Specifies files to exclude from version control
-└── README.md                   # Documentation for the project
+back/
+├── controller/              # Business logic and request handling
+│   ├── accountController.js    # Controller for related logic
+│   ├── deleteTaskCtrl.js
+│   ├── heritageController.js
+│   ├── festivalController.js
+│   ├── ...
+│
+├── routes/                  # Route definitions for each API
+│   ├── accountRoutes.js    # Routes to define API endpoints
+│   ├── heritageRoutes.js
+│   ├── festivalRoutes.js
+│   ├── ...
+│
+├── data/                    # Static data files (if applicable)
+│   ├── heritageData.js
+│   ├── festivalData.js
+│   └── ...
+│
+├── database/                # Database connection setup
+│   └── database.js
+├── data.sql                 # SQL script for database setup
+│
+├── utils/                   # Utility functions
+│   └── apiUtils.js
+│
+├── .gitignore               # Ignored files and folders for Git
+├── package.json             # Node.js dependencies and scripts
+└── README.md                # Project documentation
 
 
 빨리가기 버튼 
