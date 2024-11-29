@@ -53,7 +53,8 @@ const Modal = ({ item, onClose }) => {
             fontSize: "18px",
             marginBottom: "20px",
             boxSizing: "border-box",
-            border: "1px solid gray",
+            border: "1px solid #7d7576",
+            borderRadius: "8px",
             padding: "10px",
           }}
         >
@@ -85,6 +86,15 @@ const Modal = ({ item, onClose }) => {
             justifyContent: "center", // 가로로 가운데 정렬
             width: "100%", // 버튼의 너비를 100%로 설정하여 부모 요소 안에서 가로로 가운데 배치
             alignItems: "center", // 버튼 내용 가로 세로 모두 가운데로 정렬
+            transition: "box-shadow 0.3s ease, transform 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = "0 0 10px 2px rgba(255, 255, 255, 0.7)"; // 글로우 효과
+            e.target.style.transform = "scale(1.02)"; // 크기 확대
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = "none"; // 글로우 제거
+            e.target.style.transform = "scale(1)"; // 원래 크기로 복원
           }}
         >
           닫기
