@@ -4,8 +4,6 @@ const pool = require("../database/database");
 const { v4: uuidv4 } = require("uuid");
 
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key"; // Securely handle secret keys
-
-// Utility function to validate passwords
 // Utility function to validate passwords
 const isValidPassword = (password) => {
   const specialCharRegex = /[!@#$%^&*]/;
