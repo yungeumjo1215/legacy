@@ -10,7 +10,6 @@ import {
 import a1 from "../assets/a1.png"; // 로고 이미지
 
 const Navbar = () => {
-  const [activeTab, setActiveTab] = useState("Home");
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // 모바일 메뉴 상태
   const location = useLocation();
@@ -27,25 +26,19 @@ const Navbar = () => {
     },
   ];
 
-  // 네비게이션 클릭 핸들러
-  const handleNavClick = (name) => {
-    setActiveTab(name);
-    setIsMobileMenuOpen(false); // 모바일 메뉴 닫기
-  };
-
   // 로그인/로그아웃 핸들러
   const handleLoginLogout = () => {
     if (isLoggedIn) {
       setIsLoggedIn(false);
       navigate("/"); // 로그아웃 후 홈으로 이동
     } else {
-      setIsLoggedIn(true);
       navigate("/login"); // 로그인 페이지로 이동
     }
     setIsMobileMenuOpen(false);
   };
 
-  // 현재 경로가 회원가입 페이지인지 확인
+  // 현재 경로가 로그인 페이지 또는 회원가입 페이지인지 확인
+  const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/signup";
 
   return (
@@ -67,9 +60,8 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={() => handleNavClick(item.name)}
                   className={`px-3 py-2 rounded-md text-base font-medium ${
-                    activeTab === item.name
+                    location.pathname === item.path
                       ? "bg-blue-700 text-white"
                       : "text-gray-300 hover:text-white hover:bg-blue-700"
                   }`}
@@ -100,21 +92,40 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <button
-                    onClick={handleLoginLogout}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                  >
-                    <LogInIcon className="h-4 w-4 mr-2" />
-                    로그인
-                  </button>
-                  {/* 회원가입 버튼은 회원가입 페이지에서는 표시하지 않음 */}
-                  {!isSignUpPage && (
+                  {/* 로그인 페이지에서는 회원가입 버튼만 표시 */}
+                  {isLoginPage ? (
                     <Link
                       to="/signup"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
                       회원가입
                     </Link>
+                  ) : isSignUpPage ? (
+                    // 회원가입 페이지에서는 로그인 버튼만 표시
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                    >
+                      <LogInIcon className="h-4 w-4 mr-2" />
+                      로그인
+                    </button>
+                  ) : (
+                    // 초기 상태에서 로그인과 회원가입 모두 표시
+                    <>
+                      <button
+                        onClick={() => navigate("/login")}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                      >
+                        <LogInIcon className="h-4 w-4 mr-2" />
+                        로그인
+                      </button>
+                      <Link
+                        to="/signup"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                      >
+                        회원가입
+                      </Link>
+                    </>
                   )}
                 </>
               )}
@@ -144,7 +155,6 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={() => handleNavClick(item.name)}
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-blue-700"
                 >
                   {item.name}
@@ -159,7 +169,6 @@ const Navbar = () => {
                       to="/mypage"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                     >
-                      <UserCircleIcon className="h-4 w-4 mr-2" />
                       마이페이지
                     </Link>
                     <button
@@ -171,20 +180,37 @@ const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    <button
-                      onClick={handleLoginLogout}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
-                    >
-                      로그인
-                    </button>
-                    {/* 모바일 메뉴에서도 회원가입 버튼 숨기기 */}
-                    {!isSignUpPage && (
+                    {isLoginPage ? (
                       <Link
                         to="/signup"
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
                       >
                         회원가입
                       </Link>
+                    ) : isSignUpPage ? (
+                      <button
+                        onClick={() => navigate("/login")}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                      >
+                        <LogInIcon className="h-4 w-4 mr-2" />
+                        로그인
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => navigate("/login")}
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                        >
+                          <LogInIcon className="h-4 w-4 mr-2" />
+                          로그인
+                        </button>
+                        <Link
+                          to="/signup"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+                        >
+                          회원가입
+                        </Link>
+                      </>
                     )}
                   </>
                 )}
