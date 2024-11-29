@@ -92,7 +92,7 @@ const Map = ({ selectedLocation }) => {
 
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
-                <div className="flex flex-col items-center text-center">  
+                <div className="flex flex-col items-center text-center justify-center">  
                   ${
                     heritage.imageUrl
                       ? `<img src="${heritage.imageUrl}" alt="${heritage.name}" style="max-width: 300px;">`
@@ -229,14 +229,6 @@ const Map = ({ selectedLocation }) => {
     };
 
     loadGoogleMapsScript();
-
-    // 클린업 함수
-    return () => {
-      isMounted = false;
-      // 마커와 인포윈도우 정리
-      markers.forEach((marker) => marker.setMap(null));
-      infoWindows.forEach((window) => window.close());
-    };
   }, []);
 
   return (
@@ -268,7 +260,7 @@ const Map = ({ selectedLocation }) => {
         ref={mapRef}
         style={{
           width: "100%",
-          height: "850px",
+          height: "888px",
           border: "1px solid #ccc",
           display: error ? "none" : "block",
         }}
