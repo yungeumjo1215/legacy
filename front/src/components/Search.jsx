@@ -3,7 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
 import Map from "./map/Map";
-import Modal from "./Modal";
+import DetailSection from "./DetailSection";
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +15,7 @@ const SearchPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   // 디바운스 처리
   useEffect(() => {
@@ -106,10 +107,6 @@ const SearchPage = () => {
     setError("");
   };
 
-  const closeModal = () => {
-    setSelectedHeritage(null);
-  };
-
   return (
     <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
       <div
@@ -125,6 +122,10 @@ const SearchPage = () => {
           left: "10px",
           borderRight: "1px solid #e2e2e2",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
         }}
       >
         <div style={{ marginBottom: "20px", display: "flex" }}>
@@ -163,7 +164,7 @@ const SearchPage = () => {
 
         <div
           style={{
-            maxHeight: "calc(100vh - 80px)",
+            flex: "1 1 auto",
             overflowY: "auto",
           }}
         >
@@ -201,6 +202,18 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
+
+        {selectedHeritage && (
+          <div
+            style={{
+              borderTop: "1px solid #e2e2e2",
+              paddingTop: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <DetailSection item={selectedHeritage} />
+          </div>
+        )}
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
@@ -268,10 +281,6 @@ const SearchPage = () => {
             </button>
           </div>
         </>
-      )}
-
-      {selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={closeModal} />
       )}
     </div>
   );
