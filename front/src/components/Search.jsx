@@ -3,7 +3,6 @@ import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
 import Map from "./map/Map";
-import DetailSection from "./DetailSection";
 import Modal from "./Modal";
 
 const SearchPage = () => {
