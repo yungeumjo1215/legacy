@@ -230,18 +230,6 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
-
-        {selectedHeritage && (
-          <div
-            style={{
-              borderTop: "1px solid #e2e2e2",
-              paddingTop: "20px",
-              marginTop: "20px",
-            }}
-          >
-            <DetailSection item={selectedHeritage} />
-          </div>
-        )}
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
