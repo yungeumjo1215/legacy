@@ -11,7 +11,6 @@ export const fetchFestivalData = createAsyncThunk(
       });
 
       // 응답 데이터 구조 확인 및 변환
-      console.log("Raw API Response:", response.data);
 
       if (response.data && response.data.data) {
         // 데이터 구조 정규화
@@ -54,7 +53,6 @@ const festivalDetailSlice = createSlice({
       .addCase(fetchFestivalData.fulfilled, (state, action) => {
         state.loading = false;
         state.festivalList = action.payload;
-        console.log("Processed Festival Data:", state.festivalList[0]); // 데이터 구조 확인
       })
       .addCase(fetchFestivalData.rejected, (state, action) => {
         state.loading = false;

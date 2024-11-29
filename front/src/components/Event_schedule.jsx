@@ -158,8 +158,12 @@ const EventSchedule = () => {
 
     return festivalList.filter((festival) => {
       try {
-        const startDate = parseYYYYMMDD(festival.startDate);
-        const endDate = parseYYYYMMDD(festival.endDate);
+        const startDate = festival.startDate
+          ? parseYYYYMMDD(festival.startDate)
+          : null;
+        const endDate = festival.endDate
+          ? parseYYYYMMDD(festival.endDate)
+          : null;
         if (!startDate || !endDate) return false;
 
         const currentDate = new Date(date);
