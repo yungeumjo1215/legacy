@@ -7,7 +7,7 @@ import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 
 // 값 포맷팅 유틸리티 함수
 const formatValue = (value) => {
-  return value === "N/A" ? "정보 없음" : value;
+  return value === "N/A" ? "모두" : value;
 };
 
 // 날짜 포맷팅 유틸리티 함수
@@ -302,31 +302,6 @@ const EventSchedule = () => {
           )}
         </div>
       </div>
-
-      {/* 디버깅을 위한 데이터 출력 (개발 중에만 사용) */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="max-w-7xl mx-auto px-4 mt-4 text-sm text-gray-500">
-          <pre>
-            {JSON.stringify(
-              {
-                totalFestivals: festivalList.length,
-                filteredCount: formattedFestivals.length,
-                currentDate: date.toISOString(),
-                searchTerm: search,
-                sampleFestival: festivalList[0]
-                  ? {
-                      name: festivalList[0].programName,
-                      startDate: festivalList[0].startDate,
-                      endDate: festivalList[0].endDate,
-                    }
-                  : null,
-              },
-              null,
-              2
-            )}
-          </pre>
-        </div>
-      )}
     </div>
   );
 };
