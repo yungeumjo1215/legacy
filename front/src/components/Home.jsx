@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import "./ImageSlider.css";
-import Event_schedule from "./Event_schedule";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -20,6 +19,15 @@ const Home = () => {
     dispatch(fetchFestivalData());
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log("Fetched festivalList:", festivalList);
+  }, [festivalList]);
+
+  if (loading) return <p>Loading festival data...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!festivalList || festivalList.length === 0)
+    return <p>No festivals to display.</p>;
+
   const totalFestivals = festivalList.length;
 
   const goToPrevious = () => {
@@ -34,7 +42,7 @@ const Home = () => {
     );
   };
 
-  const getVisibleFestivals = useMemo(() => {
+  const getVisibleFestivals = () => {
     if (!festivalList || festivalList.length === 0) return [];
     const prevIndex = (currentIndex - 1 + totalFestivals) % totalFestivals;
     const nextIndex = (currentIndex + 1) % totalFestivals;
@@ -43,28 +51,9 @@ const Home = () => {
       festivalList[currentIndex],
       festivalList[nextIndex],
     ];
-  }, [currentIndex, festivalList, totalFestivals]);
-
-  // 키보드 네비게이션 핸들러
-  const handleKeyPress = (e) => {
-    if (e.key === "ArrowLeft") {
-      goToPrevious();
-    } else if (e.key === "ArrowRight") {
-      goToNext();
-    }
   };
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, []);
-
-  if (loading)
-    return <p className="text-center mt-8">데이터를 불러오는 중...</p>;
-  if (error)
-    return <p className="text-center mt-8">오류가 발생했습니다: {error}</p>;
-  if (!festivalList || festivalList.length === 0)
-    return <p className="text-center mt-8">표시할 행사가 없습니다.</p>;
+  const visibleFestivals = getVisibleFestivals();
 
   return (
     <div style={{ paddingTop: "4rem" }}>
@@ -80,64 +69,41 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <Link to={"/Event_schedule"}>
-        <div>
-          <h1 className="main-text">문화재 행사 일정</h1>
-        </div>
-      </Link>
+      <h1 className="main-text">문화재 행사 일정</h1>
       <div className="slider-container">
-        {getVisibleFestivals.length === 0 ? (
-          <p>표시할 행사 데이터가 없습니다.</p>
+        {visibleFestivals.length === 0 ? (
+          <p>No festival data available.</p>
         ) : (
           <>
-            <button
-              className="arrow left"
-              onClick={goToPrevious}
-              aria-label="이전 행사 보기"
-              onKeyDown={(e) => e.key === "Enter" && goToPrevious()}
-            >
+            <button className="arrow left" onClick={goToPrevious}>
               &lt;
             </button>
-            <div className="slider" role="region" aria-label="행사 슬라이더">
-              {getVisibleFestivals.map((festival, index) => (
+            <div className="slider">
+              {visibleFestivals.map((festival, index) => (
                 <div
                   key={festival?.id || index}
                   className={`slide ${index === 1 ? "active" : ""}`}
-                  role="group"
-                  aria-label={festival?.programName || "행사"}
                 >
-                  <Link
-                    to={`/festival/${festival?.id || ""}`}
-                    aria-label={`${festival?.programName || "행사"} 상세 보기`}
-                  >
+                  <Link to={`/festival/${festival?.id || ""}`}>
                     {festival?.image && festival.image !== "N/A" ? (
                       <img
                         src={festival.image}
-                        alt={festival?.programName || "행사 이미지"}
+                        alt={festival?.programName || "Festival"}
                         className="slider-image"
-                        loading="lazy"
                       />
                     ) : (
-                      <div className="slider-placeholder">이미지 없음</div>
+                      <div className="slider-placeholder">No Image</div>
                     )}
                   </Link>
                   <div className="slider-textbox">
                     <h2 className="slider-title">
-                      {festival?.programName || "제목 없음"}
+                      {festival?.programName || "Unknown Festival"}
                     </h2>
-                    <p className="slider-dates">
-                      {festival?.startDate} - {festival?.endDate}
-                    </p>
                   </div>
                 </div>
               ))}
             </div>
-            <button
-              className="arrow right"
-              onClick={goToNext}
-              aria-label="다음 행사 보기"
-              onKeyDown={(e) => e.key === "Enter" && goToNext()}
-            >
+            <button className="arrow right" onClick={goToNext}>
               &gt;
             </button>
           </>
