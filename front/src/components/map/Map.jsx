@@ -34,9 +34,34 @@ const Map = () => {
         return;
       }
 
+      // 현재 위치 가져오기
+      const getCurrentPosition = () =>
+        new Promise((resolve, reject) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => resolve(position),
+              (error) => reject(error)
+            );
+          } else {
+            reject(new Error("Geolocation을 지원하지 않는 브라우저입니다."));
+          }
+        });
+
+      let currentPosition = { lat: 37.5326, lng: 127.024612 }; // 기본값: 서울
+      try {
+        const position = await getCurrentPosition();
+        currentPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        console.log("현재 위치:", currentPosition);
+      } catch (error) {
+        console.error("현재 위치를 가져오는 중 오류 발생:", error);
+      }
+
       // Google Maps 초기화
       const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: 37.5326, lng: 127.024612 }, // 서울 중심 좌표
+        center: currentPosition, // 현재 위치로 중심 설정
         zoom: 12,
       });
 
@@ -47,7 +72,7 @@ const Map = () => {
 
       // Heritage 데이터를 지도에 마커로 표시
       geocodedData.forEach((heritage) => {
-        const { latitude, longitude, name, description, imageUrl } = heritage;
+        const { latitude, longitude, name, description } = heritage;
 
         const marker = new window.google.maps.Marker({
           position: { lat: latitude, lng: longitude },
@@ -58,8 +83,7 @@ const Map = () => {
         // 마커 클릭 시 정보창 표시
         const infoWindow = new window.google.maps.InfoWindow({
           content: `
-            <div>
-              <img src="${imageUrl}" alt="${name}" style="width:200px; height:auto; margin-top:10px;" />
+            <div>            
               <h3>${name}</h3>
               <p>${description}</p>
             </div>
@@ -107,7 +131,7 @@ const Map = () => {
                 description: heritage.ccbaLcad,
                 latitude: location.lat,
                 longitude: location.lng,
-                image: heritage.imageUrl,
+                imageUrl: heritage.imageUrl,
               };
             } else {
               console.error(
