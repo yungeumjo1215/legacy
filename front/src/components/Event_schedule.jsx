@@ -270,16 +270,6 @@ const EventSchedule = () => {
     }
   }, [isLoggedIn]);
 
-  // 디버깅을 위한 로그 추가
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("Sample Festival Date Format:", {
-        startDate: festivalList[0]?.startDate,
-        endDate: festivalList[0]?.endDate,
-      });
-    }
-  }, [date, festivalList, filteredFestivals]);
-
   // 즐겨찾기 상태 변경 시 로컬 스토리지 업데이트
   useEffect(() => {
     if (isLoggedIn && selectedItems.length > 0) {
