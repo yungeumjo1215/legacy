@@ -3,6 +3,7 @@ import { FaSearch } from "react-icons/fa"; // 검색 아이콘
 import { TiStarFullOutline } from "react-icons/ti"; // 별표 아이콘
 import axios from "axios"; // HTTP 요청 라이브러리
 import Map from "./map/Map"; // 지도 컴포넌트
+import Modal from "./Modal"; // Modal 컴포넌트 임포트
 
 const SearchPage = () => {
   // 상태 관리
@@ -12,6 +13,7 @@ const SearchPage = () => {
   const [selectedItems, setSelectedItems] = useState([]); // 선택된 항목 상태
   const [error, setError] = useState(""); // 에러 메시지 상태
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
+  const [selectedHeritage, setSelectedHeritage] = useState(null); // 선택된 유적지 정보 상태
 
   // 컴포넌트가 처음 렌더링될 때 실행되는 useEffect
   useEffect(() => {
@@ -31,15 +33,24 @@ const SearchPage = () => {
   }, []); // 컴포넌트 마운트 시 한 번 실행
 
   // 검색어 변경 시 호출되는 함수
-  const handleSearch = (event) => {
-    const term = event.target.value; // 입력된 검색어
-    setSearchTerm(term); // 검색어 상태 업데이트
-
+  const handleSearch = () => {
     // 검색어에 따라 데이터 필터링
     const filtered = heritageData.filter(
-      (item) => item.ccbaMnm1.toLowerCase().includes(term.toLowerCase()) // 검색어와 이름 비교
+      (item) => item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase()) // 검색어와 이름 비교
     );
     setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
+  };
+
+  // 엔터키 입력 시 검색 실행
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(); // 엔터키 눌렀을 때 검색 실행
+    }
+  };
+
+  // 유적지 이름 클릭 시 모달 열기
+  const handleHeritageClick = (item) => {
+    setSelectedHeritage(item); // 선택된 유적지 정보 저장
   };
 
   // 별표 클릭 시 호출되는 함수
@@ -68,22 +79,27 @@ const SearchPage = () => {
     setError(""); // 에러 메시지 초기화
   };
 
+  // 모달 닫기
+  const closeModal = () => {
+    setSelectedHeritage(null); // 모달 닫기
+  };
+
   return (
     <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
       {/* Sidebar */}
       <div
         style={{
-          width: "24.5%", // 사이드바 너비
-          height: "100vh", // 전체 화면 높이
-          backgroundColor: "#fff", // 배경색
-          color: "black", // 텍스트 색상
-          padding: "20px", // 내부 여백
-          boxSizing: "border-box", // 테두리와 패딩 포함 크기 계산
-          position: "fixed", // 화면에 고정
-          top: "4rem", // 상단 여백
-          left: "10px", // 왼쪽 여백
-          borderRight: "1px solid #e2e2e2", // 오른쪽 테두리
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // 그림자 효과
+          width: "24.5%",
+          height: "100vh",
+          backgroundColor: "#fff",
+          color: "black",
+          padding: "20px",
+          boxSizing: "border-box",
+          position: "fixed",
+          top: "4rem",
+          left: "10px",
+          borderRight: "1px solid #e2e2e2",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
         {/* 검색창 */}
@@ -91,55 +107,61 @@ const SearchPage = () => {
           <input
             type="text"
             placeholder="문화재를 입력해주세요."
-            value={searchTerm} // 검색어 상태 바인딩
-            onChange={handleSearch} // 검색어 변경 시 처리
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // 검색어 입력 시 상태 업데이트
+            onKeyPress={handleKeyPress} // 엔터키 입력 시 검색 실행
             style={{
-              width: "80%", // 입력창 너비
-              padding: "10px", // 내부 여백
-              borderRadius: "5px", // 둥근 모서리
-              border: "1px solid #77767c", // 테두리
-              fontSize: "16px", // 텍스트 크기
+              width: "80%",
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #77767c",
+              fontSize: "16px",
             }}
           />
           <button
             className="border-solid border-2 p-1.5 ml-2 hover:bg-[#191934] hover:text-white"
             style={{
-              height: "45px", // 버튼 높이
-              padding: "20px", // 내부 여백
-              borderRadius: "5px", // 둥근 모서리
+              height: "45px",
+              padding: "20px",
+              borderRadius: "5px",
               display: "flex",
-              alignItems: "center", // 수직 정렬
-              justifyContent: "center", // 수평 정렬
-              border: "1px solid #77767c", // 테두리
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid #77767c",
             }}
+            onClick={handleSearch} // 검색 아이콘 클릭 시 검색 실행
           >
-            <FaSearch className="text-2xl" /> {/* 검색 아이콘 */}
+            <FaSearch className="text-2xl" />
           </button>
         </div>
 
         {/* 유적지 목록 */}
         <div
           style={{
-            maxHeight: "calc(100vh - 80px)", // 검색창을 제외한 영역 높이
-            overflowY: "auto", // 스크롤 허용
+            maxHeight: "calc(100vh - 80px)",
+            overflowY: "auto",
           }}
         >
           <ul>
             {filteredData.map((item, index) => (
               <li key={index} style={{ margin: "20px 0", display: "flex" }}>
                 <div
-                  onClick={() => handleStarClick(index)} // 별표 클릭 처리
+                  onClick={() => handleStarClick(index)}
                   style={{
-                    cursor: "pointer", // 마우스 커서 변경
-                    marginRight: "10px", // 간격
+                    cursor: "pointer",
+                    marginRight: "10px",
                     color: selectedItems.includes(index)
-                      ? "#FFD700" // 선택된 항목은 노란색
-                      : "#DCDCDC", // 선택되지 않은 항목은 회색
+                      ? "#FFD700"
+                      : "#DCDCDC",
                   }}
                 >
-                  <TiStarFullOutline className="text-3xl" /> {/* 별표 아이콘 */}
+                  <TiStarFullOutline className="text-3xl" />
                 </div>
-                <button>{item.ccbaMnm1}</button> {/* 유적지 이름 출력 */}
+                <button
+                  onClick={() => handleHeritageClick(item)} // 유적지 이름 클릭 시 모달 열기
+                >
+                  {item.ccbaMnm1}
+                </button>
               </li>
             ))}
           </ul>
@@ -148,13 +170,12 @@ const SearchPage = () => {
 
       {/* Map 컴포넌트 */}
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <Map /> {/* 지도 렌더링 */}
+        <Map />
       </div>
 
       {/* 에러 메시지 및 오버레이 */}
       {error && (
         <>
-          {/* 오버레이 */}
           <div
             style={{
               position: "fixed",
@@ -162,33 +183,62 @@ const SearchPage = () => {
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.5)", // 반투명 배경
-              zIndex: 9999, // 팝업 뒤에 표시
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 9999,
             }}
-            onClick={closeError} // 클릭 시 에러 팝업 닫기
+            onClick={closeError}
           />
-          {/* 에러 팝업 */}
           <div
             style={{
               position: "fixed",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              backgroundColor: "#e2e2e2", // 팝업 배경색
+              backgroundColor: "#e2e2e2",
+              color: "black",
               padding: "20px",
-              borderRadius: "8px", // 둥근 모서리
-              zIndex: 10000, // 팝업 위에 표시
+              borderRadius: "8px",
+              zIndex: 10000,
               width: "400px",
               height: "200px",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              textAlign: "center",
             }}
           >
-            <p>{error}</p> {/* 에러 메시지 출력 */}
-            <button onClick={closeError}>닫기</button> {/* 닫기 버튼 */}
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "18px",
+                whiteSpace: "pre-wrap",
+                marginTop: "20px",
+              }}
+            >
+              {error}
+            </p>
+            <button
+              onClick={closeError}
+              style={{
+                backgroundColor: "#121a35",
+                color: "white",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "25px",
+              }}
+            >
+              닫기
+            </button>
           </div>
         </>
+      )}
+
+      {/* 모달 */}
+      {selectedHeritage && (
+        <Modal item={selectedHeritage} onClose={closeModal} />
       )}
     </div>
   );
