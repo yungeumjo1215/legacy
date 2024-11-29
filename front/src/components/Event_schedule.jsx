@@ -114,7 +114,7 @@ const Event_schedule = () => {
                     selectedRegion === item.label
                       ? "bg-blue-800 text-white"
                       : ""
-                  }`}
+                  }region-btn-${item.label.toLowerCase()}`}
                 >
                   {item.label}
                 </button>

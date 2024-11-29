@@ -46,7 +46,7 @@ const getFestivalList = async (req, res) => {
     const year = req.query.year || new Date().getFullYear(); // Current year
     const month = req.query.month || 11; // Default to November (11)
 
-    const data = await fetchFestivalData(year, month)();
+    const data = await fetchFestivalData(year, month).unwrap();
     res.status(200).json({
       year,
       month,
