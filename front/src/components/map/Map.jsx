@@ -97,6 +97,7 @@ const Map = () => {
             if (response.data.status === "OK") {
               const location = response.data.results[0].geometry.location;
               return {
+                img: heritage.imageUrl,
                 name: heritage.ccbaMnm1,
                 description: heritage.ccbaLcad,
                 latitude: location.lat,
