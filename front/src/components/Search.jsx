@@ -185,8 +185,10 @@ const SearchPage = () => {
               alignItems: "center",
             }}
           >
-            <p>{error}</p> {/* 에러 메시지 출력 */}
-            <button onClick={closeError}>닫기</button> {/* 닫기 버튼 */}
+            <div className="absolute">
+              <p>{error}</p> {/* 에러 메시지 출력 */}
+              <button onClick={closeError}>닫기</button> {/* 닫기 버튼 */}
+            </div>
           </div>
         </>
       )}
