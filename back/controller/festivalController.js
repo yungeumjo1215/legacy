@@ -13,10 +13,10 @@ const fetchFestivalData = async (year, month) => {
     const response = await axios.get(festivalInfo_Url(year, month), {
       headers: { Accept: "application/xml" },
     });
-    console.log("API Response:", response.data); // 응답 데이터 로그 출력
+    // console.log("API Response:", response.data); // 응답 데이터 로그 출력
 
     const xmlText = response.data;
-    console.log("Raw XML Data:", xmlText);
+    // console.log("Raw XML Data:", xmlText);
     const jsonData = await parseStringPromise(xmlText);
     const items = jsonData.result?.item || [];
 
