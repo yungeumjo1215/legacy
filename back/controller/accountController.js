@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key"; // Securely handle secret keys
 
 // Utility function to validate passwords
+// Utility function to validate passwords
 const isValidPassword = (password) => {
   const specialCharRegex = /[!@#$%^&*]/;
   const lengthRegex = /.{8,}/;
@@ -45,33 +46,21 @@ const createAccount = async (req, res) => {
 
     // Hash password and create account
     const hashedPassword = await bcrypt.hash(password, 10);
-    const uuid = uuidv4();
 
     const result = await pool.query(
-      "INSERT INTO accounts (uuid, email, username, password) VALUES ($1, $2, $3, $4) RETURNING *",
-      [uuid, email, username, hashedPassword]
+      "INSERT INTO accounts (email, username, password) VALUES ($1, $2, $3) RETURNING *",
+      [email, username, hashedPassword]
     );
 
-    // Set default permissions in `mypage` table
-    await pool.query(
-      "INSERT INTO mypage (uuid, update_account, delete_account) VALUES ($1, $2, $3)",
-      [uuid, false, false]
-    );
-
-    res.status(201).json({
+    return res.status(201).json({
       message: "Account created successfully.",
-      account: {
-        uuid: result.rows[0].uuid,
-        email: result.rows[0].email,
-        username: result.rows[0].username,
-      },
+      account: result.rows[0],
     });
-  } catch (err) {
-    console.error("Error creating account:", err.message);
-    if (err.code === "23505") {
-      return res.status(409).json({ message: "Email already exists." });
-    }
-    res.status(500).json({ message: "Internal server error." });
+  } catch (error) {
+    console.error("Error creating account:", error);
+    return res.status(500).json({
+      message: "An error occurred while creating the account.",
+    });
   }
 };
 
