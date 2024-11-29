@@ -90,18 +90,60 @@ const Map = ({ selectedLocation }) => {
               animation: window.google.maps.Animation.DROP,
             });
 
-            const infoWindow = new window.google.maps.InfoWindow({
-              content: `
-                <div className="flex flex-col items-center text-center justify-center">  
-                  ${
-                    heritage.imageUrl
-                      ? `<img src="${heritage.imageUrl}" alt="${heritage.name}" style="max-width: 300px;">`
-                      : ""
-                  }          
-                  <h3>${heritage.name}</h3>
-                  <p>${heritage.description}</p>                
+            const infoWindowContent = (heritage) => `
+              <div style="
+                padding: 15px;
+                max-width: 350px;
+                font-family: 'Noto Sans KR', sans-serif;
+              ">
+                ${
+                  heritage.imageUrl
+                    ? `
+                  <div style="
+                    width: 100%;
+                    height: 200px;
+                    margin-bottom: 15px;
+                    overflow: hidden;
+                    border-radius: 8px;
+                  ">
+                    <img 
+                      src="${heritage.imageUrl}" 
+                      alt="${heritage.name}" 
+                      style="
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                      "
+                    >
+                  </div>
+                `
+                    : ""
+                }
+                
+                <h3 style="
+                  font-size: 18px;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                  color: #121a35;
+                ">${heritage.name}</h3>
+                
+                <p style="
+                  font-size: 14px;
+                  line-height: 1.5;
+                  color: #666;
+                  margin-bottom: 10px;
+                  max-height: 100px;
+                  overflow-y: auto;
+                ">${heritage.description}</p>
+                
+                
                 </div>
-              `,
+              </div>
+            `;
+
+            const infoWindow = new window.google.maps.InfoWindow({
+              content: infoWindowContent(heritage),
+              maxWidth: 350,
             });
 
             marker.addListener("click", () => {
