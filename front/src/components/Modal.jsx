@@ -35,15 +35,15 @@ const Modal = ({ item, onClose }) => {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: "center", // 수평 중앙 정렬
           }}
         >
           <h2
             style={{
               fontSize: "28px",
-              marginBottom: "20px",
+              margin: 0, // margin-bottom 제거하여 X 버튼과 같은 라인에 위치시킴
               fontWeight: "bold",
-              margin: 0,
+              marginBottom: "20px",
             }}
           >
             {item.ccbaMnm1} {/* 유적지 이름 */}
@@ -53,12 +53,12 @@ const Modal = ({ item, onClose }) => {
             style={{
               backgroundColor: "#121a35",
               color: "white",
-              padding: "5px 10px", // 버튼 크기 키움
+              padding: "3px 15px", // 버튼 크기 키움
               border: "none",
               fontSize: "25px", // X 크기
               borderRadius: "5px",
               cursor: "pointer",
-              marginBottom: "20px",
+              marginBottom: "20px", //
             }}
           >
             X
