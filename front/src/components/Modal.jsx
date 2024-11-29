@@ -1,79 +1,31 @@
 import React from "react";
 
 const Modal = ({ item, onClose }) => {
-  // 이미지 로드 실패 시 대체 이미지 사용
   const handleImageError = (e) => {
-    e.target.src = "/default-image.jpg"; // 기본 이미지 경로로 수정 필요
+    e.target.src = "/default-image.jpg";
     e.target.alt = "이미지를 불러올 수 없습니다";
   };
 
-  // item이 없는 경우 예외 처리
   if (!item) {
     return null;
   }
 
   return (
     <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: 9999,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      className="fixed inset-0 w-full h-full bg-black/50 z-[9999] flex justify-center items-center"
       onClick={onClose}
     >
       <div
-        style={{
-          position: "relative",
-          backgroundColor: "#fff",
-          color: "black",
-          padding: "30px",
-          borderRadius: "8px",
-          zIndex: 10000,
-          width: "90%",
-          maxWidth: "800px",
-          maxHeight: "90vh",
-          overflowY: "auto",
-        }}
+        className="relative bg-white text-black p-8 rounded-lg z-[10000] w-[90%] max-w-[800px] max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "28px",
-              margin: 0,
-              fontWeight: "bold",
-              wordBreak: "break-word",
-              flex: 1,
-              paddingRight: "20px",
-            }}
-          >
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-[28px] m-0 font-bold break-words flex-1 pr-5">
             {item.ccbaMnm1}
           </h2>
           <button
             onClick={onClose}
-            style={{
-              backgroundColor: "#121a35",
-              color: "white",
-              padding: "3px 15px",
-              border: "none",
-              fontSize: "25px",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            className="bg-[#121a35] text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
           >
             X
           </button>
@@ -84,39 +36,15 @@ const Modal = ({ item, onClose }) => {
             src={item.imageUrl}
             alt={item.ccbaMnm1}
             onError={handleImageError}
-            style={{
-              width: "100%",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              maxHeight: "350px",
-              objectFit: "cover",
-            }}
+            className="w-full rounded-lg mb-5 max-h-[350px] object-cover"
           />
         )}
 
-        <p
-          style={{
-            fontSize: "18px",
-            marginBottom: "20px",
-            boxSizing: "border-box",
-            border: "1px solid #7d7576",
-            borderRadius: "8px",
-            padding: "10px",
-            lineHeight: "1.6",
-          }}
-        >
+        <p className="text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed">
           {item.content}
         </p>
 
-        <div
-          style={{
-            fontSize: "16px",
-            marginBottom: "10px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
+        <div className="text-base mb-2.5 flex flex-col gap-2.5">
           <p>
             <strong>위치:</strong> {item.ccbaLcad}
           </p>
