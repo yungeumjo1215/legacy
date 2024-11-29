@@ -10,6 +10,7 @@ const isValidPassword = (password) => {
 // Controller to create a new account
 const createAccount = async (req, res) => {
   const { username, email, password } = req.body;
+  console.log(username);
 
   // Validate input fields
   if (!username || !email || !password) {
