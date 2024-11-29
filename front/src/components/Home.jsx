@@ -4,6 +4,7 @@ import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import "./ImageSlider.css";
+import Event_schedule from "./Event_schedule";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -79,7 +80,11 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <h1 className="main-text">문화재 행사 일정</h1>
+      <Link to={"/Event_schedule"}>
+        <div>
+          <h1 className="main-text">문화재 행사 일정</h1>
+        </div>
+      </Link>
       <div className="slider-container">
         {getVisibleFestivals.length === 0 ? (
           <p>표시할 행사 데이터가 없습니다.</p>
