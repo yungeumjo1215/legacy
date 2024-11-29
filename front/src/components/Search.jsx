@@ -27,7 +27,7 @@ const SearchPage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // 디바운스된 검색어로 검색 실행
+  // 디바운스된 검어로 검색 실행
   useEffect(() => {
     if (debouncedSearchTerm) {
       handleSearch();
@@ -135,27 +135,9 @@ const SearchPage = () => {
   };
 
   return (
-    <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
-      <div
-        style={{
-          width: "24.5%",
-          height: "100vh",
-          backgroundColor: "#fff",
-          color: "black",
-          padding: "20px",
-          boxSizing: "border-box",
-          position: "fixed",
-          top: "4rem",
-          left: "10px",
-          borderRight: "1px solid #e2e2e2",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
-        <div style={{ marginBottom: "20px", display: "flex" }}>
+    <div className="pt-16 flex relative">
+      <div className="w-1/4 h-screen bg-white text-black p-5 box-border fixed top-16 left-2.5 border-r border-[#e2e2e2] shadow-md overflow-y-auto flex flex-col gap-5">
+        <div className="mb-5 flex">
           <input
             type="text"
             placeholder="문화재를 입력해주세요."
@@ -163,25 +145,10 @@ const SearchPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
             aria-label="문화재 검색"
-            style={{
-              width: "80%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #77767c",
-              fontSize: "16px",
-            }}
+            className="w-full p-2 rounded border border-[#77767c] text-base"
           />
           <button
-            className="border-solid border-2 p-1.5 ml-2 hover:bg-[#191934] hover:text-white"
-            style={{
-              height: "45px",
-              padding: "20px",
-              borderRadius: "5px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid #77767c",
-            }}
+            className="h-[45px] p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center hover:bg-[#191934] hover:text-white"
             onClick={handleSearch}
             aria-label="검색하기"
           >
@@ -189,27 +156,20 @@ const SearchPage = () => {
           </button>
         </div>
 
-        <div
-          style={{
-            flex: "1 1 auto",
-            overflowY: "auto",
-          }}
-        >
+        <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div>데이터를 불러오는 중...</div>
           ) : (
             <ul>
               {filteredData.map((item, index) => (
-                <li key={index} style={{ margin: "20px 0", display: "flex" }}>
+                <li key={index} className="my-5 flex">
                   <div
                     onClick={() => handleStarClick(index)}
-                    style={{
-                      cursor: "pointer",
-                      marginRight: "10px",
-                      color: selectedItems.includes(index)
-                        ? "#FFD700"
-                        : "#DCDCDC",
-                    }}
+                    className={`cursor-pointer mr-2.5 ${
+                      selectedItems.includes(index)
+                        ? "text-[#FFD700]"
+                        : "text-[#DCDCDC]"
+                    }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
@@ -231,79 +191,33 @@ const SearchPage = () => {
         </div>
       </div>
 
-      <div style={{ flexGrow: 1, marginLeft: "25%" }}>
+      <div className="flex-grow ml-[25%]">
         <Map selectedLocation={selectedLocation} />
       </div>
 
       {error && (
         <>
           <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              zIndex: 9999,
-            }}
+            className="fixed inset-0 bg-black/50 z-[9999]"
             onClick={closeError}
           />
           <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "#e2e2e2",
-              color: "black",
-              padding: "20px",
-              borderRadius: "8px",
-              zIndex: 10000,
-              width: "400px",
-              height: "200px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-            }}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#e2e2e2] text-black p-5 rounded-lg z-[10000] w-[400px] h-[200px] flex flex-col justify-center items-center text-center"
             role="alert"
           >
-            <p
-              style={{
-                fontWeight: "bold",
-                fontSize: "18px",
-                whiteSpace: "pre-wrap",
-                marginTop: "20px",
-              }}
-            >
+            <p className="font-bold text-lg whitespace-pre-wrap mt-5">
               {error}
             </p>
-            <div style={{ marginTop: "25px", display: "flex", gap: "10px" }}>
+            <div className="mt-6 flex gap-2.5">
               <button
                 onClick={() => (window.location.href = "/login")}
-                style={{
-                  backgroundColor: "#2563eb",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 16px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 transition-colors"
               >
                 로그인하기
               </button>
               <button
                 onClick={closeError}
-                style={{
-                  backgroundColor: "#6b7280",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 16px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
+                className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors"
               >
                 닫기
               </button>
