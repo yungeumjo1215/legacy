@@ -14,7 +14,7 @@ const cleanText = (text) => text?.replace(/\r\n|\n|\r|\t/g, "").trim() || "-";
  * @param {number} limit - Maximum number of heritage items to fetch.
  * @returns {Array<object>} - List of enriched heritage data.
  */
-const fetchHeritageList = async (limit = 1) => {
+const fetchHeritageList = async (limit = 10) => {
   const heritageList = [];
   let totalFetched = 0;
 
@@ -74,7 +74,7 @@ const fetchHeritageList = async (limit = 1) => {
 const getHeritageList = async (req, res) => {
   try {
     const { limit } = req.query;
-    const data = await fetchHeritageList(limit ? parseInt(limit) : 1);
+    const data = await fetchHeritageList(limit ? parseInt(limit) : 10);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });

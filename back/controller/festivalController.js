@@ -13,8 +13,10 @@ const fetchFestivalData = async (year, month) => {
     const response = await axios.get(festivalInfo_Url(year, month), {
       headers: { Accept: "application/xml" },
     });
+    console.log("API Response:", response.data); // 응답 데이터 로그 출력
 
     const xmlText = response.data;
+    console.log("Raw XML Data:", xmlText);
     const jsonData = await parseStringPromise(xmlText);
     const items = jsonData.result?.item || [];
 
@@ -30,6 +32,7 @@ const fetchFestivalData = async (year, month) => {
       additionalInfo: `${item.subDesc2 || "N/A"}, ${item.subDesc_3 || "N/A"}`,
     }));
   } catch (error) {
+    console.error("Error in fetchFestivalData:", error);
     throw new Error("Failed to fetch festival data.");
   }
 };
@@ -43,13 +46,14 @@ const getFestivalList = async (req, res) => {
     const year = req.query.year || new Date().getFullYear(); // Current year
     const month = req.query.month || 11; // Default to November (11)
 
-    const data = await fetchFestivalData(year, month);
+    const data = await fetchFestivalData(year, month).unwrap();
     res.status(200).json({
       year,
       month,
       data,
     });
   } catch (error) {
+    console.error("Festival fetch error:", error.message);
     res.status(500).json({ error: error.message });
   }
 };

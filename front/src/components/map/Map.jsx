@@ -1,70 +1,153 @@
-import React, { useEffect, useState } from "react";
-import mapboxgl from "mapbox-gl";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-// Mapbox access token
-mapboxgl.accessToken = "YOUR_MAPBOX_ACCESS_TOKEN";
-
 const Map = () => {
-  const [heritageList, setHeritageList] = useState([]);
-  const [map, setMap] = useState(null);
+  const mapRef = useRef(null);
+  const [geocodedHeritageData, setGeocodedHeritageData] = useState([]); // 지오코딩된 유적지 데이터
 
-  // Fetch heritage list from the backend
   useEffect(() => {
-    const fetchHeritageList = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/heritage");
-        setHeritageList(response.data);
-      } catch (error) {
-        console.error("Error fetching heritage data:", error);
+    const loadGoogleMapsScript = () => {
+      const existingScript = document.getElementById("google-maps-script");
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API;
+
+      if (!apiKey) {
+        console.error("Google Maps API Key가 설정되지 않았습니다.");
+        return;
+      }
+
+      if (!existingScript) {
+        const script = document.createElement("script");
+        script.id = "google-maps-script";
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => initializeMap();
+        document.head.appendChild(script);
+      } else {
+        initializeMap();
       }
     };
 
-    fetchHeritageList();
-  }, []);
+    const initializeMap = async () => {
+      if (!mapRef.current) {
+        console.error("mapRef가 DOM 요소에 연결되지 않았습니다.");
+        return;
+      }
 
-  // Initialize map
-  useEffect(() => {
-    const initializeMap = () => {
-      const mapInstance = new mapboxgl.Map({
-        container: "map", // ID of the container div
-        style: "mapbox://styles/mapbox/streets-v11", // Map style
-        center: [127.024612, 37.5326], // Initial center (longitude, latitude)
-        zoom: 10, // Initial zoom level
+      // Google Maps 초기화
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: { lat: 37.5326, lng: 127.024612 }, // 서울 중심 좌표
+        zoom: 12,
       });
 
-      setMap(mapInstance);
+      // Heritage 데이터 가져오기 및 Geocoding
+      const heritageData = await fetchGetHeritageData();
+      const geocodedData = await geocodeHeritageData(heritageData);
+      setGeocodedHeritageData(geocodedData);
 
-      // Cleanup map on unmount
-      return () => mapInstance.remove();
+      // Heritage 데이터를 지도에 마커로 표시
+      geocodedData.forEach((heritage) => {
+        const { latitude, longitude, name, description } = heritage;
+
+        const marker = new window.google.maps.Marker({
+          position: { lat: latitude, lng: longitude },
+          map,
+          title: name,
+        });
+
+        // 마커 클릭 시 정보창 표시
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `<h3>${name}</h3><p>${description}</p>`,
+        });
+
+        marker.addListener("click", () => {
+          infoWindow.open(map, marker);
+        });
+      });
     };
 
-    initializeMap();
-  }, []);
+    // Heritage 데이터 가져오기
+    const fetchGetHeritageData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/heritage");
+        return response.data; // 유적지 데이터 반환
+      } catch (error) {
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
+        return [];
+      }
+    };
 
-  // Add markers to the map
-  useEffect(() => {
-    if (map && heritageList.length) {
-      heritageList.forEach((heritage) => {
-        const marker = new mapboxgl.Marker()
-          .setLngLat([heritage.longitude, heritage.latitude]) // Use longitude & latitude
-          .setPopup(
-            new mapboxgl.Popup({ offset: 25 }).setText(
-              `${heritage.name}\n${heritage.description}`
-            )
-          ) // Add popup with name and description
-          .addTo(map);
-      });
-    }
-  }, [map, heritageList]);
+    // Heritage 데이터를 지오코딩하여 위도와 경도 변환
+    const geocodeHeritageData = async (heritageData) => {
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API;
+
+      const geocodedData = await Promise.all(
+        heritageData.map(async (heritage) => {
+          try {
+            const response = await axios.get(
+              `https://maps.googleapis.com/maps/api/geocode/json`,
+              {
+                params: {
+                  address: heritage.ccbaLcad, // 주소 데이터
+                  key: apiKey,
+                },
+              }
+            );
+
+            if (response.data.status === "OK") {
+              const location = response.data.results[0].geometry.location;
+              return {
+                name: heritage.ccbaMnm1,
+                description: heritage.ccbaLcad,
+                latitude: location.lat,
+                longitude: location.lng,
+              };
+            } else {
+              console.error(
+                `Geocoding 실패: ${heritage.ccbaLcad} - ${response.data.status}`
+              );
+              return null;
+            }
+          } catch (error) {
+            console.error(
+              `Geocoding 요청 중 오류 발생: ${heritage.ccbaLcad}`,
+              error
+            );
+            return null;
+          }
+        })
+      );
+
+      return geocodedData.filter((data) => data !== null); // 유효한 데이터만 반환
+    };
+
+    loadGoogleMapsScript();
+  }, []);
 
   return (
     <div>
-      <h1>Heritage Map</h1>
+      <h1>Google Maps Heritage Map</h1>
       <div
-        id="map"
-        style={{ width: "100%", height: "500px", border: "1px solid #ccc" }}
+        ref={mapRef}
+        style={{
+          width: "100%",
+          height: "800px",
+          border: "1px solid #ccc",
+        }}
       ></div>
+      {geocodedHeritageData.length > 0 && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>지오코딩된 유적지 정보</h2>
+          <ul>
+            {geocodedHeritageData.map((heritage, index) => (
+              <li key={index}>
+                <strong>{heritage.name}</strong>: {heritage.latitude},{" "}
+                {heritage.longitude}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
