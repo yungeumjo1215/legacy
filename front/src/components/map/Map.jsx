@@ -47,7 +47,7 @@ const Map = () => {
 
       // Heritage 데이터를 지도에 마커로 표시
       geocodedData.forEach((heritage) => {
-        const { latitude, longitude, name, description } = heritage;
+        const { latitude, longitude, name, description, imageUrl } = heritage;
 
         const marker = new window.google.maps.Marker({
           position: { lat: latitude, lng: longitude },
@@ -57,7 +57,13 @@ const Map = () => {
 
         // 마커 클릭 시 정보창 표시
         const infoWindow = new window.google.maps.InfoWindow({
-          content: `<h3>${name}</h3><p>${description}</p>`,
+          content: `
+            <div>
+              <img src="${imageUrl}" alt="${name}" style="width:200px; height:auto; margin-top:10px;" />
+              <h3>${name}</h3>
+              <p>${description}</p>
+            </div>
+          `,
         });
 
         marker.addListener("click", () => {
@@ -97,11 +103,11 @@ const Map = () => {
             if (response.data.status === "OK") {
               const location = response.data.results[0].geometry.location;
               return {
-                img: heritage.imageUrl,
                 name: heritage.ccbaMnm1,
                 description: heritage.ccbaLcad,
                 latitude: location.lat,
                 longitude: location.lng,
+                image: heritage.imageUrl,
               };
             } else {
               console.error(
@@ -127,7 +133,7 @@ const Map = () => {
 
   return (
     <div>
-      <h1>Google Maps Heritage Map</h1>
+      <div></div>
       <div
         ref={mapRef}
         style={{
