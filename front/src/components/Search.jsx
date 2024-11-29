@@ -280,20 +280,34 @@ const SearchPage = () => {
             >
               {error}
             </p>
-            <button
-              onClick={closeError}
-              style={{
-                backgroundColor: "#121a35",
-                color: "white",
-                border: "none",
-                padding: "8px 16px",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "25px",
-              }}
-            >
-              닫기
-            </button>
+            <div style={{ marginTop: "25px", display: "flex", gap: "10px" }}>
+              <button
+                onClick={() => (window.location.href = "/login")}
+                style={{
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                로그인하기
+              </button>
+              <button
+                onClick={closeError}
+                style={{
+                  backgroundColor: "#6b7280",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                닫기
+              </button>
+            </div>
           </div>
         </>
       )}

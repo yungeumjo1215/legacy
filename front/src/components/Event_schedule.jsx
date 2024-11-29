@@ -5,7 +5,6 @@ import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
@@ -38,14 +37,20 @@ const formatDateString = (dateArr) => {
 
 // YYYYMMDD 형식의 문자열을 Date 객체로 변환하는 함수
 const parseYYYYMMDD = (dateArr) => {
-  if (!dateArr || !dateArr[0]) return null;
+  if (!dateArr || !dateArr[0] || dateArr[0].length !== 8) return null;
 
-  const dateStr = dateArr[0];
-  const year = parseInt(dateStr.substring(0, 4));
-  const month = parseInt(dateStr.substring(4, 6)) - 1; // 월은 0-based
-  const day = parseInt(dateStr.substring(6, 8));
+  try {
+    const dateStr = dateArr[0];
+    const year = parseInt(dateStr.substring(0, 4));
+    const month = parseInt(dateStr.substring(4, 6)) - 1;
+    const day = parseInt(dateStr.substring(6, 8));
 
-  return new Date(year, month, day);
+    const date = new Date(year, month, day);
+    return isNaN(date.getTime()) ? null : date;
+  } catch (error) {
+    console.error("날짜 파싱 오류:", error);
+    return null;
+  }
 };
 
 // 검색바 컴포넌트
@@ -68,15 +73,16 @@ const SearchBar = memo(({ value, onChange }) => (
 ));
 
 // 이벤트 아이템 컴포넌트
-const EventItem = memo(({ event, isStarred, onStarClick }) => (
+const EventItem = memo(({ event, isStarred, handleStarClick }) => (
   <li className="pb-2">
     <div className="border p-4 rounded-lg hover:bg-gray-50 transition-colors">
       <div className="flex items-start">
         <button
-          onClick={() => onStarClick(event.programName)}
+          onClick={() => handleStarClick(event.programName)}
           className={`star-button mr-3 ${
             isStarred ? "text-yellow-400" : "text-gray-300"
           }`}
+          tabIndex={0}
           aria-label={`${event.programName} 즐겨찾기 ${
             isStarred ? "제거" : "추가"
           }`}
@@ -152,46 +158,21 @@ const EventSchedule = () => {
 
     return festivalList.filter((festival) => {
       try {
-        const startDateStr = Array.isArray(festival.startDate)
-          ? festival.startDate[0]
-          : festival.startDate;
-        const endDateStr = Array.isArray(festival.endDate)
-          ? festival.endDate[0]
-          : festival.endDate;
+        const startDate = parseYYYYMMDD(festival.startDate);
+        const endDate = parseYYYYMMDD(festival.endDate);
+        if (!startDate || !endDate) return false;
 
-        if (!startDateStr || !endDateStr) return false;
-
-        // YYYYMMDD 형식의 날짜 파싱
-        const parseDate = (dateStr) => {
-          const year = dateStr.substring(0, 4);
-          const month = dateStr.substring(4, 6);
-          const day = dateStr.substring(6, 8);
-          return new Date(year, month - 1, day);
-        };
-
-        const startDate = parseDate(startDateStr);
-        const endDate = parseDate(endDateStr);
         const currentDate = new Date(date);
-
-        // 시간 정보 제거
         currentDate.setHours(0, 0, 0, 0);
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
 
-        const isInDateRange =
-          currentDate >= startDate && currentDate <= endDate;
-
-        // 검색어 필터링
-        const programName = Array.isArray(festival.programName)
-          ? festival.programName[0]
-          : festival.programName || "";
-
-        const matchesSearch = programName
-          .toString()
-          .toLowerCase()
-          .includes(search.toLowerCase());
-
-        return isInDateRange && matchesSearch;
+        return (
+          currentDate >= startDate &&
+          currentDate <= endDate &&
+          festival.programName
+            .toString()
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        );
       } catch (error) {
         console.error("Date parsing error for festival:", festival);
         return false;
@@ -223,89 +204,63 @@ const EventSchedule = () => {
     }));
   }, [filteredFestivals]);
 
-  // 이벤트 핸들러
+  // 검색어 변경 핸들러
   const handleSearchChange = useCallback((e) => {
     setSearch(e.target.value);
   }, []);
 
+  // 즐겨찾기 클릭 핸들러
   const handleStarClick = useCallback(
     (programName) => {
       if (!isLoggedIn) {
-        toast.warn("로그인이 필요한 서비스입니다", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            backgroundColor: "#FEF9C3",
-            color: "#854D0E",
-          },
-        });
-
-        const confirmLogin = window.confirm(
-          "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?"
+        setError(
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
         );
-
-        if (confirmLogin) {
-          navigate("/login", {
-            state: { from: window.location.pathname },
-          });
-        }
         return;
       }
 
-      try {
-        setSelectedItems((prev) => {
-          const isAlreadySelected = prev.includes(programName);
-          const newItems = isAlreadySelected
-            ? prev.filter((item) => item !== programName)
-            : [...prev, programName];
+      setSelectedItems((prev) => {
+        const isAlreadySelected = prev.includes(programName);
+        const newItems = isAlreadySelected
+          ? prev.filter((item) => item !== programName)
+          : [...prev, programName];
 
-          toast.success(
-            isAlreadySelected
-              ? "즐겨찾기에서 제거되었습니다"
-              : "즐겨찾기에 추가되었습니다",
-            {
-              position: "top-center",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              style: {
-                backgroundColor: isAlreadySelected ? "#FEE2E2" : "#DCFCE7",
-                color: isAlreadySelected ? "#991B1B" : "#166534",
-              },
-            }
-          );
-
+        // 로컬 스토리지 업데이트
+        if (newItems.length > 0) {
           localStorage.setItem("selectedFestivals", JSON.stringify(newItems));
-          return newItems;
-        });
-      } catch (error) {
-        console.error("즐겨찾기 처리 중 오류 발생:", error);
-        toast.error("처리 중 오류가 발생했습니다. 다시 시도해주세요.", {
-          style: {
-            backgroundColor: "#FEE2E2",
-            color: "#991B1B",
-          },
-        });
-      }
+        } else {
+          localStorage.removeItem("selectedFestivals");
+        }
+        return newItems;
+      });
     },
-    [isLoggedIn, navigate]
+    [isLoggedIn]
   );
 
-  // 로컬 스토리지에서 즐겨찾기 불러오기
+  // 에러 닫기 핸들러
+  const closeError = useCallback(() => {
+    setError("");
+  }, []);
+
+  // 로그인 페이지 이동 핸들러
+  const handleLoginClick = useCallback(() => {
+    navigate("/login", { state: { from: window.location.pathname } });
+    closeError();
+  }, [navigate]);
+
+  // 로컬 스토리지 동기화
   useEffect(() => {
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
+      setSelectedItems([]);
+      localStorage.removeItem("selectedFestivals");
+    } else {
       const savedItems = localStorage.getItem("selectedFestivals");
       if (savedItems) {
         try {
           setSelectedItems(JSON.parse(savedItems));
         } catch (error) {
           console.error("저장된 즐겨찾기 불러오기 실패:", error);
+          localStorage.removeItem("selectedFestivals");
         }
       }
     }
@@ -320,6 +275,13 @@ const EventSchedule = () => {
       });
     }
   }, [date, festivalList, filteredFestivals]);
+
+  // 즐겨찾기 상태 변경 시 로컬 스토리지 업데이트
+  useEffect(() => {
+    if (isLoggedIn && selectedItems.length > 0) {
+      localStorage.setItem("selectedFestivals", JSON.stringify(selectedItems));
+    }
+  }, [selectedItems, isLoggedIn]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
@@ -380,9 +342,37 @@ const EventSchedule = () => {
           )}
 
           {error && (
-            <div className="text-red-600 text-center py-8">
-              <p>{error}</p>
-            </div>
+            <>
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-50"
+                onClick={closeError}
+              />
+              <div
+                className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                         bg-white rounded-lg shadow-xl z-50 w-96 p-6"
+                role="alert"
+              >
+                <p className="text-lg font-semibold text-center mb-6 whitespace-pre-line">
+                  {error}
+                </p>
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={handleLoginClick}
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 
+                             transition-colors duration-200"
+                  >
+                    로그인하기
+                  </button>
+                  <button
+                    onClick={closeError}
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 
+                             transition-colors duration-200"
+                  >
+                    닫기
+                  </button>
+                </div>
+              </div>
+            </>
           )}
 
           {!loading && !fetchError && !error && (
@@ -393,7 +383,7 @@ const EventSchedule = () => {
                     key={`${festival.programName}-${index}`}
                     event={festival}
                     isStarred={selectedItems.includes(festival.programName)}
-                    onStarClick={handleStarClick}
+                    handleStarClick={handleStarClick}
                   />
                 ))
               ) : (
