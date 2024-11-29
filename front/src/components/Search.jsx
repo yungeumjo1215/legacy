@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
-import MapComponent from "./map/Map";
-import DetailSection from "./DetailSection";
+import Map from "./map/Map";
+import Modal from "./Modal";
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +16,7 @@ const SearchPage = () => {
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // 디바운스 처리
   useEffect(() => {
@@ -85,6 +86,7 @@ const SearchPage = () => {
 
   const handleHeritageClick = async (item) => {
     setSelectedHeritage(item);
+    setModalOpen(true);
 
     try {
       // Google Geocoding API를 사용하여 주소를 좌표로 변환
@@ -125,6 +127,11 @@ const SearchPage = () => {
 
   const closeError = () => {
     setError("");
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedHeritage(null);
   };
 
   return (
@@ -222,22 +229,10 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
-
-        {selectedHeritage && (
-          <div
-            style={{
-              borderTop: "1px solid #e2e2e2",
-              paddingTop: "20px",
-              marginTop: "20px",
-            }}
-          >
-            <DetailSection item={selectedHeritage} />
-          </div>
-        )}
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <MapComponent selectedLocation={selectedLocation} />
+        <Map selectedLocation={selectedLocation} />
       </div>
 
       {error && (
@@ -301,6 +296,10 @@ const SearchPage = () => {
             </button>
           </div>
         </>
+      )}
+
+      {modalOpen && selectedHeritage && (
+        <Modal item={selectedHeritage} onClose={handleCloseModal} />
       )}
     </div>
   );
