@@ -44,7 +44,7 @@ const SearchPage = () => {
       {/* Sidebar 컴포넌트 */}
       <div
         style={{
-          width: "25%", // 사이드바 너비
+          width: "24.5%", // 사이드바 너비
           height: "100vh", // 전체 화면 높이
           backgroundColor: "#fff", // 배경색
           color: "black", // 텍스트 색상
