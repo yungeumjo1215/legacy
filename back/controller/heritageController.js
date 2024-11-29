@@ -74,7 +74,7 @@ const fetchHeritageList = async (limit = 10) => {
 const getHeritageList = async (req, res) => {
   try {
     const { limit } = req.query;
-    const data = await fetchHeritageList(limit ? parseInt(limit) : 10);
+    const data = await fetchHeritageList(limit ? parseInt(limit) : 30);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });

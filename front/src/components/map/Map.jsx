@@ -142,19 +142,6 @@ const Map = () => {
           border: "1px solid #ccc",
         }}
       ></div>
-      {geocodedHeritageData.length > 0 && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>지오코딩된 유적지 정보</h2>
-          <ul>
-            {geocodedHeritageData.map((heritage, index) => (
-              <li key={index}>
-                <strong>{heritage.name}</strong>: {heritage.latitude},{" "}
-                {heritage.longitude}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
