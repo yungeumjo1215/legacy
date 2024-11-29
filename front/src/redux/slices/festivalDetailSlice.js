@@ -4,13 +4,34 @@ import axios from "axios";
 // Async thunk to fetch festival data
 export const fetchFestivalData = createAsyncThunk(
   "festival/fetchFestivalData",
-  async (_, { rejectWithValue }) => {
+  async ({ year, month }, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:8000/festival"); // API endpoint
-      // console.log("API Response:", response.data);
-      return response.data.data; // Directly return the raw data from the API response
+      const response = await axios.get("http://localhost:8000/festival", {
+        params: { year, month },
+      });
+
+      // 응답 데이터 구조 확인 및 변환
+      console.log("Raw API Response:", response.data);
+
+      if (response.data && response.data.data) {
+        // 데이터 구조 정규화
+        return response.data.data.map((item) => ({
+          programName: item.programName || item.subTitle,
+          programContent: item.programContent || item.subContent,
+          startDate: item.startDate || item.sDate,
+          endDate: item.endDate || item.eDate,
+          location: item.location || item.subDesc,
+          contact: item.contact,
+          image: item.image || item.fileNm,
+          targetAudience: item.targetAudience || item.subDesc1,
+          additionalInfo:
+            item.additionalInfo ||
+            `${item.subDesc2 || ""}, ${item.subDesc_3 || ""}`,
+        }));
+      }
+      return [];
     } catch (error) {
-      console.error("API Fetch Error:", error.message);
+      console.error("API Fetch Error:", error);
       return rejectWithValue(error.message || "Failed to fetch festival data");
     }
   }
@@ -19,7 +40,7 @@ export const fetchFestivalData = createAsyncThunk(
 const festivalDetailSlice = createSlice({
   name: "festival",
   initialState: {
-    festivalList: [], // Holds the raw data directly
+    festivalList: [],
     loading: false,
     error: null,
   },
@@ -31,14 +52,14 @@ const festivalDetailSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchFestivalData.fulfilled, (state, action) => {
-        // console.log("Data fetched successfully:", action.payload);
         state.loading = false;
-        state.festivalList = action.payload; // Store the raw data directly
+        state.festivalList = action.payload;
+        console.log("Processed Festival Data:", state.festivalList[0]); // 데이터 구조 확인
       })
       .addCase(fetchFestivalData.rejected, (state, action) => {
-        // console.error("Fetch failed:", action.payload); // 에러 확인
         state.loading = false;
         state.error = action.payload;
+        state.festivalList = [];
       });
   },
 });
