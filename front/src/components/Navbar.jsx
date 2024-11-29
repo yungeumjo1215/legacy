@@ -7,7 +7,7 @@ import {
   MenuIcon,
   XIcon,
 } from "lucide-react";
-import a1 from "../assets/a1.png"; // 로고 이미지
+import c1 from "../assets/c1.png"; // 로고 이미지
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
@@ -49,7 +49,7 @@ const Navbar = () => {
             {/* 로고 */}
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
-                <img src={a1} alt="Logo" className="h-8 w-8 mr-2" />
+                <img src={c1} alt="Logo" className="h-8 w-8 mr-2" />
                 <span className="text-2xl font-bold">유산지기</span>
               </Link>
             </div>
