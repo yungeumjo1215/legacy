@@ -1,15 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const Map = () => {
-  // 컴포넌트 이름을 Map에서 MapComponent로 변경
+const Map = ({ selectedLocation }) => {
   const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
   const [geocodedHeritageData, setGeocodedHeritageData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // JavaScript Map 객체 생성
   const geocodeCache = useRef(new window.Map());
+
+  // selectedLocation이 변경될 때마다 지도 중심 이동
+  useEffect(() => {
+    if (selectedLocation && mapInstanceRef.current) {
+      mapInstanceRef.current.panTo(
+        new window.google.maps.LatLng(
+          selectedLocation.lat,
+          selectedLocation.lng
+        )
+      );
+      mapInstanceRef.current.setZoom(15); // 적절한 줌 레벨로 설정
+    }
+  }, [selectedLocation]);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,8 +69,10 @@ const Map = () => {
         const currentPosition = await getCurrentPosition();
         const map = new window.google.maps.Map(mapRef.current, {
           center: currentPosition,
-          zoom: 12,
+          zoom: 15,
         });
+
+        mapInstanceRef.current = map;
 
         const heritageData = await fetchGetHeritageData();
         const geocodedData = await geocodeHeritageData(heritageData);
@@ -72,18 +87,19 @@ const Map = () => {
               position: { lat: heritage.latitude, lng: heritage.longitude },
               map,
               title: heritage.name,
+              animation: window.google.maps.Animation.DROP,
             });
 
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
-                <div>            
-                  <h3>${heritage.name}</h3>
-                  <p>${heritage.description}</p>
+                <div className="flex flex-col items-center text-center">  
                   ${
                     heritage.imageUrl
-                      ? `<img src="${heritage.imageUrl}" alt="${heritage.name}" style="max-width: 200px;">`
+                      ? `<img src="${heritage.imageUrl}" alt="${heritage.name}" style="max-width: 300px;">`
                       : ""
-                  }
+                  }          
+                  <h3>${heritage.name}</h3>
+                  <p>${heritage.description}</p>                
                 </div>
               `,
             });
@@ -91,6 +107,20 @@ const Map = () => {
             marker.addListener("click", () => {
               // 다른 인포윈도우들을 닫음
               infoWindows.forEach((window) => window.close());
+
+              // 지도 중심을 마커 위치로 부드럽게 이동
+              mapInstanceRef.current.panTo(marker.getPosition());
+
+              // 적절한 줌 레벨로 설정
+              mapInstanceRef.current.setZoom(15);
+
+              // 마커 바운스 애니메이션 추가
+              marker.setAnimation(window.google.maps.Animation.BOUNCE);
+              setTimeout(() => {
+                marker.setAnimation(null);
+              }, 750); // 0.75초 후 애니메이션 중지
+
+              // 인포윈도우 열기
               infoWindow.open(map, marker);
             });
 
@@ -211,32 +241,34 @@ const Map = () => {
 
   return (
     <div>
-      {isLoading && (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-          지도를 불러오는 중...
-        </div>
-      )}
+      <div className="map-loading-error-container fixed z-[9999] w-[80%] bg-white">
+        {isLoading && (
+          <div style={{ textAlign: "center", padding: "20px" }}>
+            지도를 불러오는 중...
+          </div>
+        )}
 
-      {error && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "20px",
-            color: "red",
-            backgroundColor: "#ffe6e6",
-            borderRadius: "4px",
-            margin: "10px",
-          }}
-        >
-          {error}
-        </div>
-      )}
+        {error && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "20px",
+              color: "red",
+              backgroundColor: "#ffe6e6",
+              borderRadius: "4px",
+              margin: "10px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </div>
 
       <div
         ref={mapRef}
         style={{
           width: "100%",
-          height: "800px",
+          height: "850px",
           border: "1px solid #ccc",
           display: error ? "none" : "block",
         }}

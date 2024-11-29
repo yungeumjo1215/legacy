@@ -15,6 +15,7 @@ const SearchPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   // 디바운스 처리
   useEffect(() => {
@@ -46,7 +47,7 @@ const SearchPage = () => {
           throw new Error("데이터를 불러오는데 실패했습니다");
         }
 
-        const slicedData = response.data.slice(0, 30);
+        const slicedData = response.data.slice(0, 50); // 문화재 갯수 조절
         setHeritageData(slicedData);
         setFilteredData(slicedData);
       } catch (error) {
@@ -82,8 +83,28 @@ const SearchPage = () => {
     }
   };
 
-  const handleHeritageClick = (item) => {
+  const handleHeritageClick = async (item) => {
     setSelectedHeritage(item);
+
+    try {
+      // Google Geocoding API를 사용하여 주소를 좌표로 변환
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            address: item.ccbaLcad,
+            key: process.env.REACT_APP_GOOGLE_MAPS_API,
+          },
+        }
+      );
+
+      if (response.data.status === "OK") {
+        const { lat, lng } = response.data.results[0].geometry.location;
+        setSelectedLocation({ lat, lng });
+      }
+    } catch (error) {
+      console.error("위치 정보 변환 중 오류 발생:", error);
+    }
   };
 
   const handleStarClick = (index) => {
@@ -204,7 +225,7 @@ const SearchPage = () => {
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <Map />
+        <Map selectedLocation={selectedLocation} />
       </div>
 
       {error && (
