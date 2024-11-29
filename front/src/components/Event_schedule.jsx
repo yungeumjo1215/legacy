@@ -4,6 +4,10 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 // 값 포맷팅 유틸리티 함수
 const formatValue = (value) => {
@@ -123,12 +127,17 @@ const EventItem = memo(({ event, isStarred, onStarClick }) => (
 
 const EventSchedule = () => {
   const dispatch = useDispatch();
-  const { festivalList, loading, error } = useSelector(
-    (state) => state.festival
-  );
+  const navigate = useNavigate();
+  const {
+    festivalList,
+    loading,
+    error: fetchError,
+  } = useSelector((state) => state.festival);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
+  const [error, setError] = useState("");
 
   // 데이터 로딩
   useEffect(() => {
@@ -219,13 +228,88 @@ const EventSchedule = () => {
     setSearch(e.target.value);
   }, []);
 
-  const handleStarClick = useCallback((programName) => {
-    setSelectedItems((prev) =>
-      prev.includes(programName)
-        ? prev.filter((item) => item !== programName)
-        : [...prev, programName]
-    );
-  }, []);
+  const handleStarClick = useCallback(
+    (programName) => {
+      if (!isLoggedIn) {
+        toast.warn("로그인이 필요한 서비스입니다", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: {
+            backgroundColor: "#FEF9C3",
+            color: "#854D0E",
+          },
+        });
+
+        const confirmLogin = window.confirm(
+          "로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?"
+        );
+
+        if (confirmLogin) {
+          navigate("/login", {
+            state: { from: window.location.pathname },
+          });
+        }
+        return;
+      }
+
+      try {
+        setSelectedItems((prev) => {
+          const isAlreadySelected = prev.includes(programName);
+          const newItems = isAlreadySelected
+            ? prev.filter((item) => item !== programName)
+            : [...prev, programName];
+
+          toast.success(
+            isAlreadySelected
+              ? "즐겨찾기에서 제거되었습니다"
+              : "즐겨찾기에 추가되었습니다",
+            {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              style: {
+                backgroundColor: isAlreadySelected ? "#FEE2E2" : "#DCFCE7",
+                color: isAlreadySelected ? "#991B1B" : "#166534",
+              },
+            }
+          );
+
+          localStorage.setItem("selectedFestivals", JSON.stringify(newItems));
+          return newItems;
+        });
+      } catch (error) {
+        console.error("즐겨찾기 처리 중 오류 발생:", error);
+        toast.error("처리 중 오류가 발생했습니다. 다시 시도해주세요.", {
+          style: {
+            backgroundColor: "#FEE2E2",
+            color: "#991B1B",
+          },
+        });
+      }
+    },
+    [isLoggedIn, navigate]
+  );
+
+  // 로컬 스토리지에서 즐겨찾기 불러오기
+  useEffect(() => {
+    if (isLoggedIn) {
+      const savedItems = localStorage.getItem("selectedFestivals");
+      if (savedItems) {
+        try {
+          setSelectedItems(JSON.parse(savedItems));
+        } catch (error) {
+          console.error("저장된 즐겨찾기 불러오기 실패:", error);
+        }
+      }
+    }
+  }, [isLoggedIn]);
 
   // 디버깅을 위한 로그 추가
   useEffect(() => {
@@ -239,6 +323,19 @@ const EventSchedule = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">
           문화재 행사 정보
@@ -276,13 +373,19 @@ const EventSchedule = () => {
             </div>
           )}
 
+          {fetchError && (
+            <div className="text-red-600 text-center py-8">
+              <p>{fetchError}</p>
+            </div>
+          )}
+
           {error && (
             <div className="text-red-600 text-center py-8">
               <p>{error}</p>
             </div>
           )}
 
-          {!loading && !error && (
+          {!loading && !fetchError && !error && (
             <ul className="space-y-4">
               {formattedFestivals.length > 0 ? (
                 formattedFestivals.map((festival, index) => (
