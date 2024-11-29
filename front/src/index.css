@@ -59,12 +59,12 @@ code {
   border: 2px solid rgb(30 58 138 / var(--tw-bg-opacity, 1));
 }
 
-.Gyeongsang {
+.region-btn-경상도 {
   margin-left: 76px;
 }
 
-.seoul,
-.incheon {
+.region-btn-서울,
+.region-btn-인천 {
   padding: 3px 17px;
 }
 
