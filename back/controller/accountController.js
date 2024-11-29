@@ -186,13 +186,13 @@ const deleteAccount = async (req, res) => {
   }
 
   try {
-    const adminUuid = req.user.uuid;
-
+    // Log the delete action (set admin_uuid to NULL or skip entirely)
     await pool.query(
-      "INSERT INTO login_log (admin_uuid, client_uuid, action) VALUES ($1, $2, $3)",
-      [adminUuid, uuid, "DELETE"]
+      "INSERT INTO login_log (admin_uuid, client_uuid, action) VALUES (NULL, $1, $2)",
+      [uuid, "DELETE"]
     );
 
+    // Delete the account
     const result = await pool.query(
       "DELETE FROM accounts WHERE uuid = $1 RETURNING *",
       [uuid]
