@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
-import Map from "./map/Map";
+import MapComponent from "./map/Map";
 import DetailSection from "./DetailSection";
 
 const SearchPage = () => {
@@ -237,7 +237,7 @@ const SearchPage = () => {
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <Map selectedLocation={selectedLocation} />
+        <MapComponent selectedLocation={selectedLocation} />
       </div>
 
       {error && (
