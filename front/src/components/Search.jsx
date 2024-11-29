@@ -174,21 +174,44 @@ const SearchPage = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              backgroundColor: "#e2e2e2", // 팝업 배경색
+              backgroundColor: "#e2e2e2",
+              color: "black",
               padding: "20px",
-              borderRadius: "8px", // 둥근 모서리
-              zIndex: 10000, // 팝업 위에 표시
+              borderRadius: "8px",
+              zIndex: 10000,
               width: "400px",
               height: "200px",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              textAlign: "center",
             }}
           >
-            <div className="absolute">
-              <p>{error}</p> {/* 에러 메시지 출력 */}
-              <button onClick={closeError}>닫기</button> {/* 닫기 버튼 */}
-            </div>
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "18px",
+                whiteSpace: "pre-wrap",
+                marginTop: "20px",
+              }}
+            >
+              {error}
+            </p>
+            <button
+              onClick={closeError}
+              style={{
+                backgroundColor: "#121a35",
+                color: "white",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "25px",
+              }}
+            >
+              닫기
+            </button>
           </div>
         </>
       )}
