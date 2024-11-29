@@ -42,7 +42,7 @@
 }
 
 .slide {
-  flex: 0 0 30%; /* 각 슬라이드 크기를 30%로 고정 */
+  flex: 0 0 35%; /* 각 슬라이드 크기를 30%로 고정 */
   text-align: center;
   opacity: 0.5;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
@@ -64,7 +64,7 @@
 
 .slider-textbox {
   background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
-  padding: 20px; /* 텍스트 박스에 여유 공간 추가 */
+  padding: 10px; /* 텍스트 박스에 여유 공간 추가 */
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
   margin-top: 30px; /* 이미지와 텍스트 박스 사이의 간격을 넓히기 */
@@ -78,4 +78,22 @@
   text-align: left; /* 텍스트 정렬 */
 }
 
+.slider-title {
+  margin-top: 0px;
+  margin-left: 20px;
+  font-size: 1.1rem;
+  color: #333;
+  font-family: "Do Hyeon";
+  font-weight: 400;
+  font-style: normal;
+}
 
+.slider-dates {
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 1rem;
+  color: #333;
+  font-family: "Noto Sans Korean";
+  font-weight: 400;
+  font-style: normal;
+}
