@@ -1,47 +1,76 @@
-import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { TiStarFullOutline } from "react-icons/ti";
-import Map from "./map/Map";
+import React, { useState, useEffect } from "react"; // React 및 상태 관리 Hook 임포트
+import { FaSearch } from "react-icons/fa"; // 검색 아이콘
+import { TiStarFullOutline } from "react-icons/ti"; // 별표 아이콘
+import axios from "axios"; // HTTP 요청 라이브러리
+import Map from "./map/Map"; // 지도 컴포넌트
 
 const SearchPage = () => {
+  // 상태 관리
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [heritageData, setHeritageData] = useState([]); // 전체 유적지 데이터 상태
+  const [filteredData, setFilteredData] = useState([]); // 검색어에 따른 필터링된 데이터
   const [selectedItems, setSelectedItems] = useState([]); // 선택된 항목 상태
   const [error, setError] = useState(""); // 에러 메시지 상태
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 임의로 설정
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
 
+  // 컴포넌트가 처음 렌더링될 때 실행되는 useEffect
+  useEffect(() => {
+    // 유적지 데이터를 가져오는 함수
+    const fetchGetHeritageData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/heritage"); // API 호출
+        const slicedData = response.data.slice(0, 30); // 0번째부터 30번째까지 데이터만 사용
+        setHeritageData(slicedData); // 상태에 전체 데이터 저장
+        setFilteredData(slicedData); // 초기에는 필터링된 데이터도 동일하게 설정
+      } catch (error) {
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error); // 에러 처리
+      }
+    };
+
+    fetchGetHeritageData(); // 데이터 가져오기 호출
+  }, []); // 컴포넌트 마운트 시 한 번 실행
+
+  // 검색어 변경 시 호출되는 함수
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value); // 검색어 입력 시 상태 업데이트
+    const term = event.target.value; // 입력된 검색어
+    setSearchTerm(term); // 검색어 상태 업데이트
+
+    // 검색어에 따라 데이터 필터링
+    const filtered = heritageData.filter(
+      (item) => item.ccbaMnm1.toLowerCase().includes(term.toLowerCase()) // 검색어와 이름 비교
+    );
+    setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
   };
 
+  // 별표 클릭 시 호출되는 함수
   const handleStarClick = (index) => {
     if (!isLoggedIn) {
-      // 로그인하지 않은 상태에서 클릭 시 에러 메시지 표시
+      // 로그인 상태가 아니면 에러 메시지 표시
       setError(
         "로그인 후 사용하실 수 있습니다.\n회원가입 또는 로그인해주세요."
       );
-      return; // 에러가 발생하면 더 이상 클릭하지 않음
+      return;
     }
 
-    setError(""); // 로그인 상태일 경우 에러 메시지 초기화
+    setError(""); // 에러 메시지 초기화
 
-    setSelectedItems((prevSelectedItems) => {
-      // 항목이 이미 선택되었으면 제거, 아니면 추가
-      if (prevSelectedItems.includes(index)) {
-        return prevSelectedItems.filter((item) => item !== index); // 선택된 항목을 취소 (false로 변경)
-      } else {
-        return [...prevSelectedItems, index]; // 새 항목을 선택 (true로 설정)
-      }
-    });
+    // 선택된 항목 상태 업데이트
+    setSelectedItems(
+      (prevSelectedItems) =>
+        prevSelectedItems.includes(index)
+          ? prevSelectedItems.filter((item) => item !== index) // 이미 선택된 경우 제거
+          : [...prevSelectedItems, index] // 선택되지 않은 경우 추가
+    );
   };
 
   // 에러 메시지를 닫는 함수
   const closeError = () => {
-    setError("");
+    setError(""); // 에러 메시지 초기화
   };
 
   return (
     <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
-      {/* Sidebar 컴포넌트 */}
+      {/* Sidebar */}
       <div
         style={{
           width: "24.5%", // 사이드바 너비
@@ -52,9 +81,8 @@ const SearchPage = () => {
           boxSizing: "border-box", // 테두리와 패딩 포함 크기 계산
           position: "fixed", // 화면에 고정
           top: "4rem", // 상단 여백
-          left: "10px", // 왼쪽 여백으로 띄움
+          left: "10px", // 왼쪽 여백
           borderRight: "1px solid #e2e2e2", // 오른쪽 테두리
-          borderRadius: "0px", // 둥근 모서리
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // 그림자 효과
         }}
       >
@@ -66,81 +94,52 @@ const SearchPage = () => {
             value={searchTerm} // 검색어 상태 바인딩
             onChange={handleSearch} // 검색어 변경 시 처리
             style={{
-              width: "80%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #77767c",
-              outline: "none",
-              fontSize: "16px",
-              color: "black",
+              width: "80%", // 입력창 너비
+              padding: "10px", // 내부 여백
+              borderRadius: "5px", // 둥근 모서리
+              border: "1px solid #77767c", // 테두리
+              fontSize: "16px", // 텍스트 크기
             }}
           />
           <button
             className="border-solid border-2 p-1.5 ml-2 hover:bg-[#191934] hover:text-white"
             style={{
-              height: "45px", // input 높이와 동일하게 설정
-              padding: "20px", // 동일한 내부 여백
+              height: "45px", // 버튼 높이
+              padding: "20px", // 내부 여백
               borderRadius: "5px", // 둥근 모서리
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid #77767c",
+              alignItems: "center", // 수직 정렬
+              justifyContent: "center", // 수평 정렬
+              border: "1px solid #77767c", // 테두리
             }}
           >
-            <FaSearch className="text-2xl" />
+            <FaSearch className="text-2xl" /> {/* 검색 아이콘 */}
           </button>
         </div>
 
-        {/* 나머지 콘텐츠 영역 */}
+        {/* 유적지 목록 */}
         <div
           style={{
-            maxHeight: "calc(100vh - 80px)", // 검색창을 제외한 나머지 영역에 스크롤 적용
-            overflowY: "auto", // 콘텐츠가 많으면 스크롤
+            maxHeight: "calc(100vh - 80px)", // 검색창을 제외한 영역 높이
+            overflowY: "auto", // 스크롤 허용
           }}
         >
           <ul>
-            {/* 문화재 목록 */}
-            {[
-              "문화재 1",
-              "문화재 2",
-              "문화재 3",
-              "문화재 4",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-              "문화재 5",
-            ].map((item, index) => (
+            {filteredData.map((item, index) => (
               <li key={index} style={{ margin: "20px 0", display: "flex" }}>
-                {/* 아이콘과 텍스트 */}
                 <div
-                  onClick={() => handleStarClick(index)} // 아이콘 클릭 시 색상 변경
+                  onClick={() => handleStarClick(index)} // 별표 클릭 처리
                   style={{
-                    cursor: "pointer", // 마우스 커서가 손 모양으로 바뀌게
-                    marginRight: "10px", // 아이콘과 텍스트 간격
-                    display: "inline-block",
+                    cursor: "pointer", // 마우스 커서 변경
+                    marginRight: "10px", // 간격
                     color: selectedItems.includes(index)
-                      ? "#FFD700"
-                      : "#DCDCDC", // 선택된 항목은 노란색
+                      ? "#FFD700" // 선택된 항목은 노란색
+                      : "#DCDCDC", // 선택되지 않은 항목은 회색
                   }}
                 >
-                  <TiStarFullOutline className="text-3xl" />
+                  <TiStarFullOutline className="text-3xl" /> {/* 별표 아이콘 */}
                 </div>
-                <div>{item}</div>
+                <div>{item.ccbaMnm1}</div> {/* 유적지 이름 출력 */}
               </li>
             ))}
           </ul>
@@ -149,7 +148,7 @@ const SearchPage = () => {
 
       {/* Map 컴포넌트 */}
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <Map />
+        <Map /> {/* 지도 렌더링 */}
       </div>
 
       {/* 에러 메시지 및 오버레이 */}
@@ -158,61 +157,36 @@ const SearchPage = () => {
           {/* 오버레이 */}
           <div
             style={{
-              position: "fixed", // 화면 전체를 차지
+              position: "fixed",
               top: 0,
               left: 0,
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.5)", // 어두운 반투명 배경
-              zIndex: 9999, // 팝업보다 아래에 표시
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // 반투명 배경
+              zIndex: 9999, // 팝업 뒤에 표시
             }}
             onClick={closeError} // 클릭 시 에러 팝업 닫기
           />
-          {/* 에러팝업 */}
+          {/* 에러 팝업 */}
           <div
             style={{
-              position: "fixed", // 화면 중앙에 고정
+              position: "fixed",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              backgroundColor: "#e2e2e2",
-              color: "black",
+              backgroundColor: "#e2e2e2", // 팝업 배경색
               padding: "20px",
-              borderRadius: "8px",
-              zIndex: 10000, // 오버레이 위에 표시
-              width: "400px", // 가로 크기 적당히 줄임
-              height: "200px", // 세로 크기 적당히 줄임
+              borderRadius: "8px", // 둥근 모서리
+              zIndex: 10000, // 팝업 위에 표시
+              width: "400px",
+              height: "200px",
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "center", // 수직 중앙 정렬
-              alignItems: "center", // 수평 중앙 정렬
-              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <p
-              style={{
-                fontWeight: "bold", // 에러 문구 굵게 처리
-                fontSize: "18px", // 폰트 크기 살짝 증가
-                whiteSpace: "pre-wrap",
-                marginTop: "20px",
-              }}
-            >
-              {error}
-            </p>
-            <button
-              onClick={closeError} // 에러 메시지 닫기
-              style={{
-                backgroundColor: "#121a35",
-                color: "white",
-                border: "none",
-                padding: "8px 16px", // 버튼 내부 여백 줄이기
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "25px",
-              }}
-            >
-              닫기
-            </button>
+            <p>{error}</p> {/* 에러 메시지 출력 */}
+            <button onClick={closeError}>닫기</button> {/* 닫기 버튼 */}
           </div>
         </>
       )}
