@@ -1,6 +1,17 @@
 import React from "react";
 
 const Modal = ({ item, onClose }) => {
+  // 이미지 로드 실패 시 대체 이미지 사용
+  const handleImageError = (e) => {
+    e.target.src = "/default-image.jpg"; // 기본 이미지 경로로 수정 필요
+    e.target.alt = "이미지를 불러올 수 없습니다";
+  };
+
+  // item이 없는 경우 예외 처리
+  if (!item) {
+    return null;
+  }
+
   return (
     <div
       style={{
@@ -11,70 +22,78 @@ const Modal = ({ item, onClose }) => {
         height: "100%",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         zIndex: 9999,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
-      onClick={onClose} // 모달 외부 클릭 시 닫기
+      onClick={onClose}
     >
       <div
         style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          position: "relative",
           backgroundColor: "#fff",
           color: "black",
-          padding: "30px", // padding을 늘려서 여백을 좀 더 추가
+          padding: "30px",
           borderRadius: "8px",
           zIndex: 10000,
-          width: "800px", // 모달 너비를 800px로 늘림
-          height: "800px", // 모달 높이를 600px로 늘림
+          width: "90%",
+          maxWidth: "800px",
+          maxHeight: "90vh",
           overflowY: "auto",
         }}
-        onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 이벤트 버블링 방지
+        onClick={(e) => e.stopPropagation()}
       >
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center", // 수평 중앙 정렬
+            alignItems: "center",
+            marginBottom: "20px",
           }}
         >
           <h2
             style={{
               fontSize: "28px",
-              margin: 0, // margin-bottom 제거하여 X 버튼과 같은 라인에 위치시킴
+              margin: 0,
               fontWeight: "bold",
-              marginBottom: "20px",
+              wordBreak: "break-word",
+              flex: 1,
+              paddingRight: "20px",
             }}
           >
-            {item.ccbaMnm1} {/* 유적지 이름 */}
+            {item.ccbaMnm1}
           </h2>
           <button
-            onClick={onClose} // 닫기 버튼 기능
+            onClick={onClose}
             style={{
               backgroundColor: "#121a35",
               color: "white",
-              padding: "3px 15px", // 버튼 크기 키움
+              padding: "3px 15px",
               border: "none",
-              fontSize: "25px", // X 크기
+              fontSize: "25px",
               borderRadius: "5px",
               cursor: "pointer",
-              marginBottom: "20px", //
             }}
           >
             X
           </button>
         </div>
-        <img
-          src={item.imageUrl} // 유적지 이미지 URL
-          alt={item.ccbaMnm1}
-          style={{
-            width: "100%",
-            borderRadius: "8px",
-            marginBottom: "20px", // 이미지 아래 여백 추가
-            maxHeight: "350px", // 이미지 최대 높이를 350px로 제한
-            objectFit: "cover", // 이미지가 잘리거나 왜곡되지 않도록
-          }}
-        />
+
+        {item.imageUrl && (
+          <img
+            src={item.imageUrl}
+            alt={item.ccbaMnm1}
+            onError={handleImageError}
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+              marginBottom: "20px",
+              maxHeight: "350px",
+              objectFit: "cover",
+            }}
+          />
+        )}
+
         <p
           style={{
             fontSize: "18px",
@@ -83,21 +102,43 @@ const Modal = ({ item, onClose }) => {
             border: "1px solid #7d7576",
             borderRadius: "8px",
             padding: "10px",
+            lineHeight: "1.6",
           }}
         >
-          {item.content} {/* 유적지 설명 */}
+          {item.content}
         </p>
-        <p
+
+        <div
           style={{
             fontSize: "16px",
             marginBottom: "10px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
           }}
         >
-          <strong>위치:</strong> {item.ccbaLcad} {/* 유적지 위치 */}
-        </p>
-        <p style={{ fontSize: "16px", marginBottom: "20px" }}>
-          <strong>시대:</strong> {item.ccceName} {/* 유적지 이름 */}
-        </p>
+          <p>
+            <strong>위치:</strong> {item.ccbaLcad}
+          </p>
+          <p>
+            <strong>시대:</strong> {item.ccceName}
+          </p>
+          {item.ccmaName && (
+            <p>
+              <strong>문화재 종류:</strong> {item.ccmaName}
+            </p>
+          )}
+          {item.ccbaQuan && (
+            <p>
+              <strong>수량:</strong> {item.ccbaQuan}
+            </p>
+          )}
+          {item.ccbaAsNo && (
+            <p>
+              <strong>지정번호:</strong> {item.ccbaAsNo}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

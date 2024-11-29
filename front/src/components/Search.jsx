@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
-import Map from "./map/Map";
-import Modal from "./Modal";
+import MapComponent from "./map/Map";
+import DetailSection from "./DetailSection";
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +15,7 @@ const SearchPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   // 디바운스 처리
   useEffect(() => {
@@ -46,7 +47,7 @@ const SearchPage = () => {
           throw new Error("데이터를 불러오는데 실패했습니다");
         }
 
-        const slicedData = response.data.slice(0, 30);
+        const slicedData = response.data.slice(0, 50); // 문화재 갯수 조절
         setHeritageData(slicedData);
         setFilteredData(slicedData);
       } catch (error) {
@@ -82,8 +83,28 @@ const SearchPage = () => {
     }
   };
 
-  const handleHeritageClick = (item) => {
+  const handleHeritageClick = async (item) => {
     setSelectedHeritage(item);
+
+    try {
+      // Google Geocoding API를 사용하여 주소를 좌표로 변환
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            address: item.ccbaLcad,
+            key: process.env.REACT_APP_GOOGLE_MAPS_API,
+          },
+        }
+      );
+
+      if (response.data.status === "OK") {
+        const { lat, lng } = response.data.results[0].geometry.location;
+        setSelectedLocation({ lat, lng });
+      }
+    } catch (error) {
+      console.error("위치 정보 변환 중 오류 발생:", error);
+    }
   };
 
   const handleStarClick = (index) => {
@@ -106,10 +127,6 @@ const SearchPage = () => {
     setError("");
   };
 
-  const closeModal = () => {
-    setSelectedHeritage(null);
-  };
-
   return (
     <div style={{ paddingTop: "4rem", display: "flex", position: "relative" }}>
       <div
@@ -125,6 +142,10 @@ const SearchPage = () => {
           left: "10px",
           borderRight: "1px solid #e2e2e2",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
         }}
       >
         <div style={{ marginBottom: "20px", display: "flex" }}>
@@ -163,7 +184,7 @@ const SearchPage = () => {
 
         <div
           style={{
-            maxHeight: "calc(100vh - 80px)",
+            flex: "1 1 auto",
             overflowY: "auto",
           }}
         >
@@ -201,10 +222,22 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
+
+        {selectedHeritage && (
+          <div
+            style={{
+              borderTop: "1px solid #e2e2e2",
+              paddingTop: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <DetailSection item={selectedHeritage} />
+          </div>
+        )}
       </div>
 
       <div style={{ flexGrow: 1, marginLeft: "25%" }}>
-        <Map />
+        <MapComponent selectedLocation={selectedLocation} />
       </div>
 
       {error && (
@@ -268,10 +301,6 @@ const SearchPage = () => {
             </button>
           </div>
         </>
-      )}
-
-      {selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={closeModal} />
       )}
     </div>
   );
