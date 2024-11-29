@@ -139,7 +139,7 @@ const SearchPage = () => {
                 >
                   <TiStarFullOutline className="text-3xl" /> {/* 별표 아이콘 */}
                 </div>
-                <div>{item.ccbaMnm1}</div> {/* 유적지 이름 출력 */}
+                <button>{item.ccbaMnm1}</button> {/* 유적지 이름 출력 */}
               </li>
             ))}
           </ul>
