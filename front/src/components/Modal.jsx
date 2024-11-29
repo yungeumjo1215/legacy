@@ -1,4 +1,3 @@
-// Modal.jsx
 import React from "react";
 
 const Modal = ({ item, onClose }) => {
@@ -32,11 +31,39 @@ const Modal = ({ item, onClose }) => {
         }}
         onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 이벤트 버블링 방지
       >
-        <h2
-          style={{ fontSize: "28px", marginBottom: "20px", fontWeight: "bold" }}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center", // 수평 중앙 정렬
+          }}
         >
-          {item.ccbaMnm1} {/* 유적지 이름 */}
-        </h2>
+          <h2
+            style={{
+              fontSize: "28px",
+              margin: 0, // margin-bottom 제거하여 X 버튼과 같은 라인에 위치시킴
+              fontWeight: "bold",
+              marginBottom: "20px",
+            }}
+          >
+            {item.ccbaMnm1} {/* 유적지 이름 */}
+          </h2>
+          <button
+            onClick={onClose} // 닫기 버튼 기능
+            style={{
+              backgroundColor: "#121a35",
+              color: "white",
+              padding: "3px 15px", // 버튼 크기 키움
+              border: "none",
+              fontSize: "25px", // X 크기
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginBottom: "20px", //
+            }}
+          >
+            X
+          </button>
+        </div>
         <img
           src={item.imageUrl} // 유적지 이미지 URL
           alt={item.ccbaMnm1}
@@ -71,34 +98,6 @@ const Modal = ({ item, onClose }) => {
         <p style={{ fontSize: "16px", marginBottom: "20px" }}>
           <strong>시대:</strong> {item.ccceName} {/* 유적지 이름 */}
         </p>
-
-        <button
-          onClick={onClose}
-          style={{
-            backgroundColor: "#121a35",
-            color: "white",
-            border: "none",
-            padding: "12px 25px", // 버튼 크기 키움
-            borderRadius: "5px",
-            cursor: "pointer",
-            marginTop: "20px",
-            display: "flex", // flexbox를 사용하여 정렬
-            justifyContent: "center", // 가로로 가운데 정렬
-            width: "100%", // 버튼의 너비를 100%로 설정하여 부모 요소 안에서 가로로 가운데 배치
-            alignItems: "center", // 버튼 내용 가로 세로 모두 가운데로 정렬
-            transition: "box-shadow 0.3s ease, transform 0.3s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.boxShadow = "0 0 10px 2px rgba(255, 255, 255, 0.7)"; // 글로우 효과
-            e.target.style.transform = "scale(1.02)"; // 크기 확대
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.boxShadow = "none"; // 글로우 제거
-            e.target.style.transform = "scale(1)"; // 원래 크기로 복원
-          }}
-        >
-          닫기
-        </button>
       </div>
     </div>
   );
