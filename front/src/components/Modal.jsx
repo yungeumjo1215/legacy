@@ -34,16 +34,21 @@ const Modal = ({ item, onClose }) => {
         <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>
           {item.ccbaMnm1} {/* 유적지 이름 */}
         </h2>
+        <img
+          src={item.imageUrl} // 유적지 이미지 URL
+          alt={item.ccbaMnm1}
+          style={{ width: "100%", borderRadius: "8px", marginTop: "20px" }}
+        />
         <p>
-          <strong>설명:</strong> {item.ccbaMnm1}에 대한 설명이 이곳에
-          표시됩니다.
+          <strong>설명:</strong> {item.content} {/* 유적지 설명 */}
         </p>
         <p>
-          <strong>위치:</strong> {item.ccbaAddr1} {/* 유적지 주소 */}
+          <strong>위치:</strong> {item.ccbaLcad} {/* 유적지 위치 */}
         </p>
         <p>
-          <strong>유적지 ID:</strong> {item.ccbaId} {/* 유적지 ID */}
+          <strong>유적지 이름:</strong> {item.ccceName} {/* 유적지 이름 */}
         </p>
+
         <button
           onClick={onClose}
           style={{
