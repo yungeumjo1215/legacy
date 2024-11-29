@@ -48,7 +48,8 @@ const getFestivalList = async (req, res) => {
 
     const allData = await fetchFestivalData(year, month);
 
-    const data = allData.slice(0, 1);
+    data = allData.slice(0, 1);
+    // const data = allData; //위 코드 때문에 홍보행사 데이터가 안 들어와서 주석으로 추가 해놨습니다.
 
     res.status(200).json({
       year,
