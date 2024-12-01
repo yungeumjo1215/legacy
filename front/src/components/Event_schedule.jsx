@@ -7,6 +7,7 @@ import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import EventModal from "./EventModal";
 
 const REGIONS = [
   { id: "all", name: "전체" },
@@ -84,64 +85,73 @@ const SearchBar = memo(({ value, onChange }) => (
   </form>
 ));
 
-const EventItem = memo(({ event, isStarred, handleStarClick }) => (
-  <li className="pb-2">
-    <div className="border p-4 rounded-lg hover:bg-gray-50 transition-colors">
-      <div className="flex items-start">
-        <button
-          onClick={() => handleStarClick(event.programName)}
-          className={`star-button mr-3 ${
-            isStarred ? "text-yellow-400" : "text-gray-300"
-          }`}
-          tabIndex={0}
-          aria-label={`${event.programName} 즐겨찾기 ${
-            isStarred ? "제거" : "추가"
-          }`}
-        >
-          <TiStarFullOutline className="text-3xl" />
-        </button>
-        <div className="flex-1">
-          <h3 className="font-semibold text-lg mb-2">
-            {formatValue(event.programName)}
-          </h3>
-          <p className="text-gray-600 text-sm mb-2">
-            {formatValue(event.programContent)}
-          </p>
-          <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 text-sm">
-            <div>
-              <p>
-                <span className="font-medium">기간:</span>{" "}
-                {formatValue(event.startDate)} ~ {formatValue(event.endDate)}
-              </p>
-              <p>
-                <span className="font-medium">장소:</span>{" "}
-                {formatValue(event.location)}
-              </p>
+const EventItem = memo(
+  ({ event, isStarred, handleStarClick, onEventClick }) => (
+    <li className="pb-2">
+      <div
+        className="border p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+        onClick={() => onEventClick(event)}
+      >
+        <div className="flex items-start">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStarClick(event.programName);
+            }}
+            className={`star-button mr-3 ${
+              isStarred ? "text-yellow-400" : "text-gray-300"
+            }`}
+            tabIndex={0}
+            aria-label={`${event.programName} 즐겨찾기 ${
+              isStarred ? "제거" : "추가"
+            }`}
+          >
+            <TiStarFullOutline className="text-3xl" />
+          </button>
+          <div className="flex-1">
+            <h3 className="font-semibold text-2xl mb-2">
+              {formatValue(event.programName)}
+            </h3>
+            <p className="SubFont text-lg mb-2">
+              {formatValue(event.programContent)}
+            </p>
+            <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 text-lg">
+              <div>
+                <p>
+                  <span className="font-medium">기간:</span>{" "}
+                  {formatValue(event.startDate)} ~ {formatValue(event.endDate)}
+                </p>
+                <p>
+                  <span className="font-medium">장소:</span>{" "}
+                  {formatValue(event.location)}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <span className="font-medium">대상:</span>{" "}
+                  {formatValue(event.targetAudience)}
+                </p>
+                <p>
+                  <span className="font-medium">문의:</span>{" "}
+                  {formatValue(event.contact)}
+                </p>
+              </div>
             </div>
-            <div>
-              <p>
-                <span className="font-medium">대상:</span>{" "}
-                {formatValue(event.targetAudience)}
-              </p>
-              <p>
-                <span className="font-medium">문의:</span>{" "}
-                {formatValue(event.contact)}
-              </p>
-            </div>
+            {event.image && event.image !== "N/A" && (
+              <img
+                src={event.image}
+                alt={event.programName}
+                className="mt-3 rounded-md w-full max-w-md h-auto"
+                loading="lazy"
+              />
+            )}
           </div>
-          {event.image && event.image !== "N/A" && (
-            <img
-              src={event.image}
-              alt={event.programName}
-              className="mt-3 rounded-md w-full max-w-md h-auto"
-              loading="lazy"
-            />
-          )}
         </div>
       </div>
-    </div>
-  </li>
-));
+    </li>
+  )
+);
+
 const EventSchedule = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -156,6 +166,7 @@ const EventSchedule = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const year = date.getFullYear();
@@ -288,6 +299,14 @@ const EventSchedule = () => {
     },
     [isLoggedIn]
   );
+
+  const handleEventClick = useCallback((event) => {
+    setSelectedEvent(event);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedEvent(null);
+  }, []);
 
   const closeError = useCallback(() => {
     setError("");
@@ -432,7 +451,7 @@ const EventSchedule = () => {
           )}
 
           {!loading && !fetchError && !error && (
-            <ul className="space-y-4">
+            <ul className="SubFont text-4xl space-y-4">
               {formattedFestivals.length > 0 ? (
                 formattedFestivals.map((festival, index) => (
                   <EventItem
@@ -440,6 +459,7 @@ const EventSchedule = () => {
                     event={festival}
                     isStarred={selectedItems.includes(festival.programName)}
                     handleStarClick={handleStarClick}
+                    onEventClick={handleEventClick}
                   />
                 ))
               ) : (
@@ -451,6 +471,10 @@ const EventSchedule = () => {
           )}
         </div>
       </div>
+
+      {selectedEvent && (
+        <EventModal event={selectedEvent} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };
