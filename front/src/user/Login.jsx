@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   loginStart,
   loginSuccess,
@@ -121,6 +121,14 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <div className="text-center mt-4">
+          <span className="text-sm text-gray-500 mr-1">
+            아직 회원이 아니신가요? |
+          </span>
+          <Link to="/signup" className="text-blue-500 hover:underline">
+            회원가입
+          </Link>
+        </div>
       </div>
     </div>
   );
