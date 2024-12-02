@@ -9,8 +9,11 @@ import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
 import ComTest from "./components/Comtest";
 import FestivalTable from "./components/FestivalTable";
+import { useAuth } from "./hooks/useAuth";
 
 const App = () => {
+  useAuth();
+
   return (
     <BrowserRouter>
       <div className="App">
