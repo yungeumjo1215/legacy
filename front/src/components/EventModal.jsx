@@ -31,12 +31,12 @@ const EventModal = ({ event, onClose }) => {
             />
           )}
 
-          <div className="SubFont text-2xl space-y-3">
-            <p className="border border-gray-700 w-full p-4  rounded-md text-gray-950 whitespace-pre-line">
+          <div className="text-2xl space-y-3">
+            <p className="SubFont border border-gray-700 w-full p-4  rounded-md text-gray-950 whitespace-pre-line overflow-hidden">
               {event.programContent}
             </p>
 
-            <div className="grid grid-cols-2 gap-4 text-lg">
+            <div className="MainFont grid grid-cols-2 gap-4 text-lg">
               <div>
                 <p className="font-semibold">기간</p>
                 <p>
