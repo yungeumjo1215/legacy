@@ -236,57 +236,39 @@ const MyPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
-      <div className="w-full max-h-[900px] p-12">
-        <div className="w-full h-full grid grid-cols-6 gap-12">
+    <div className="h-screen bg-gray-100 pt-16">
+      <div className="h-[calc(100%-4rem)] p-8">
+        <div className="h-full grid grid-cols-6 gap-8">
           {/* 사용자 정보 섹션 */}
-          <div className="col-span-1 bg-white p-8 rounded-lg shadow-lg flex flex-col justify-between">
+          <div className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
             <div>
-              <h2 className="text-3xl font-bold mb-12">마이페이지</h2>
-              <div className="space-y-8">
-                <p className="text-lg">
+              <h2 className="text-2xl font-bold mb-8">마이페이지</h2>
+              <div className="space-y-6">
+                <p className="text-base">
                   <strong>이름:</strong> {user.name}
                 </p>
-                <p className="text-lg">
+                <p className="text-base">
                   <strong>이메일:</strong> {user.email}
                 </p>
-                <p className="text-lg">
+                <p className="text-base">
                   <strong>가입일:</strong> {user.joinDate}
                 </p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="mt-12 w-full bg-blue-800 text-white px-6 py-4 rounded-md text-lg hover:bg-blue-700 transition-colors duration-300"
-            >
-              로그아웃
-            </button>
           </div>
 
           {/* 즐겨찾기 섹션 */}
-          <div className="col-span-5 bg-white p-12 rounded-lg shadow-lg flex flex-col justify-between">
+          <div className="col-span-5 bg-white p-8 rounded-lg shadow-lg flex flex-col">
             <div>
-              <h3 className="text-4xl font-semibold mb-12">나의 즐겨찾기</h3>
-
+              <h3 className="text-3xl font-semibold mb-8">나의 즐겨찾기</h3>
               {/* 문화재 섹션 */}
-              <div className="mb-16">
-                {renderSection("문화재", culturalRef)}
-              </div>
-
+              <div className="mb-6">{renderSection("문화재", culturalRef)}</div>
               {/* 행사 섹션 */}
               <div>{renderSection("행사", eventRef)}</div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* 모달 컴포넌트 추가 */}
-      {selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={handleCloseModal} />
-      )}
-      {selectedEvent && (
-        <EventModal event={selectedEvent} onClose={handleCloseModal} />
-      )}
     </div>
   );
 };
