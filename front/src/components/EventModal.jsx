@@ -38,7 +38,7 @@ const EventModal = ({ event, onClose }) => {
 
             <div className="MainFont grid grid-cols-2 gap-4 text-lg">
               <div>
-                <p className="font-semibold">기간</p>
+                <p className="">기간</p>
                 <p>
                   {event.startDate} ~ {event.endDate}
                 </p>
