@@ -75,7 +75,6 @@ const Map = ({ selectedLocation }) => {
         mapInstanceRef.current = map;
 
         const heritageData = await fetchGetHeritageData();
-        // console.log(heritageData);
         const geocodedData = await geocodeHeritageData(heritageData);
 
         if (isMounted) {
