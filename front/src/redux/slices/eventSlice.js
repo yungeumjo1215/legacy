@@ -6,7 +6,7 @@ export const fetchEvents = createAsyncThunk(
   "events/fetchEvents",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:8000/events"); // Adjust the URL to match your API
+      const response = await axios.get("http://localhost:8000/event"); // Adjust the URL to match your API
       return response.data; // Return the fetched data
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch events");
