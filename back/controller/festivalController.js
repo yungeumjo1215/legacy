@@ -35,9 +35,7 @@ const fetchFestivalData = async (year, month) => {
       location: item.subDesc || "N/A",
       contact: item.contact || "N/A",
       sido: item.sido || "N/A",
-      image: item.fileNm || "N/A",
-      targetAudience: item.subDesc1 || "N/A",
-      additionalInfo: `${item.subDesc2 || "N/A"}, ${item.subDesc_3 || "N/A"}`,
+      targetAudience: item.subDesc_2 || "N/A",
     }));
 
     // Slice the transformed data to only include the first item
