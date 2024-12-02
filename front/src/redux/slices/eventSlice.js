@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Define an async thunk to fetch events
-export const fetchEvents = createAsyncThunk(
-  "events/fetchEvents",
+// Define an async thunk to fetch event
+export const fetchEvent = createAsyncThunk(
+  "event/fetchEvent",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("http://localhost:8000/event"); // Adjust the URL to match your API
@@ -15,29 +15,29 @@ export const fetchEvents = createAsyncThunk(
 );
 
 // Define the slice
-const eventsSlice = createSlice({
+const eventSlice = createSlice({
   name: "events",
   initialState: {
-    events: [],
+    event: [],
     loading: false,
     error: null,
   },
   reducers: {}, // Add synchronous reducers if needed
   extraReducers: (builder) => {
     builder
-      .addCase(fetchEvents.pending, (state) => {
+      .addCase(fetchEvent.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchEvents.fulfilled, (state, action) => {
+      .addCase(fetchEvent.fulfilled, (state, action) => {
         state.loading = false;
-        state.events = action.payload;
+        state.event = action.payload;
       })
-      .addCase(fetchEvents.rejected, (state, action) => {
+      .addCase(fetchEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default eventsSlice.reducer;
+export default eventSlice.reducer;

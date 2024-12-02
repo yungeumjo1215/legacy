@@ -8,6 +8,7 @@ import Login from "./user/Login";
 import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
 import { useAuth } from "./hooks/useAuth";
+import Event from "./components/Event";
 
 const App = () => {
   useAuth();
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/event" element={<Event />} />
         </Routes>
 
         {/* <Footer /> */}
