@@ -1,6 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const EventModal = ({ event, onClose }) => {
+  const dispatch = useDispatch();
+  const { festivals } = useSelector((state) => state.favorites);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const isFavorite = festivals.some(
+    (festival) => festival.programName === event.programName
+  );
+
+  const handleFavoriteClick = () => {
+    if (!isLoggedIn) {
+      setAlertMessage("로그인이 필요한 서비스입니다.");
+      return;
+    }
+
+    if (isFavorite) {
+      dispatch(
+        removeFavorite({
+          programName: event.programName,
+          type: "event",
+        })
+      );
+      setAlertMessage("즐겨찾기가 해제되었습니다.");
+    } else {
+      dispatch(
+        addFavorite({
+          type: "event",
+          programName: event.programName,
+          programContent: event.programContent,
+          location: event.location,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          targetAudience: event.targetAudience,
+          contact: event.contact,
+        })
+      );
+      setAlertMessage("즐겨찾기에 추가되었습니다.");
+    }
+  };
+
+  const closeAlert = () => {
+    setAlertMessage("");
+  };
+
   if (!event) return null;
 
   return (
@@ -16,12 +63,20 @@ const EventModal = ({ event, onClose }) => {
         <div>
           <div className="flex justify-between items-center mb-[8px]">
             <h2 className="MainFont text-2xl">{event.programName}</h2>
-            <button
-              onClick={onClose}
-              className="bg-[#121a35] text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
-            >
-              X
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleFavoriteClick}
+                className="text-2xl text-yellow-500 hover:text-yellow-600"
+              >
+                {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
+              </button>
+              <button
+                onClick={onClose}
+                className="bg-[#121a35] text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
+              >
+                X
+              </button>
+            </div>
           </div>
           <div className="SubFont text-2xl space-y-3">
             <div className="border border-gray-700 w-full p-4 rounded-md text-gray-950 whitespace-pre-line overflow-hidden text-[20px]">
@@ -51,6 +106,23 @@ const EventModal = ({ event, onClose }) => {
           </div>
         </div>
       </div>
+
+      {/* 경고 모달 */}
+      {alertMessage && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+            <p className="text-center text-lg mb-4">{alertMessage}</p>
+            <div className="flex justify-center">
+              <button
+                onClick={closeAlert}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

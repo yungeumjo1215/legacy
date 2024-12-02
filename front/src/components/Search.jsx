@@ -165,8 +165,7 @@ const SearchPage = () => {
       if (isAlreadySelected) {
         dispatch(
           removeFavorite({
-            ...heritage,
-            id: heritage.ccbaKdcd, // id 필드 추가
+            id: heritage.ccbaKdcd,
             type: "heritage",
           })
         );
@@ -175,7 +174,7 @@ const SearchPage = () => {
         dispatch(
           addFavorite({
             ...heritage,
-            id: heritage.ccbaKdcd, // id 필드 추가
+            id: heritage.ccbaKdcd,
             type: "heritage",
           })
         );
@@ -186,7 +185,6 @@ const SearchPage = () => {
         const newItems = isAlreadySelected
           ? prev.filter((item) => item !== heritage.ccbaMnm1)
           : [...prev, heritage.ccbaMnm1];
-        localStorage.setItem("selectedHeritages", JSON.stringify(newItems));
         return newItems;
       });
     },
