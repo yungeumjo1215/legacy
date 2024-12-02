@@ -16,7 +16,6 @@ const REGIONS = [
   { id: "all", name: "전체", sido: null }, // 전체 보기
   { id: "seoul", name: "서울", sido: "서울특별시" },
   { id: "incheon", name: "인천", sido: "인천광역시" },
-
   { id: "busan", name: "부산", sido: "부산광역시" },
   { id: "ulsan", name: "울산", sido: "울산광역시" },
   { id: "gyeonggi", name: "경기도", sido: "경기도" },
@@ -24,7 +23,6 @@ const REGIONS = [
   { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
   { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
   { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
-
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
@@ -398,7 +396,6 @@ const EventSchedule = () => {
         pauseOnHover
         theme="light"
       />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl text-gray-900 mb-8">
           문화재 행사 정보
