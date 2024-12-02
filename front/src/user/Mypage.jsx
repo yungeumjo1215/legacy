@@ -155,7 +155,7 @@ const MyPage = () => {
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[338px] h-[300px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden"
+                      className="flex-none w-[338px] h-[300px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center border-gray-300 hover:border-blue-500 transition-colors duration-300 overflow-hidden"
                       key={item.id}
                     >
                       <div className="w-full h-[200px] overflow-hidden">
