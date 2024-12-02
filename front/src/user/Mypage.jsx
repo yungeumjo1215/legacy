@@ -34,7 +34,7 @@ const MyPage = () => {
         </div>
         <button
           onClick={handleLogout}
-          className="mt-6 w-full bg-gray-300 text-black px-4 py-2 rounded-md "
+          className="mt-6 w-full bg-blue-800 text-white px-4 py-2 rounded-md "
         >
           로그아웃
         </button>
