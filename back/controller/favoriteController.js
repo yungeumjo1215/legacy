@@ -1,12 +1,12 @@
 const pool = require("../database/database");
 
 exports.addFavorite = async (req, res) => {
-  const { userId, eventName, eventType } = req.body;
+  const { email, eventName, eventType } = req.body;
 
   try {
     const result = await pool.query(
       "INSERT INTO favorites (user_id, event_name, event_type) VALUES ($1, $2, $3) RETURNING *",
-      [userId, eventName, eventType]
+      [email, eventName, eventType]
     );
 
     res.status(201).json(result.rows[0]);
@@ -17,12 +17,12 @@ exports.addFavorite = async (req, res) => {
 };
 
 exports.removeFavorite = async (req, res) => {
-  const { userId, eventName } = req.params;
+  const { email, eventName } = req.params;
 
   try {
     await pool.query(
       "DELETE FROM favorites WHERE user_id = $1 AND event_name = $2",
-      [userId, eventName]
+      [email, eventName]
     );
 
     res.status(200).json({ message: "Favorite removed successfully" });
@@ -33,12 +33,12 @@ exports.removeFavorite = async (req, res) => {
 };
 
 exports.getUserFavorites = async (req, res) => {
-  const { userId } = req.params;
+  const { email } = req.params;
 
   try {
     const result = await pool.query(
       "SELECT * FROM favorites WHERE user_id = $1 ORDER BY created_at DESC",
-      [userId]
+      [email]
     );
 
     res.status(200).json(result.rows);
