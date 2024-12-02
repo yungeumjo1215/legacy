@@ -455,7 +455,7 @@ const EventSchedule = () => {
           )}
 
           {!loading && !fetchError && !error && (
-            <ul className="SubFont text-4xl space-y-4">
+            <ul className="SubFont text-3xl space-y-4">
               {formattedFestivals.length > 0 ? (
                 formattedFestivals.map((festival, index) => (
                   <EventItem
