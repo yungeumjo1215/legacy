@@ -10,16 +10,16 @@ import { ToastContainer } from "react-toastify";
 import EventModal from "./EventModal";
 
 const REGIONS = [
-  { id: "all", name: "전체" },
-  { id: "seoul", name: "서울" },
-  { id: "incheon", name: "인천" },
-  { id: "gyeonggi", name: "경기도" },
-  { id: "gangwon", name: "강원도" },
-  { id: "jeolla", name: "전라도" },
-  { id: "chungcheong", name: "충청도" },
-  { id: "gyeongsang", name: "경상도" },
-  { id: "busan", name: "부산" },
-  { id: "jeju", name: "제주도" },
+  { id: "all", name: "전체", sido: null }, // 전체 보기
+  { id: "seoul", name: "서울", sido: "서울특별시" },
+  { id: "incheon", name: "인천", sido: "인천광역시" },
+  { id: "gyeonggi", name: "경기도", sido: "경기도" },
+  { id: "gangwon", name: "강원도", sido: "강원도" },
+  { id: "jeolla", name: "전라도", sido: "전라북도" }, // 전라남도 포함 가능
+  { id: "chungcheong", name: "충청도", sido: "충청북도" }, // 충청남도 포함 가능
+  { id: "gyeongsang", name: "경상도", sido: "경상북도" }, // 경상남도 포함 가능
+  { id: "busan", name: "부산", sido: "부산광역시" },
+  { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
 const formatValue = (value) => {
@@ -67,8 +67,7 @@ const parseYYYYMMDD = (dateArr) => {
 const SearchBar = memo(({ value, onChange }) => (
   <form
     onSubmit={(e) => e.preventDefault()}
-    className="sm:flex-none md:flex-center flex justify-center sm:m-5 md:m-0 w-full max-w-full"
-  >
+    className="sm:flex-none md:flex-center flex justify-center sm:m-5 md:m-0 w-full max-w-full">
     <input
       type="text"
       placeholder="행사명을 입력해주세요"
@@ -78,8 +77,7 @@ const SearchBar = memo(({ value, onChange }) => (
     />
     <button
       type="submit"
-      className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap"
-    >
+      className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap">
       검색
     </button>
   </form>
@@ -90,8 +88,7 @@ const EventItem = memo(
     <li className="pb-2">
       <div
         className="border p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-        onClick={() => onEventClick(event)}
-      >
+        onClick={() => onEventClick(event)}>
         <div className="flex items-start">
           <button
             onClick={(e) => {
@@ -104,8 +101,7 @@ const EventItem = memo(
             tabIndex={0}
             aria-label={`${event.programName} 즐겨찾기 ${
               isStarred ? "제거" : "추가"
-            }`}
-          >
+            }`}>
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
@@ -193,42 +189,54 @@ const EventSchedule = () => {
           .includes(search.toLowerCase());
 
         let matchesRegion = selectedRegion === "all";
-        if (!matchesRegion && festival.location?.[0]) {
-          const location = festival.location[0].toLowerCase();
+
+        // Ensure sido is processed correctly
+        if (!matchesRegion && festival.sido) {
+          let regionSido;
+          if (Array.isArray(festival.sido)) {
+            // If `sido` is an array, use the first element
+            regionSido = festival.sido[0]?.toLowerCase() || "";
+          } else if (typeof festival.sido === "string") {
+            // If `sido` is a string, use it directly
+            regionSido = festival.sido.toLowerCase();
+          } else {
+            regionSido = ""; // Fallback for unexpected types
+          }
+
           switch (selectedRegion) {
             case "seoul":
-              matchesRegion = /서울|seoul/i.test(location);
+              matchesRegion = /서울|seoul/i.test(regionSido);
               break;
             case "incheon":
-              matchesRegion = /인천|incheon/i.test(location);
+              matchesRegion = /인천|incheon/i.test(regionSido);
               break;
             case "gyeonggi":
-              matchesRegion = /경기|gyeonggi/i.test(location);
+              matchesRegion = /경기|gyeonggi/i.test(regionSido);
               break;
             case "gangwon":
-              matchesRegion = /강원|gangwon/i.test(location);
+              matchesRegion = /강원|gangwon/i.test(regionSido);
               break;
             case "jeolla":
               matchesRegion = /전라|전북|전남|광주|jeolla|gwangju/i.test(
-                location
+                regionSido
               );
               break;
             case "chungcheong":
               matchesRegion = /충청|충북|충남|대전|chungcheong|daejeon/i.test(
-                location
+                regionSido
               );
               break;
             case "gyeongsang":
               matchesRegion =
                 /경상|경북|경남|대구|울산|gyeongsang|daegu|ulsan/i.test(
-                  location
+                  regionSido
                 );
               break;
             case "busan":
-              matchesRegion = /부산|busan/i.test(location);
+              matchesRegion = /부산|busan/i.test(regionSido);
               break;
             case "jeju":
-              matchesRegion = /제주|jeju/i.test(location);
+              matchesRegion = /제주|jeju/i.test(regionSido);
               break;
             default:
               matchesRegion = false;
@@ -378,8 +386,7 @@ const EventSchedule = () => {
                       selectedRegion === region.id
                         ? "bg-blue-800 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                >
+                    }`}>
                   {region.name}
                 </button>
               ))}
@@ -425,8 +432,7 @@ const EventSchedule = () => {
               />
               <div
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                           bg-white rounded-lg shadow-xl z-50 w-96 p-6"
-              >
+                           bg-white rounded-lg shadow-xl z-50 w-96 p-6">
                 <p className="text-lg font-semibold text-center mb-6 whitespace-pre-line">
                   {error}
                 </p>
@@ -434,15 +440,13 @@ const EventSchedule = () => {
                   <button
                     onClick={handleLoginClick}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 
-                             transition-colors duration-200"
-                  >
+                             transition-colors duration-200">
                     로그인하기
                   </button>
                   <button
                     onClick={closeError}
                     className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 
-                             transition-colors duration-200"
-                  >
+                             transition-colors duration-200">
                     닫기
                   </button>
                 </div>
@@ -451,7 +455,7 @@ const EventSchedule = () => {
           )}
 
           {!loading && !fetchError && !error && (
-            <ul className="SubFont text-4xl space-y-4">
+            <ul className="SubFont text-3xl space-y-4">
               {formattedFestivals.length > 0 ? (
                 formattedFestivals.map((festival, index) => (
                   <EventItem

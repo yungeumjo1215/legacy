@@ -21,6 +21,7 @@ export const fetchFestivalData = createAsyncThunk(
           endDate: item.endDate || item.eDate,
           location: item.location || item.subDesc,
           contact: item.contact,
+          sido: item.sido,
           image: item.image || item.fileNm,
           targetAudience: item.targetAudience || item.subDesc1,
           additionalInfo:
