@@ -1,11 +1,17 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { useSelector } from "react-redux";
+import Modal from "../components/Modal";
+import EventModal from "../components/EventModal";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const { heritages, festivals } = useSelector((state) => state.favorites);
+
+  // 모달 상태 추가
+  const [selectedHeritage, setSelectedHeritage] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // 사용자 정보 가져오기
   const user = {
@@ -59,6 +65,47 @@ const MyPage = () => {
     }
   };
 
+  // 클릭 핸들러 수정
+  const handleItemClick = (item) => {
+    if (item.type === "문화재") {
+      const heritageData = heritages.find(
+        (heritage) => heritage.ccbaKdcd === item.id || heritage.id === item.id
+      );
+
+      if (heritageData) {
+        setSelectedHeritage({
+          ccbaMnm1: heritageData.ccbaMnm1,
+          imageUrl: heritageData.imageUrl,
+          content: heritageData.content || heritageData.ccbaCtcdNm,
+          ccbaLcad: heritageData.ccbaLcad,
+          ccceName: heritageData.ccceName,
+        });
+      }
+    } else {
+      const festivalData = festivals.find(
+        (festival) => festival.programName === item.name
+      );
+
+      if (festivalData) {
+        setSelectedEvent({
+          programName: festivalData.programName,
+          programContent: festivalData.programContent,
+          location: festivalData.location,
+          startDate: festivalData.startDate,
+          endDate: festivalData.endDate,
+          targetAudience: festivalData.targetAudience || "전체",
+          contact: festivalData.contact || "문의 정보 없음",
+        });
+      }
+    }
+  };
+
+  // 모달 닫기 핸들러
+  const handleCloseModal = () => {
+    setSelectedHeritage(null);
+    setSelectedEvent(null);
+  };
+
   const renderSection = (type, ref) => {
     const items = type === "문화재" ? culturalItems : favoriteEvents;
     const hasMoreThanFour = items.length > 4;
@@ -73,8 +120,9 @@ const MyPage = () => {
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[300px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden"
+                      className="flex-none w-[300px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
                       key={item.id}
+                      onClick={() => handleItemClick(item)}
                     >
                       <div className="w-full h-[200px] overflow-hidden">
                         {item.image ? (
@@ -192,6 +240,14 @@ const MyPage = () => {
           </div>
         </div>
       </div>
+
+      {/* 모달 컴포넌트 추가 */}
+      {selectedHeritage && (
+        <Modal item={selectedHeritage} onClose={handleCloseModal} />
+      )}
+      {selectedEvent && (
+        <EventModal event={selectedEvent} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };
