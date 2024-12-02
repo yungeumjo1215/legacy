@@ -48,35 +48,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-.MC {
-  width: 100%;
-  margin: auto;
-  max-width: 1280px;
-  max-height: 320px;
-  overflow: hidden;
-  border: 2px solid rgb(30 58 138 / var(--tw-bg-opacity, 1));
-}
-
-.region-btn-경상도 {
-  margin-left: 76px;
-}
-
-.region-btn-서울,
-.region-btn-인천 {
-  padding: 3px 17px;
-}
-
-.Event-sc {
-  border: 2px solid rgb(30 58 138 / var(--tw-bg-opacity, 1));
-}
-
-.react-calendar {
-  width: 100%;
-  max-height: 280px; /* 높이를 제한 */
-  overflow-y: auto; /* 스크롤 추가 */
-}
-
-.Event-information {
-  margin-top: 1.875rem !important;
-}

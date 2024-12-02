@@ -13,6 +13,9 @@ exports.getEvents = (req, res) => {
     const events = data.map((event) => ({
       title: event.TITLE,
       imageUrl: event.IMAGE_URL,
+      begin_de: event.BEGIN_DE,
+      event_tm_info: event.EVENT_TM_INFO,
+      host_inst_nm: event.HOST_INST_NM,
     }));
 
     // Send response
