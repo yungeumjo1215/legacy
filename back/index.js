@@ -6,6 +6,7 @@ const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
 const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 
 const PORT = 8000;
 const app = express();
@@ -29,14 +30,8 @@ app.get("/", (req, res) => {
 app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
-
+app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
-
-// Task related thingy
-// app.use(require("./routes/getRoutes"));
-// app.use(require("./routes/deleteRoutes"));
-// app.use(require("./routes/postRoutes"));
-// app.use(require("./routes/updateRoutes"));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
