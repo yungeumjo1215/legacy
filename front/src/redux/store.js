@@ -6,6 +6,7 @@ import heritageReducer from "./slices/heritageDetailSlice";
 import festivalReducer from "./slices/festivalDetailSlice";
 import accountReducer from "./slices/accountSlice";
 import eventReducer from "./slices/eventSlice";
+import favoriteReducer from "./slices/favoriteSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     heritage: heritageReducer,
     festival: festivalReducer,
     event: eventReducer,
+    favorites: favoriteReducer,
   },
 });
 

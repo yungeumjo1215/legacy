@@ -67,9 +67,29 @@ const Map = ({ selectedLocation }) => {
 
       try {
         const currentPosition = await getCurrentPosition();
+
         const map = new window.google.maps.Map(mapRef.current, {
           center: currentPosition,
           zoom: 15,
+          // 지도 타입 컨트롤 (지도/위성)
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: window.google.maps.ControlPosition.RIGHT_TOP,
+          },
+          // 기타 컨트롤 옵션들
+          zoomControl: true,
+          zoomControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_CENTER,
+          },
+          streetViewControl: true,
+          streetViewControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_TOP,
+          },
         });
 
         mapInstanceRef.current = map;
@@ -135,7 +155,6 @@ const Map = ({ selectedLocation }) => {
                   max-height: 100px;
                   overflow-y: auto;
                 ">${heritage.description}</p>
-                
                 
                 </div>
               </div>
@@ -271,6 +290,10 @@ const Map = ({ selectedLocation }) => {
     };
 
     loadGoogleMapsScript();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

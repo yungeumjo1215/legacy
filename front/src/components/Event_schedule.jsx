@@ -5,10 +5,11 @@ import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
+import axios from "../api/axios";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null }, // 전체 보기
@@ -166,10 +167,14 @@ const EventSchedule = () => {
     loading,
     error: fetchError,
   } = useSelector((state) => state.festival);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { items: favorites } = useSelector((state) => state.favorites);
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const saved = localStorage.getItem("selectedFestivals");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [error, setError] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -294,31 +299,31 @@ const EventSchedule = () => {
     setSelectedRegion(region);
   }, []);
 
-  const handleStarClick = useCallback(
-    (programName) => {
-      if (!isLoggedIn) {
-        setError(
-          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
-        );
-        return;
-      }
+  const handleStarClick = (eventName) => {
+    if (!isLoggedIn) {
+      toast.info("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return;
+    }
 
-      setSelectedItems((prev) => {
-        const isAlreadySelected = prev.includes(programName);
-        const newItems = isAlreadySelected
-          ? prev.filter((item) => item !== programName)
-          : [...prev, programName];
+    const savedFavorites = localStorage.getItem("selectedFestivals");
+    const currentFavorites = savedFavorites ? JSON.parse(savedFavorites) : [];
 
-        if (newItems.length > 0) {
-          localStorage.setItem("selectedFestivals", JSON.stringify(newItems));
-        } else {
-          localStorage.removeItem("selectedFestivals");
-        }
-        return newItems;
-      });
-    },
-    [isLoggedIn]
-  );
+    let updatedFavorites;
+    if (currentFavorites.includes(eventName)) {
+      // 즐겨찾기 해제
+      updatedFavorites = currentFavorites.filter((item) => item !== eventName);
+      toast.success("즐겨찾기가 해제되었습니다.");
+    } else {
+      // 즐겨찾기 추가
+      updatedFavorites = [...currentFavorites, eventName];
+      toast.success("즐겨찾기에 추가되었습니다.");
+    }
+
+    // localStorage 업데이트
+    localStorage.setItem("selectedFestivals", JSON.stringify(updatedFavorites));
+    setSelectedItems(updatedFavorites);
+  };
 
   const handleEventClick = useCallback((event) => {
     setSelectedEvent(event);
@@ -338,27 +343,26 @@ const EventSchedule = () => {
   }, [navigate, closeError]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      setSelectedItems([]);
-      localStorage.removeItem("selectedFestivals");
-    } else {
-      const savedItems = localStorage.getItem("selectedFestivals");
-      if (savedItems) {
-        try {
-          setSelectedItems(JSON.parse(savedItems));
-        } catch (error) {
-          console.error("저장된 즐겨찾기 불러오기 실패:", error);
-          localStorage.removeItem("selectedFestivals");
+    const loadFavorites = async () => {
+      if (isLoggedIn) {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        if (userId && token) {
+          try {
+            const response = await axios.get(`/favorites/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setSelectedItems(response.data.map((fav) => fav.event_name));
+          } catch (error) {
+            console.error("즐겨찾기 목록 로드 중 오류:", error);
+          }
         }
       }
-    }
-  }, [isLoggedIn]);
+    };
 
-  useEffect(() => {
-    if (isLoggedIn && selectedItems.length > 0) {
-      localStorage.setItem("selectedFestivals", JSON.stringify(selectedItems));
-    }
-  }, [selectedItems, isLoggedIn]);
+    loadFavorites();
+  }, [isLoggedIn]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
