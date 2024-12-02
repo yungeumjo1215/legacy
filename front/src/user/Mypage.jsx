@@ -139,21 +139,24 @@ const MyPage = () => {
 
   const renderSection = (type, ref) => {
     const items = type === "문화재" ? culturalItems : favoriteEvents;
-    const hasMoreThanFour = items.length > 4;
 
     return (
       <div className="relative flex-1 overflow-hidden">
-        <h4 className="text-2xl font-medium mb-6">{type}</h4>
-        <div className="relative mx-6">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-xl font-medium">{type}</h4>
+        </div>
+        <div className="relative mx-4">
           <div className="flex justify-center">
-            <div ref={ref} className="flex overflow-x-hidden pb-4 w-[1400px]">
-              <div className="flex gap-8">
+            <div
+              ref={ref}
+              className="flex overflow-hidden pb-4 w-[1400px] min-h-[320px]"
+            >
+              <div className="flex gap-4">
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[320px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
+                      className="flex-none w-[338px] h-[300px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden"
                       key={item.id}
-                      onClick={() => handleItemClick(item)}
                     >
                       <div className="w-full h-[200px] overflow-hidden">
                         {item.image ? (
@@ -172,21 +175,25 @@ const MyPage = () => {
                           </div>
                         )}
                       </div>
-                      <div className="p-4 w-full flex-1 flex flex-col">
-                        <h3 className="text-xl font-medium text-gray-700 mb-2">
+                      <div className="p-3 w-full flex-1 flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2 flex-grow">
-                          <span className="font-medium">설명:</span>{" "}
-                          {item.content}
-                        </p>
-                        <div className="mt-auto">
-                          <p className="text-sm text-gray-600 mb-2">
+                        <div className="flex-1 min-h-0">
+                          <div className="inline-block text-sm font-medium text-gray-600">
+                            설명:{" "}
+                          </div>
+                          <div className="text-sm text-gray-600 line-clamp-3 break-all">
+                            {item.content}
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600 mb-1 truncate">
                             <span className="font-medium">위치:</span>{" "}
                             {item.location}
                           </p>
                           {item.type === "행사" && item.date && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-xs text-gray-600 truncate">
                               <span className="font-medium">기간:</span>{" "}
                               {item.date}
                             </p>
@@ -196,7 +203,7 @@ const MyPage = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="w-full text-center text-gray-500">
+                  <div className="w-[1200px] h-[300px] flex items-center justify-center text-gray-500 text-lg">
                     {type === "행사"
                       ? "즐겨찾기한 행사가 없습니다."
                       : "즐겨찾기한 문화재가 없습니다."}
@@ -206,17 +213,18 @@ const MyPage = () => {
             </div>
           </div>
 
-          {hasMoreThanFour && (
+          {/* 좌우 이동 버튼 */}
+          {items.length > 4 && (
             <>
               <button
                 onClick={() => scroll(ref, "left")}
-                className="absolute -left-10 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
               >
                 <IoChevronBack size={28} />
               </button>
               <button
                 onClick={() => scroll(ref, "right")}
-                className="absolute -right-10 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
               >
                 <IoChevronForward size={28} />
               </button>
@@ -228,57 +236,39 @@ const MyPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
-      <div className="w-full max-h-[900px] p-12">
-        <div className="w-full h-full grid grid-cols-6 gap-12">
+    <div className="h-screen bg-gray-100 pt-16">
+      <div className="h-[calc(100%-4rem)] p-8">
+        <div className="h-full grid grid-cols-6 gap-8">
           {/* 사용자 정보 섹션 */}
-          <div className="col-span-1 bg-white p-8 rounded-lg shadow-lg flex flex-col justify-between">
+          <div className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
             <div>
-              <h2 className="text-3xl font-bold mb-12">마이페이지</h2>
-              <div className="space-y-8">
-                <p className="text-lg">
+              <h2 className="text-2xl font-bold mb-8">마이페이지</h2>
+              <div className="space-y-6">
+                <p className="text-base">
                   <strong>이름:</strong> {user.name}
                 </p>
-                <p className="text-lg">
+                <p className="text-base">
                   <strong>이메일:</strong> {user.email}
                 </p>
-                <p className="text-lg">
+                <p className="text-base">
                   <strong>가입일:</strong> {user.joinDate}
                 </p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="mt-12 w-full bg-blue-800 text-white px-6 py-4 rounded-md text-lg hover:bg-blue-700 transition-colors duration-300"
-            >
-              로그아웃
-            </button>
           </div>
 
           {/* 즐겨찾기 섹션 */}
-          <div className="col-span-5 bg-white p-12 rounded-lg shadow-lg flex flex-col justify-between">
+          <div className="col-span-5 bg-white p-8 rounded-lg shadow-lg flex flex-col">
             <div>
-              <h3 className="text-4xl font-semibold mb-12">나의 즐겨찾기</h3>
-
+              <h3 className="text-3xl font-semibold mb-8">나의 즐겨찾기</h3>
               {/* 문화재 섹션 */}
-              <div className="mb-16">
-                {renderSection("문화재", culturalRef)}
-              </div>
-
+              <div className="mb-6">{renderSection("문화재", culturalRef)}</div>
               {/* 행사 섹션 */}
               <div>{renderSection("행사", eventRef)}</div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* 모달 컴포넌트 추가 */}
-      {selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={handleCloseModal} />
-      )}
-      {selectedEvent && (
-        <EventModal event={selectedEvent} onClose={handleCloseModal} />
-      )}
     </div>
   );
 };

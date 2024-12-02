@@ -12,13 +12,10 @@ import "swiper/css/pagination";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const {
-    events = [],
-    loading,
-    error,
-  } = useSelector(
-    (state) => state.events || { events: [], loading: false, error: null }
-  );
+  const eventState = useSelector((state) => state.event);
+  const event = eventState?.event || [];
+  const loading = eventState?.loading || false;
+  const error = eventState?.error || null;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [date, setDate] = useState(new Date());
@@ -26,7 +23,15 @@ const Home = () => {
   const nextRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchEvent());
+    console.log("Dispatching fetchEvent");
+    dispatch(fetchEvent())
+      .unwrap()
+      .then((result) => {
+        console.log("Fetch success:", result);
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+      });
   }, [dispatch]);
 
   if (loading)
@@ -43,7 +48,7 @@ const Home = () => {
       </div>
     );
 
-  const totalFestivals = events.length;
+  const totalFestivals = event.length;
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? totalFestivals - 1 : prevIndex - 1
@@ -55,10 +60,10 @@ const Home = () => {
     );
   };
   const getVisibleFestivals = () => {
-    if (!events || events.length === 0) return [];
+    if (!event || event.length === 0) return [];
     const prevIndex = (currentIndex - 1 + totalFestivals) % totalFestivals;
     const nextIndex = (currentIndex + 1) % totalFestivals;
-    return [events[prevIndex], events[currentIndex], events[nextIndex]];
+    return [event[prevIndex], event[currentIndex], event[nextIndex]];
   };
   const visibleFestivals = getVisibleFestivals();
   return (
@@ -81,7 +86,7 @@ const Home = () => {
           <p className="SubFont ">전국 축제 행사 일정</p>
         </h1>
 
-        {events.length === 0 ? (
+        {event.length === 0 ? (
           <p>표시할 행사 데이터가 없습니다.</p>
         ) : (
           <div className="w-full h-[800px] max-w-6xl mx-auto px-4">
@@ -104,11 +109,11 @@ const Home = () => {
               }}
               className="relative py-10"
             >
-              {events.map((event, index) => (
-                <SwiperSlide key={index}>
+              {event.slice(0, 6).map((event) => (
+                <SwiperSlide key={event.title}>
                   <Link
                     to={`/event/${event.title}`}
-                    className="block bg-white rounded-lg shadow-lg overflow-hidden"
+                    className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
                     <div className="relative h-[400px]">
                       {event.imageUrl ? (
@@ -116,6 +121,10 @@ const Home = () => {
                           src={event.imageUrl}
                           alt={event.title}
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "기본이미지URL"; // 이미지 로드 실패시 기본 이미지
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -124,13 +133,16 @@ const Home = () => {
                       )}
                     </div>
                     <div className="p-6">
-                      <h2 className="text-xl font-bold mb-2">
+                      <h2 className="text-xl font-bold mb-2 truncate">
                         {event.title || "제목 없음"}
                       </h2>
-                      <p className="text-gray-600 mb-2">{event.host_inst_nm}</p>
-                      <p className="text-sm text-gray-500">
-                        {event.begin_de} {event.event_tm_info}
+                      <p className="text-gray-600 mb-2 truncate">
+                        {event.host_inst_nm}
                       </p>
+                      <div className="text-sm text-gray-500">
+                        <p>시작일: {event.begin_de}</p>
+                        <p>시간 정보: {event.event_tm_info}</p>
+                      </div>
                     </div>
                   </Link>
                 </SwiperSlide>
