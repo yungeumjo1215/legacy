@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import "./ImageSlider.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 const Home = () => {
   const dispatch = useDispatch();
   const {
@@ -13,6 +19,8 @@ const Home = () => {
   } = useSelector((state) => state.festival);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [date, setDate] = useState(new Date());
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   useEffect(() => {
     const year = date.getFullYear();
@@ -76,41 +84,66 @@ const Home = () => {
           <p className="SubFont ">전국 축제 행사 일정</p>
         </h1>
 
-        {visibleFestivals.length === 0 ? (
+        {festivalList.length === 0 ? (
           <p>표시할 축제 데이터가 없습니다.</p>
         ) : (
-          <>
-            <button
-              className="arrow left"
-              onClick={goToPrevious}
-              aria-label="이전 축제"
+          <div className="w-full h-[800px] max-w-6xl mx-auto px-4">
+            <Swiper
+              modules={[Navigation, Pagination]}
+              spaceBetween={25}
+              slidesPerView={3}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+                dynamicMainBullets: 7,
+                el: ".pagination-bullets",
+              }}
+              onSlideChange={() => console.log("slide change")}
+              onSwiper={(swiper) => {
+                swiper.params.navigation.prevEl = prevRef.current;
+                swiper.params.navigation.nextEl = nextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }}
+              className="relative py-10"
             >
-              &lt;
-            </button>
-            <div className="slider">
-              {visibleFestivals.map((festival, index) => (
-                <div
-                  key={festival?.id || index}
-                  className={`slide ${index === 1 ? "active" : ""}`}
-                >
-                  <Link to={`/festival/${festival?.id || ""}`}>
-                    <div className="slider-textbox">
-                      <h2 className="slider-title">
-                        {festival?.programName || "Unknown Festival"}
+              {festivalList.map((festival) => (
+                <SwiperSlide key={festival.id}>
+                  <Link
+                    to={`/festival/${festival.id}`}
+                    className="block bg-white rounded-lg shadow-lg overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <h2 className="text-xl font-bold mb-2">
+                        {festival.programName || "Unknown Festival"}
                       </h2>
                     </div>
                   </Link>
-                </div>
+                </SwiperSlide>
               ))}
-            </div>
-            <button
-              className="arrow right"
-              onClick={goToNext}
-              aria-label="다음 축제"
-            >
-              &gt;
-            </button>
-          </>
+              <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center pb-4">
+                <div className="pagination-bullets-container flex items-center justify-center w-full">
+                  <button
+                    ref={prevRef}
+                    className="bg-white rounded-full p-2 shadow-lg z-10 mr-15 translate-y-2"
+                    aria-label="이전 축제"
+                  >
+                    &lt;
+                  </button>
+                  <div className="pagination-bullets">
+                    <div className="swiper-pagination"></div>
+                  </div>
+                  <button
+                    ref={nextRef}
+                    className="bg-white rounded-full p-2 shadow-lg z-10 ml-15 translate-y-2"
+                    aria-label="다음 축제"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </div>
+            </Swiper>
+          </div>
         )}
       </div>
     </div>

@@ -58,12 +58,14 @@ const SearchPage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // 디바운스된 검어로 검색 실행
+  // 디바운스된 검색어로 검색 실행
   useEffect(() => {
     if (debouncedSearchTerm) {
       handleSearch();
+    } else {
+      setFilteredData(heritageData);
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, heritageData]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -106,7 +108,11 @@ const SearchPage = () => {
   }, [heritageData, searchTerm]);
 
   const handleSearch = () => {
-    setFilteredData(filteredResults);
+    if (!searchTerm.trim()) {
+      setFilteredData(heritageData);
+    } else {
+      setFilteredData(filteredResults);
+    }
   };
 
   const handleKeyPress = (e) => {

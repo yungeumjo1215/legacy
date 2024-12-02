@@ -398,9 +398,7 @@ const EventSchedule = () => {
                           : "bg-gray-100 text-black hover:bg-gray-200"
                       }`}
                   >
-                    <div className="flex items-center gap-2 SubFont">
-                      {region.name}
-                    </div>
+                    {region.name}
                   </button>
                 ))}
               </div>
@@ -482,7 +480,7 @@ const EventSchedule = () => {
           )}
 
           {!loading && !fetchError && !error && (
-            <ul className="SubFont text-3xl space-y-4">
+            <ul className="SubFont text-3xl space-y-4 overflow-hidden">
               {formattedFestivals.length > 0 ? (
                 formattedFestivals.map((festival, index) => (
                   <EventItem
@@ -491,6 +489,7 @@ const EventSchedule = () => {
                     isStarred={selectedItems.includes(festival.programName)}
                     handleStarClick={handleStarClick}
                     onEventClick={handleEventClick}
+                    className=""
                   />
                 ))
               ) : (

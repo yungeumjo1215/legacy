@@ -42,7 +42,7 @@
 }
 
 .slide {
-  flex: 0 0 35%; /* 각 슬라이드 크기를 30%로 고정 */
+  flex: 0 0 30%; /* 각 슬라이드 크기를 30%로 고정 */
   text-align: center;
   opacity: 0.5;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
@@ -96,4 +96,39 @@
   font-family: "Noto Sans Korean";
   font-weight: 400;
   font-style: normal;
+}
+
+.pagination-bullets-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  max-width: 300px; /* 도트와 버튼 사이의 전체 너비 조절 */
+  justify-content: space-between;
+}
+
+.pagination-bullets {
+  display: inline-block;
+  position: relative;
+  z-index: 10;
+}
+
+.swiper-pagination {
+  position: relative !important;
+  bottom: 0 !important;
+}
+
+/* 좌우 버튼 위치 조정 */
+.pagination-bullets-container button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pagination-bullets-container button:first-child {
+  left: -20px;
+}
+
+.pagination-bullets-container button:last-child {
+  right: -20px;
 }
