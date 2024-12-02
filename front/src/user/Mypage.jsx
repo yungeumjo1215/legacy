@@ -8,7 +8,7 @@ const MyPage = () => {
   const user = {
     name: "홍길동",
     email: "hong@example.com",
-    joinDate: "2023-11-27",
+    joinDate: "2024-12-02",
   };
 
   const handleLogout = () => {
