@@ -1,22 +1,53 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
 import Map from "./map/Map";
 import Modal from "./Modal";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const SearchPage = () => {
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [heritageData, setHeritageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const saved = localStorage.getItem("selectedHeritages");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [error, setError] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // 즐겨찾기 상태 저장
+  useEffect(() => {
+    if (isLoggedIn && selectedItems.length > 0) {
+      localStorage.setItem("selectedHeritages", JSON.stringify(selectedItems));
+    }
+  }, [selectedItems, isLoggedIn]);
+
+  // 로그인 상태 변경 시 즐겨찾기 처리
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setSelectedItems([]);
+      localStorage.removeItem("selectedHeritages");
+    } else {
+      const saved = localStorage.getItem("selectedHeritages");
+      if (saved) {
+        try {
+          setSelectedItems(JSON.parse(saved));
+        } catch (error) {
+          console.error("저장된 즐겨찾기 불러오기 실패:", error);
+          localStorage.removeItem("selectedHeritages");
+        }
+      }
+    }
+  }, [isLoggedIn]);
 
   // 디바운스 처리
   useEffect(() => {
@@ -67,33 +98,6 @@ const SearchPage = () => {
     return () => controller.abort();
   }, []);
 
-  // 로그인 상태 확인을 위한 useEffect 추가
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const response = await axios.get(
-            "http://localhost:8000/auth/verify",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setIsLoggedIn(response.data.isValid);
-        } else {
-          setIsLoggedIn(false);
-        }
-      } catch (error) {
-        console.error("로그인 상태 확인 중 오류 발생:", error);
-        setIsLoggedIn(false);
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
-
   // 검색 결과 메모이제이션
   const filteredResults = useMemo(() => {
     return heritageData.filter((item) =>
@@ -136,25 +140,40 @@ const SearchPage = () => {
     }
   };
 
-  const handleStarClick = (index) => {
-    if (!isLoggedIn) {
-      setError(
-        "로그인 후 사용하실 수 있습니다.\n회원가입 또는 로그인해주세요."
-      );
-      return;
-    }
+  const handleStarClick = useCallback(
+    (index) => {
+      if (!isLoggedIn) {
+        setError(
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
+        );
+        return;
+      }
 
-    setError("");
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.includes(index)
-        ? prevSelectedItems.filter((item) => item !== index)
-        : [...prevSelectedItems, index]
-    );
-  };
+      setSelectedItems((prev) => {
+        const isAlreadySelected = prev.includes(index);
+        const newItems = isAlreadySelected
+          ? prev.filter((item) => item !== index)
+          : [...prev, index];
 
-  const closeError = () => {
+        if (newItems.length > 0) {
+          localStorage.setItem("selectedHeritages", JSON.stringify(newItems));
+        } else {
+          localStorage.removeItem("selectedHeritages");
+        }
+        return newItems;
+      });
+    },
+    [isLoggedIn]
+  );
+
+  const closeError = useCallback(() => {
     setError("");
-  };
+  }, []);
+
+  const handleLoginClick = useCallback(() => {
+    navigate("/login", { state: { from: window.location.pathname } });
+    closeError();
+  }, [navigate, closeError]);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -194,8 +213,8 @@ const SearchPage = () => {
                     onClick={() => handleStarClick(index)}
                     className={`cursor-pointer mr-2.5 ${
                       selectedItems.includes(index)
-                        ? "text-[#FFD700]"
-                        : "text-[#DCDCDC]"
+                        ? "text-yellow-400"
+                        : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
@@ -237,7 +256,7 @@ const SearchPage = () => {
             </p>
             <div className="mt-6 flex gap-2.5">
               <button
-                onClick={() => (window.location.href = "/login")}
+                onClick={handleLoginClick}
                 className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 transition-colors"
               >
                 로그인하기
