@@ -19,12 +19,19 @@ const MyPage = () => {
     id: heritage.id || heritage.ccbaKdcd,
     name: heritage.ccbaMnm1,
     type: "문화재",
+    image: heritage.imageUrl || heritage.ccbaAsno,
+    location: heritage.ccbaLcad || "위치 정보 없음",
+    content: heritage.content || heritage.ccbaCtcdNm || "설명 정보 없음",
   }));
 
   const favoriteEvents = festivals.map((festival, index) => ({
     id: `event-${index}`,
     name: festival.programName,
     type: "행사",
+    image: festival.image || null,
+    location: festival.location || "위치 정보 없음",
+    date: `${festival.startDate || ""} ~ ${festival.endDate || ""}`,
+    content: festival.programContent || "설명 정보 없음",
   }));
 
   // 로그아웃 핸들러
@@ -66,11 +73,46 @@ const MyPage = () => {
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[300px] h-48 border-2 border-gray-200 rounded-xl flex flex-col justify-center items-center hover:border-blue-500 transition-colors duration-300"
+                      className="flex-none w-[300px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden"
                       key={item.id}
                     >
-                      <div className="text-xl font-medium text-gray-700">
-                        {item.name}
+                      <div className="w-full h-[200px] overflow-hidden">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = "/default-image.jpg"; // 기본 이미지 경로 설정
+                              e.target.onerror = null;
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-gray-500">이미지 없음</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4 w-full flex-1 flex flex-col">
+                        <h3 className="text-xl font-medium text-gray-700 mb-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2 flex-grow">
+                          <span className="font-medium">설명:</span>{" "}
+                          {item.content}
+                        </p>
+                        <div className="mt-auto">
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">위치:</span>{" "}
+                            {item.location}
+                          </p>
+                          {item.type === "행사" && item.date && (
+                            <p className="text-sm text-gray-600">
+                              <span className="font-medium">기간:</span>{" "}
+                              {item.date}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
