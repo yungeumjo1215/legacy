@@ -10,16 +10,17 @@ import { ToastContainer } from "react-toastify";
 import EventModal from "./EventModal";
 
 const REGIONS = [
-  { id: "all", name: "전체" },
-  { id: "seoul", name: "서울" },
-  { id: "incheon", name: "인천" },
-  { id: "gyeonggi", name: "경기도" },
-  { id: "gangwon", name: "강원도" },
-  { id: "jeolla", name: "전라도" },
-  { id: "chungcheong", name: "충청도" },
-  { id: "gyeongsang", name: "경상도" },
-  { id: "busan", name: "부산" },
-  { id: "jeju", name: "제주도" },
+  { id: "all", name: "전체", sido: null }, // 전체 보기
+  { id: "seoul", name: "서울", sido: "서울특별시" },
+  { id: "incheon", name: "인천", sido: "인천광역시" },
+  { id: "gyeonggi", name: "경기도", sido: "경기도" },
+  { id: "gangwon", name: "강원도", sido: "강원도" },
+  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
+  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
+  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
+  { id: "busan", name: "부산", sido: "부산광역시" },
+  { id: "ulsan", name: "울산", sido: "울산광역시" },
+  { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
 const formatValue = (value) => {
@@ -65,24 +66,26 @@ const parseYYYYMMDD = (dateArr) => {
 };
 
 const SearchBar = memo(({ value, onChange }) => (
-  <form
-    onSubmit={(e) => e.preventDefault()}
-    className="sm:flex-none md:flex-center flex justify-center sm:m-5 md:m-0 w-full max-w-full"
-  >
-    <input
-      type="text"
-      placeholder="행사명을 입력해주세요"
-      value={value}
-      onChange={onChange}
-      className="Event-sc rounded-s-[5px] flex-1 min-w-0 w-full md:max-w-[20rem]"
-    />
-    <button
-      type="submit"
-      className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap"
+  <div className="flex justify-end w-full">
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className="flex w-full sm:w-auto md:w-[400px]"
     >
-      검색
-    </button>
-  </form>
+      <input
+        type="text"
+        placeholder="행사명을 입력해주세요"
+        value={value}
+        onChange={onChange}
+        className="Event-sc rounded-s-[5px] flex-1 p-2"
+      />
+      <button
+        type="submit"
+        className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap"
+      >
+        검색
+      </button>
+    </form>
+  </div>
 ));
 
 const EventItem = memo(
@@ -193,42 +196,56 @@ const EventSchedule = () => {
           .includes(search.toLowerCase());
 
         let matchesRegion = selectedRegion === "all";
-        if (!matchesRegion && festival.location?.[0]) {
-          const location = festival.location[0].toLowerCase();
+
+        // Ensure sido is processed correctly
+        if (!matchesRegion && festival.sido) {
+          let regionSido;
+          if (Array.isArray(festival.sido)) {
+            // If `sido` is an array, use the first element
+            regionSido = festival.sido[0]?.toLowerCase() || "";
+          } else if (typeof festival.sido === "string") {
+            // If `sido` is a string, use it directly
+            regionSido = festival.sido.toLowerCase();
+          } else {
+            regionSido = ""; // Fallback for unexpected types
+          }
+
           switch (selectedRegion) {
             case "seoul":
-              matchesRegion = /서울|seoul/i.test(location);
+              matchesRegion = /서울|seoul/i.test(regionSido);
               break;
             case "incheon":
-              matchesRegion = /인천|incheon/i.test(location);
+              matchesRegion = /인천|incheon/i.test(regionSido);
               break;
             case "gyeonggi":
-              matchesRegion = /경기|gyeonggi/i.test(location);
+              matchesRegion = /경기|gyeonggi/i.test(regionSido);
               break;
             case "gangwon":
-              matchesRegion = /강원|gangwon/i.test(location);
+              matchesRegion = /강원|gangwon/i.test(regionSido);
               break;
             case "jeolla":
               matchesRegion = /전라|전북|전남|광주|jeolla|gwangju/i.test(
-                location
+                regionSido
               );
               break;
             case "chungcheong":
               matchesRegion = /충청|충북|충남|대전|chungcheong|daejeon/i.test(
-                location
+                regionSido
               );
               break;
             case "gyeongsang":
-              matchesRegion =
-                /경상|경북|경남|대구|울산|gyeongsang|daegu|ulsan/i.test(
-                  location
-                );
+              matchesRegion = /경상|경북|경남|대구|gyeongsang|daegu/i.test(
+                regionSido
+              );
               break;
             case "busan":
-              matchesRegion = /부산|busan/i.test(location);
+              matchesRegion = /부산|busan/i.test(regionSido);
+              break;
+            case "ulsan":
+              matchesRegion = /울산|ulsan/i.test(regionSido);
               break;
             case "jeju":
-              matchesRegion = /제주|jeju/i.test(location);
+              matchesRegion = /제주|jeju/i.test(regionSido);
               break;
             default:
               matchesRegion = false;
@@ -362,9 +379,6 @@ const EventSchedule = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="xl:flex xl:flex-row flex-col justify-between items-start gap-6">
-            <div className="xl:w-1/3 w-full">
-              <SearchBar value={search} onChange={handleSearchChange} />
-            </div>
             <div className="flex flex-wrap gap-2 xl:mt-[6.25rem] mt-4">
               <span className="SubFont text-xl flex items-center font-medium mr-2">
                 지역:
@@ -394,7 +408,9 @@ const EventSchedule = () => {
             </div>
           </div>
         </div>
-
+        <div className="xl:w-1/3 w-full mb-4 justify-end">
+          <SearchBar value={search} onChange={handleSearchChange} />
+        </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="MainFont md:text-3xl text-2xl font-semibold mb-6">
             {date.toLocaleDateString("ko-KR", {

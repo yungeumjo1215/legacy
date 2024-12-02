@@ -70,52 +70,58 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <h1 className="main-text">문화재 행사 일정</h1>
-      {visibleFestivals.length === 0 ? (
-        <p>표시할 축제 데이터가 없습니다.</p>
-      ) : (
-        <>
-          <button
-            className="arrow left"
-            onClick={goToPrevious}
-            aria-label="이전 축제"
-          >
-            &lt;
-          </button>
-          <div className="slider">
-            {visibleFestivals.map((festival, index) => (
-              <div
-                key={festival?.id || index}
-                className={`slide ${index === 1 ? "active" : ""}`}
-              >
-                <Link to={`/festival/${festival?.id || ""}`}>
-                  {festival?.image && festival.image !== "N/A" ? (
-                    <img
-                      src={festival.image}
-                      alt={festival?.programName || "Festival"}
-                      className="slider-image"
-                    />
-                  ) : (
-                    <div className="slider-placeholder">No Image</div>
-                  )}
-                </Link>
-                <div className="slider-textbox">
-                  <h2 className="slider-title">
-                    {festival?.programName || "Unknown Festival"}
-                  </h2>
+      <div className="flex flex-col items-center bg-gray-300 ">
+        <h1 className="MainFont">
+          문화재 행사 안내
+          <p className="SubFont ">전국 축제 행사 일정</p>
+        </h1>
+
+        {visibleFestivals.length === 0 ? (
+          <p>표시할 축제 데이터가 없습니다.</p>
+        ) : (
+          <>
+            <button
+              className="arrow left"
+              onClick={goToPrevious}
+              aria-label="이전 축제"
+            >
+              &lt;
+            </button>
+            <div className="slider">
+              {visibleFestivals.map((festival, index) => (
+                <div
+                  key={festival?.id || index}
+                  className={`slide ${index === 1 ? "active" : ""}`}
+                >
+                  <Link to={`/festival/${festival?.id || ""}`}>
+                    {festival?.mainImg ? (
+                      <img
+                        src={festival.mainImg}
+                        alt={festival?.programName || "축제 이미지"}
+                        className="slider-image"
+                      />
+                    ) : (
+                      <div className="no-image">이미지 없음</div>
+                    )}
+                    <div className="slider-textbox">
+                      <h2 className="slider-title">
+                        {festival?.programName || "Unknown Festival"}
+                      </h2>
+                    </div>
+                  </Link>
                 </div>
-              </div>
-            ))}
-          </div>
-          <button
-            className="arrow right"
-            onClick={goToNext}
-            aria-label="다음 축제"
-          >
-            &gt;
-          </button>
-        </>
-      )}
+              ))}
+            </div>
+            <button
+              className="arrow right"
+              onClick={goToNext}
+              aria-label="다음 축제"
+            >
+              &gt;
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 };

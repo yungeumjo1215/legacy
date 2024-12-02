@@ -1,134 +1,125 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+} from "../redux/slices/authSlice";
 import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(loginStart());
 
-    // 초기화
-    setError("");
-
-    // 필드 검증
-    if (!email.trim() || !password.trim()) {
-      setError("아이디와 비밀번호를 모두 입력해주세요."); // 필드 확인
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      setError("유효한 이메일 주소를 입력해주세요."); // 이메일 형식 검증
-      return;
-    }
+    console.log("로그인 시도:", formData);
 
     try {
-      setLoading(true); // 요청 시작 시 로딩 활성화
       const response = await axios.post(
-        "http://localhost:8000/account/create",
-        { email, password },
+        "http://localhost:8000/auth/login",
+        formData,
         {
           headers: {
-            "Content-Type": "application/json", // 명시적으로 Content-Type 추가
+            "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
-      console.log("Response received:", response.data);
-      alert(response.data.message || "로그인 성공!"); // 성공 메시지
-      setError(""); // 에러 초기화
-      setEmail(""); // 필드 초기화
-      setPassword(""); // 필드 초기화
-    } catch (error) {
-      console.error("Full Error Object:", error); // 전체 오류 객체 출력
 
-      if (error.response) {
-        // 서버가 응답했지만 상태 코드가 4xx/5xx인 경우
-        console.error("Error Response Status:", error.response.status); // 상태 코드 출력
-        console.error(
-          "Error Response Data:",
-          error.response.data || "No data returned"
-        ); // 데이터 확인
-        setError(error.response.data?.message || "문제가 발생했습니다.");
-      } else if (error.request) {
-        // 요청이 전송되었지만 서버로부터 응답이 없는 경우
-        console.error("No Response:", error.request);
-        setError("서버로부터 응답이 없습니다. 다시 시도해주세요.");
-      } else {
-        // 요청 설정 중 문제가 발생한 경우
-        console.error("Error Setting Up Request:", error.message);
-        setError("요청을 설정하는 중 문제가 발생했습니다.");
+      console.log("로그인 응답:", response.data);
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        dispatch(
+          loginSuccess({
+            user: response.data.user,
+            token: response.data.token,
+          })
+        );
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("로그인 에러:", err);
+      const errorMessage =
+        err.response?.data?.message || "로그인에 실패했습니다.";
+      dispatch(loginFailure(errorMessage));
+
+      if (err.response?.status === 401) {
+        dispatch(loginFailure("이메일 또는 비밀번호가 올바르지 않습니다."));
+      } else if (err.response?.status === 404) {
+        dispatch(loginFailure("존재하지 않는 사용자입니다."));
+      } else if (err.code === "ECONNREFUSED") {
+        dispatch(
+          loginFailure("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.")
+        );
       }
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
-
-        {/* 에러 메시지 출력 */}
-        {error && (
-          <div className="bg-red-100 text-red-600 p-2 mb-4 rounded">
-            {error}
+    <div className="min-h-screen pt-20 flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            로그인
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <input
+                name="email"
+                type="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="이메일 주소"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                name="password"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="비밀번호"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              아이디 (이메일)
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="이메일 입력"
-              required
-            />
+              {loading ? "로그인 중..." : "로그인"}
+            </button>
           </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              비밀번호
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="비밀번호 입력"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading} // 로딩 중 버튼 비활성화
-            className={`w-full px-4 py-2 rounded-md text-white focus:outline-none ${
-              loading
-                ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {loading ? "로그인 중..." : "로그인"}{" "}
-            {/* 로딩 상태에 따른 텍스트 */}
-          </button>
         </form>
       </div>
     </div>
