@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { useSelector } from "react-redux";
@@ -39,6 +39,37 @@ const MyPage = () => {
     date: `${festival.startDate || ""} ~ ${festival.endDate || ""}`,
     content: festival.programContent || "설명 정보 없음",
   }));
+
+  // 상태 복원
+  useEffect(() => {
+    const savedHeritage = localStorage.getItem("selectedHeritage");
+    const savedEvent = localStorage.getItem("selectedEvent");
+
+    if (savedHeritage) {
+      setSelectedHeritage(JSON.parse(savedHeritage));
+    }
+    if (savedEvent) {
+      setSelectedEvent(JSON.parse(savedEvent));
+    }
+  }, []);
+
+  // 상태 저장
+  useEffect(() => {
+    if (selectedHeritage) {
+      localStorage.setItem(
+        "selectedHeritage",
+        JSON.stringify(selectedHeritage)
+      );
+    } else {
+      localStorage.removeItem("selectedHeritage");
+    }
+
+    if (selectedEvent) {
+      localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
+    } else {
+      localStorage.removeItem("selectedEvent");
+    }
+  }, [selectedHeritage, selectedEvent]);
 
   // 로그아웃 핸들러
   const handleLogout = () => {
