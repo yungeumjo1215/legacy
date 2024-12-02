@@ -8,18 +8,21 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import EventModal from "./EventModal";
+import "../components/EventSchedule.css";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null }, // 전체 보기
   { id: "seoul", name: "서울", sido: "서울특별시" },
   { id: "incheon", name: "인천", sido: "인천광역시" },
-  { id: "gyeonggi", name: "경기도", sido: "경기도" },
-  { id: "gangwon", name: "강원도", sido: "강원도" },
-  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
-  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
-  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
+
   { id: "busan", name: "부산", sido: "부산광역시" },
   { id: "ulsan", name: "울산", sido: "울산광역시" },
+  { id: "gyeonggi", name: "경기도", sido: "경기도" },
+  { id: "gangwon", name: "강원도", sido: "강원도" },
+  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
+  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
+  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
+
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
@@ -379,38 +382,48 @@ const EventSchedule = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="xl:flex xl:flex-row flex-col justify-between items-start gap-6">
-            <div className="flex flex-wrap gap-2 xl:mt-[6.25rem] mt-4">
-              <span className="SubFont text-xl flex items-center font-medium mr-2">
-                지역:
-              </span>
-              {REGIONS.map((region) => (
-                <button
-                  key={region.id}
-                  onClick={() => handleRegionSelect(region.id)}
-                  className={`SubFont px-4 py-2 rounded-md text-lg transition-colors
-                    ${
-                      selectedRegion === region.id
-                        ? "bg-blue-800 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                >
-                  {region.name}
-                </button>
-              ))}
+            <div
+              className="xl:w-1/2 w-full flex flex-wrap justify-center sm:justify-start items-center 
+                          sm:ml-4 gap-2 sm:gap-4 xl:mt-[6.25rem] mt-4"
+            >
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 ">
+                {REGIONS.map((region) => (
+                  <button
+                    key={region.id}
+                    onClick={() => handleRegionSelect(region.id)}
+                    className={`SubFont px-2 sm:px-4 py-1 sm:py-2 rounded-md text-base sm:text-lg transition-colors
+                      ${
+                        selectedRegion === region.id
+                          ? "bg-blue-800 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                  >
+                    {region.name}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="xl:w-1/3 w-full sm:flex flex justify-center mt-6 xl:mt-0">
+            <div className="xl:w-3/5 w-full sm:flex flex justify-center mt-6 xl:mt-0">
               <Calendar
                 onChange={setDate}
                 value={date}
-                className="w-full rounded-lg shadow-sm"
+                className="w-full rounded-lg shadow-sm calendar-custom"
                 locale="ko-KR"
               />
             </div>
           </div>
         </div>
-        <div className="xl:w-1/3 w-full mb-4 justify-end">
-          <SearchBar value={search} onChange={handleSearchChange} />
+        <div className="flex flex-col sm:flex-row sm:justify-between">
+          <div className="w-full sm:w-1/2 mb-4 flex justify-start">
+            <p className="SubFont text-2xl">
+              Total: {formattedFestivals.length}건
+            </p>
+          </div>
+          <div className="w-full sm:w-1/3 mb-4 sm:ml-auto">
+            <SearchBar value={search} onChange={handleSearchChange} />
+          </div>
         </div>
+
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="MainFont md:text-3xl text-2xl  mb-6">
             {date.toLocaleDateString("ko-KR", {
