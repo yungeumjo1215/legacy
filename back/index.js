@@ -6,7 +6,7 @@ const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
 const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
-const eventController = require("./routes/eventRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 
 const PORT = 8000;
 const app = express();
@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
-app.use("/event", eventController);
+app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
 
 // Task related thingy
