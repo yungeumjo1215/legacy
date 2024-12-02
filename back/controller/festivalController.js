@@ -41,13 +41,13 @@ const fetchFestivalData = async (year, month) => {
     }));
 
     // Slice the transformed data to only include the first item
-    return transformedItems.slice(0, 1);
+    return transformedItems.slice(0, 10);
   } catch (error) {
     console.error("Error in fetchFestivalData:", error.message);
     throw new Error(`Failed to fetch festival data for ${year}-${month}`);
   }
 };
-
+// ------------------------------------------------------------ 위 슬라이스 위 에서 제한함
 /**
  * Festival List API Handler
  */
@@ -57,15 +57,7 @@ const getFestivalList = async (req, res) => {
     const year = req.query.year || new Date().getFullYear(); // Current year
     const month = req.query.month || 11; // Default to November (11)
 
-    const allData = await fetchFestivalData(year, month);
-
-<<<<<<< HEAD
-    const data = allData.slice(0);
-=======
-    data = allData.slice(0, 1);
-    // const data = allData; //위 코드 때문에 홍보행사 데이터가 안 들어와서 주석으로 추가 해놨습니다.
->>>>>>> a009c58d8f6f5ffd0e3dbef26362534d6e0f16f1
-
+    const data = await fetchFestivalData(year, month);
     res.status(200).json({
       year,
       month,

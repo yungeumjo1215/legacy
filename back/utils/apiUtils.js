@@ -19,7 +19,9 @@ const heritageInfo_Url = (ccbaKdcd, ccbaAsno, ccbaCtcd) =>
  * @param {string} searchMonth - The month to search for festivals.
  * @returns {string} - The constructed URL for the festival API.
  */
-const festivalInfo_Url = (searchYear, searchMonth) =>
-  `${FESTIVAL_API_URL}?searchYear=${searchYear}&searchMonth=${searchMonth}`;
+// const festivalInfo_Url = (searchYear, searchMonth) =>
+//   `${FESTIVAL_API_URL}?searchYear=${searchYear}&searchMonth=${searchMonth}`;
+const festivalInfo_Url = (searchYear, searchMonth, limit = 3) =>
+  `${FESTIVAL_API_URL}?searchYear=${searchYear}&searchMonth=${searchMonth}&limit=${limit}`;
 
 module.exports = { heritageInfo_Url, festivalInfo_Url };
