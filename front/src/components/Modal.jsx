@@ -20,7 +20,7 @@ const Modal = ({ item, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-[28px] m-0 font-bold break-words flex-1 pr-5">
+          <h2 className="text-[28px] m-0 MainFont break-words flex-1 pr-5">
             {item.ccbaMnm1}
           </h2>
           <button
@@ -40,32 +40,17 @@ const Modal = ({ item, onClose }) => {
           />
         )}
 
-        <p className="text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed">
+        <p className="SubFont text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed">
           {item.content}
         </p>
 
-        <div className="text-base mb-2.5 flex flex-col gap-2.5">
+        <div className="SubFont text-base mb-2.5 flex flex-col gap-2.5">
           <p>
-            <strong>위치:</strong> {item.ccbaLcad}
+            <strong className="MainFont">위치:</strong> {item.ccbaLcad}
           </p>
           <p>
-            <strong>시대:</strong> {item.ccceName}
+            <strong className="MainFont">시대:</strong> {item.ccceName}
           </p>
-          {item.ccmaName && (
-            <p>
-              <strong>문화재 종류:</strong> {item.ccmaName}
-            </p>
-          )}
-          {item.ccbaQuan && (
-            <p>
-              <strong>수량:</strong> {item.ccbaQuan}
-            </p>
-          )}
-          {item.ccbaAsNo && (
-            <p>
-              <strong>지정번호:</strong> {item.ccbaAsNo}
-            </p>
-          )}
         </div>
       </div>
     </div>

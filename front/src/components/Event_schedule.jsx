@@ -395,7 +395,7 @@ const EventSchedule = () => {
                       ${
                         selectedRegion === region.id
                           ? "bg-blue-800 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          : "bg-gray-100 text-black hover:bg-gray-200"
                       }`}
                   >
                     <div className="flex items-center gap-2 SubFont">

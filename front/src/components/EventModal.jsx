@@ -13,9 +13,9 @@ const EventModal = ({ event, onClose }) => {
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                      bg-white rounded-lg shadow-xl z-50 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
       >
-        <div className="">
+        <div>
           <div className="flex justify-between items-center mb-[8px]">
-            <h2 className="MainFont text-2xl font-bold">{event.programName}</h2>
+            <h2 className="MainFont text-2xl">{event.programName}</h2>
             <button
               onClick={onClose}
               className="bg-[#121a35] text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
@@ -23,9 +23,9 @@ const EventModal = ({ event, onClose }) => {
               X
             </button>
           </div>
-          <div className="text-2xl space-y-3">
-            <div className="SubFont border border-gray-700 w-full p-4 rounded-md text-gray-950 whitespace-pre-line overflow-hidden">
-              <p className="SubFont">{event.programContent}</p>
+          <div className="SubFont text-2xl space-y-3">
+            <div className="border border-gray-700 w-full p-4 rounded-md text-gray-950 whitespace-pre-line overflow-hidden text-[20px]">
+              <p>{event.programContent}</p>
             </div>
 
             <div className="SubFont grid grid-cols-2 gap-4 text-lg">
