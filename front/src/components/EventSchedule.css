@@ -42,3 +42,32 @@
 .Event-information {
   margin-top: 1.875rem !important;
 }
+
+@media screen and (max-width: 640px) {
+  .calendar-custom {
+    width: 100% !important;
+    font-size: 0.875rem !important;
+  }
+
+  .calendar-custom button {
+    padding: 0.5rem !important;
+  }
+
+  .react-calendar__tile {
+    height: 34px !important;
+    padding: 0.25rem !important;
+  }
+
+  .react-calendar__navigation button {
+    padding: 0.25rem !important;
+    min-width: 30px !important;
+  }
+
+  .react-calendar__month-view__weekdays {
+    font-size: 0.75rem !important;
+  }
+
+  .react-calendar__navigation__label {
+    font-size: 0.875rem !important;
+  }
+}
