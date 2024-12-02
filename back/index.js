@@ -12,8 +12,14 @@ const app = express();
 
 dotenv.config();
 
-app.use(cors());
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // 프론트엔드 도메인
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("node depoly Test");

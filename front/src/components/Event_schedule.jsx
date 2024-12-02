@@ -15,10 +15,11 @@ const REGIONS = [
   { id: "incheon", name: "인천", sido: "인천광역시" },
   { id: "gyeonggi", name: "경기도", sido: "경기도" },
   { id: "gangwon", name: "강원도", sido: "강원도" },
-  { id: "jeolla", name: "전라도", sido: "전라북도" }, // 전라남도 포함 가능
-  { id: "chungcheong", name: "충청도", sido: "충청북도" }, // 충청남도 포함 가능
-  { id: "gyeongsang", name: "경상도", sido: "경상북도" }, // 경상남도 포함 가능
+  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
+  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
+  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
   { id: "busan", name: "부산", sido: "부산광역시" },
+  { id: "ulsan", name: "울산", sido: "울산광역시" },
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
@@ -65,22 +66,26 @@ const parseYYYYMMDD = (dateArr) => {
 };
 
 const SearchBar = memo(({ value, onChange }) => (
-  <form
-    onSubmit={(e) => e.preventDefault()}
-    className="sm:flex-none md:flex-center flex justify-center sm:m-5 md:m-0 w-full max-w-full">
-    <input
-      type="text"
-      placeholder="행사명을 입력해주세요"
-      value={value}
-      onChange={onChange}
-      className="Event-sc rounded-s-[5px] flex-1 min-w-0 w-full md:max-w-[20rem]"
-    />
-    <button
-      type="submit"
-      className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap">
-      검색
-    </button>
-  </form>
+  <div className="flex justify-center w-full">
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className="flex w-full sm:w-auto md:w-[400px]"
+    >
+      <input
+        type="text"
+        placeholder="행사명을 입력해주세요"
+        value={value}
+        onChange={onChange}
+        className="Event-sc rounded-s-[5px] flex-1 p-2"
+      />
+      <button
+        type="submit"
+        className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap"
+      >
+        검색
+      </button>
+    </form>
+  </div>
 ));
 
 const EventItem = memo(
@@ -88,7 +93,8 @@ const EventItem = memo(
     <li className="pb-2">
       <div
         className="border p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-        onClick={() => onEventClick(event)}>
+        onClick={() => onEventClick(event)}
+      >
         <div className="flex items-start">
           <button
             onClick={(e) => {
@@ -101,11 +107,12 @@ const EventItem = memo(
             tabIndex={0}
             aria-label={`${event.programName} 즐겨찾기 ${
               isStarred ? "제거" : "추가"
-            }`}>
+            }`}
+          >
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
-            <h3 className="font-semibold text-2xl mb-2">
+            <h3 className="MainFont text-2xl mb-2">
               {formatValue(event.programName)}
             </h3>
             <p className="SubFont text-lg mb-2">
@@ -227,13 +234,15 @@ const EventSchedule = () => {
               );
               break;
             case "gyeongsang":
-              matchesRegion =
-                /경상|경북|경남|대구|울산|gyeongsang|daegu|ulsan/i.test(
-                  regionSido
-                );
+              matchesRegion = /경상|경북|경남|대구|gyeongsang|daegu/i.test(
+                regionSido
+              );
               break;
             case "busan":
               matchesRegion = /부산|busan/i.test(regionSido);
+              break;
+            case "ulsan":
+              matchesRegion = /울산|ulsan/i.test(regionSido);
               break;
             case "jeju":
               matchesRegion = /제주|jeju/i.test(regionSido);
@@ -364,15 +373,12 @@ const EventSchedule = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl font-bold text-gray-900 mb-8">
+        <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl text-gray-900 mb-8">
           문화재 행사 정보
         </h1>
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="xl:flex xl:flex-row flex-col justify-between items-start gap-6">
-            <div className="xl:w-1/3 w-full">
-              <SearchBar value={search} onChange={handleSearchChange} />
-            </div>
             <div className="flex flex-wrap gap-2 xl:mt-[6.25rem] mt-4">
               <span className="SubFont text-xl flex items-center font-medium mr-2">
                 지역:
@@ -381,12 +387,13 @@ const EventSchedule = () => {
                 <button
                   key={region.id}
                   onClick={() => handleRegionSelect(region.id)}
-                  className={`SubFont px-3 py-1 rounded-full text-lg transition-colors
+                  className={`SubFont px-4 py-2 rounded-md text-lg transition-colors
                     ${
                       selectedRegion === region.id
                         ? "bg-blue-800 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}>
+                    }`}
+                >
                   {region.name}
                 </button>
               ))}
@@ -401,9 +408,11 @@ const EventSchedule = () => {
             </div>
           </div>
         </div>
-
+        <div className="xl:w-1/3 w-full mb-4 justify-end">
+          <SearchBar value={search} onChange={handleSearchChange} />
+        </div>
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="MainFont md:text-3xl text-2xl font-semibold mb-6">
+          <h2 className="MainFont md:text-3xl text-2xl  mb-6">
             {date.toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
@@ -432,7 +441,8 @@ const EventSchedule = () => {
               />
               <div
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                           bg-white rounded-lg shadow-xl z-50 w-96 p-6">
+                           bg-white rounded-lg shadow-xl z-50 w-96 p-6"
+              >
                 <p className="text-lg font-semibold text-center mb-6 whitespace-pre-line">
                   {error}
                 </p>
@@ -440,13 +450,15 @@ const EventSchedule = () => {
                   <button
                     onClick={handleLoginClick}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 
-                             transition-colors duration-200">
+                             transition-colors duration-200"
+                  >
                     로그인하기
                   </button>
                   <button
                     onClick={closeError}
                     className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 
-                             transition-colors duration-200">
+                             transition-colors duration-200"
+                  >
                     닫기
                   </button>
                 </div>
