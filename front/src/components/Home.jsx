@@ -81,7 +81,7 @@ const Home = () => {
         </div>
       </div>
       <div className="flex flex-col items-center bg-gray-300 ">
-        <h1 className="MainFont">
+        <h1 className="main-text">
           문화재 행사 안내
           <p className="SubFont ">전국 축제 행사 일정</p>
         </h1>
@@ -94,20 +94,21 @@ const Home = () => {
               modules={[Navigation, Pagination]}
               spaceBetween={25}
               slidesPerView={3}
+              navigation={{
+                prevEl: prevRef.current,
+                nextEl: nextRef.current,
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
-                dynamicMainBullets: 7,
+                dynamicMainBullets: 6,
                 el: ".pagination-bullets",
               }}
-              onSlideChange={() => console.log("slide change")}
-              onSwiper={(swiper) => {
+              onBeforeInit={(swiper) => {
                 swiper.params.navigation.prevEl = prevRef.current;
                 swiper.params.navigation.nextEl = nextRef.current;
-                swiper.navigation.init();
-                swiper.navigation.update();
               }}
-              className="relative py-10"
+              className="relative py-10 pb-20"
             >
               {event.slice(0, 6).map((event) => (
                 <SwiperSlide key={event.title}>
@@ -115,7 +116,7 @@ const Home = () => {
                     to={`/event/${event.title}`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
-                    <div className="relative h-[400px]">
+                    <div className="relative h-[500px]">
                       {event.imageUrl ? (
                         <img
                           src={event.imageUrl}
@@ -147,30 +148,31 @@ const Home = () => {
                   </Link>
                 </SwiperSlide>
               ))}
-              <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center pb-4">
-                <div className="pagination-bullets-container flex items-center justify-center w-full">
-                  <button
-                    ref={prevRef}
-                    className="bg-white rounded-full p-2 shadow-lg z-10 mr-15 translate-y-2"
-                    aria-label="이전 축제"
-                  >
-                    &lt;
-                  </button>
-                  <div className="pagination-bullets">
-                    <div className="swiper-pagination"></div>
-                  </div>
-                  <button
-                    ref={nextRef}
-                    className="bg-white rounded-full p-2 shadow-lg z-10 ml-1 translate-y-2"
-                    aria-label="다음 축제"
-                  >
-                    &gt;
-                  </button>
-                </div>
-              </div>
+              <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center pb-4"></div>
             </Swiper>
           </div>
         )}
+      </div>
+      <div className="bg-gray-300 flex items-center justify-center w-full">
+        <div className="pagination-bullets-container relative w-full max-w-6xl mx-auto px-4 py-8">
+          <button
+            ref={prevRef}
+            className="bg-white rounded-full p-2 shadow-lg z-10"
+            aria-label="이전 축제"
+          >
+            &lt;
+          </button>
+          <div className="pagination-bullets">
+            <div className="swiper-pagination"></div>
+          </div>
+          <button
+            ref={nextRef}
+            className="bg-white rounded-full p-2 shadow-lg z-10"
+            aria-label="다음 축제"
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </div>
   );
