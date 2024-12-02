@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
@@ -19,6 +19,27 @@ const Navbar = () => {
 
   // Redux store에서 로그인 상태 가져오기
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const modalRef = useRef(null);
+  const handleCloseModal = (e) => {
+    if (
+      isMobileMenuOpen &&
+      modalRef.current &&
+      !modalRef.current.contains(e.target)
+    ) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("click", handleCloseModal);
+    return () => {
+      window.removeEventListener("click", handleCloseModal);
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleMenuButtonClick = (e) => {
+    e.stopPropagation(); // 이벤트 전파 중단
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   // 네비게이션 항목 정의
   const navigationItems = [
@@ -147,7 +168,7 @@ const Navbar = () => {
           <div className="flex items-center md:hidden">
             <button
               className="p-2 rounded-md text-white focus:outline-none"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={handleMenuButtonClick} // onClick 핸들러 변경
             >
               {isMobileMenuOpen ? (
                 <XIcon className="h-6 w-6" />
@@ -161,7 +182,7 @@ const Navbar = () => {
 
       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-blue-800">
+        <div className="md:hidden bg-blue-800" ref={modalRef}>
           <div className="pt-2 pb-3 space-y-1">
             {navigationItems.map((item) => (
               <Link
