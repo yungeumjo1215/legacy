@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/slices/authSlice";
 import {
   UserCircleIcon,
   LogInIcon,
@@ -10,10 +12,13 @@ import {
 import logo_w from "../assets/logo_w.png";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Redux store에서 로그인 상태 가져오기
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // 네비게이션 항목 정의
   const navigationItems = [
@@ -26,7 +31,8 @@ const Navbar = () => {
   // 로그인/로그아웃 처리
   const handleLoginLogout = () => {
     if (isLoggedIn) {
-      setIsLoggedIn(false);
+      dispatch(logout());
+      localStorage.removeItem("token");
       navigate("/");
     } else {
       navigate("/login");
@@ -45,14 +51,14 @@ const Navbar = () => {
         <>
           <Link
             to="/mypage"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
           >
             {!isMobile && <UserCircleIcon className="h-4 w-4 mr-2" />}
             마이페이지
           </Link>
           <button
             onClick={handleLoginLogout}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
           >
             {!isMobile && <LogOutIcon className="h-4 w-4 mr-2" />}
             로그아웃

@@ -35,13 +35,11 @@ const fetchFestivalData = async (year, month) => {
       location: item.subDesc || "N/A",
       contact: item.contact || "N/A",
       sido: item.sido || "N/A",
-      image: item.fileNm || "N/A",
-      targetAudience: item.subDesc1 || "N/A",
-      additionalInfo: `${item.subDesc2 || "N/A"}, ${item.subDesc_3 || "N/A"}`,
+      targetAudience: item.subDesc_2 || "N/A",
     }));
 
     // Slice the transformed data to only include the first item
-    return transformedItems.slice(0, 10);
+    return transformedItems.slice(0);
   } catch (error) {
     console.error("Error in fetchFestivalData:", error.message);
     throw new Error(`Failed to fetch festival data for ${year}-${month}`);
@@ -55,7 +53,7 @@ const getFestivalList = async (req, res) => {
   try {
     // Use default values if query parameters are missing
     const year = req.query.year || new Date().getFullYear(); // Current year
-    const month = req.query.month || 11; // Default to November (11)
+    const month = req.query.month || new Date().getMonth(); // Default to November 제한품 (11)
 
     const data = await fetchFestivalData(year, month);
     res.status(200).json({

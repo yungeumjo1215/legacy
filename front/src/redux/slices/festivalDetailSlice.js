@@ -22,11 +22,7 @@ export const fetchFestivalData = createAsyncThunk(
           location: item.location || item.subDesc,
           contact: item.contact,
           sido: item.sido,
-          image: item.image || item.fileNm,
-          targetAudience: item.targetAudience || item.subDesc1,
-          additionalInfo:
-            item.additionalInfo ||
-            `${item.subDesc2 || ""}, ${item.subDesc_3 || ""}`,
+          targetAudience: item.targetAudience || item.subDesc_2,
         }));
       }
       return [];

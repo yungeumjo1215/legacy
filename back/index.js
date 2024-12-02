@@ -6,14 +6,21 @@ const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
 const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
+const eventController = require("./routes/eventRoutes");
 
 const PORT = 8000;
 const app = express();
 
 dotenv.config();
 
-app.use(cors());
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // 프론트엔드 도메인
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("node depoly Test");
@@ -23,7 +30,7 @@ app.get("/", (req, res) => {
 app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
-
+app.use("/event", eventController);
 app.use("/account", accountRoutes);
 
 // Task related thingy

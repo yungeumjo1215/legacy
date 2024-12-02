@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -16,30 +17,51 @@ const Signup = () => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, confirmPassword } = form;
 
-    // 입력값 검증
-    if (!name || !email || !password || !confirmPassword) {
-      setError("모든 필드를 입력해주세요.");
-      return;
+    try {
+      // API 호출 전 로딩 상태 표시 가능
+      setError("");
+
+      const response = await axios.post(
+        "http://localhost:8000/account/create",
+        {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        }
+      );
+
+      console.log("서버 응답:", response); // 디버깅용
+
+      if (response.data.success) {
+        alert("회원가입이 완료되었습니다!");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("회원가입 에러:", error); // 디버깅용
+
+      if (error.response) {
+        // 서버가 응답을 반환한 경우
+        if (error.response.status === 409) {
+          setError("이미 등록된 이메일입니다.");
+        } else if (error.response.status === 400) {
+          setError("입력하신 정보가 유효하지 않습니다.");
+        } else {
+          setError(
+            error.response.data.message ||
+              "회원가입 처리 중 오류가 발생했습니다."
+          );
+        }
+      } else if (error.request) {
+        // 서버에 요청이 도달하지 못한 경우
+        setError("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+      } else {
+        // 요청 설정 중 문제가 발생한 경우
+        setError("요청 처리 중 오류가 발생했습니다.");
+      }
     }
-
-    if (!isValidEmail(email)) {
-      setError("유효한 이메일 주소를 입력해주세요.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    // 회원가입 로직 (예: API 요청)
-    console.log("회원가입 정보:", form);
-    alert("회원가입이 완료되었습니다!");
-    navigate("/login"); // 회원가입 성공 후 로그인 페이지로 이동
   };
 
   const handleChange = (e) => {
@@ -62,7 +84,8 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700">
+              className="block text-sm font-medium text-gray-700"
+            >
               이름
             </label>
             <input
@@ -80,7 +103,8 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700">
+              className="block text-sm font-medium text-gray-700"
+            >
               이메일
             </label>
             <input
@@ -98,7 +122,8 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700">
+              className="block text-sm font-medium text-gray-700"
+            >
               비밀번호
             </label>
             <input
@@ -116,7 +141,8 @@ const Signup = () => {
           <div className="mb-6">
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700">
+              className="block text-sm font-medium text-gray-700"
+            >
               비밀번호 확인
             </label>
             <input
@@ -133,7 +159,8 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none">
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none"
+          >
             회원가입
           </button>
         </form>
