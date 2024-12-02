@@ -130,7 +130,7 @@ const Navbar = () => {
                 className={`px-3 py-2 rounded-md text-base font-medium ${
                   location.pathname === item.path
                     ? "bg-blue-700 text-white"
-                    : "text-gray-300 hover:text-white hover:bg-blue-700"
+                    : "text-white hover:bg-blue-700"
                 }`}
               >
                 {item.name}
@@ -146,7 +146,7 @@ const Navbar = () => {
           {/* 모바일 메뉴 버튼 */}
           <div className="flex items-center md:hidden">
             <button
-              className="p-2 rounded-md text-gray-300 hover:text-white focus:outline-none"
+              className="p-2 rounded-md text-white focus:outline-none"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -167,7 +167,7 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-blue-700"
+                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-blue-700"
               >
                 {item.name}
               </Link>
