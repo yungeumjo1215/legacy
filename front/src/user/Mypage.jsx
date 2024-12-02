@@ -173,7 +173,7 @@ const MyPage = () => {
                         )}
                       </div>
                       <div className="p-3 w-full flex-1 flex flex-col">
-                        <h3 className="text-lg font-medium text-gray-700 mb-1 truncate">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
                           {item.name}
                         </h3>
                         <div className="flex-1 min-h-0">
