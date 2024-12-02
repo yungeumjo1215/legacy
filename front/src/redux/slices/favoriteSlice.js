@@ -24,17 +24,27 @@ const favoriteSlice = createSlice({
   reducers: {
     addFavorite: (state, action) => {
       if (action.payload.type === "event") {
-        state.festivals.push(action.payload);
-        localStorage.setItem(
-          "favoriteFestivals",
-          JSON.stringify(state.festivals)
+        const exists = state.festivals.some(
+          (festival) => festival.programName === action.payload.programName
         );
+        if (!exists) {
+          state.festivals.push(action.payload);
+          localStorage.setItem(
+            "favoriteFestivals",
+            JSON.stringify(state.festivals)
+          );
+        }
       } else {
-        state.heritages.push(action.payload);
-        localStorage.setItem(
-          "favoriteHeritages",
-          JSON.stringify(state.heritages)
+        const exists = state.heritages.some(
+          (heritage) => heritage.id === action.payload.id
         );
+        if (!exists) {
+          state.heritages.push(action.payload);
+          localStorage.setItem(
+            "favoriteHeritages",
+            JSON.stringify(state.heritages)
+          );
+        }
       }
     },
     removeFavorite: (state, action) => {

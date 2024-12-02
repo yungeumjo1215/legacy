@@ -1,6 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const Modal = ({ item, onClose }) => {
+  const dispatch = useDispatch();
+  const { heritages } = useSelector((state) => state.favorites);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const isFavorite = heritages.some(
+    (heritage) => heritage.ccbaMnm1 === item.ccbaMnm1
+  );
+
+  const handleFavoriteClick = () => {
+    if (!isLoggedIn) {
+      setAlertMessage("로그인이 필요한 서비스입니다.");
+      return;
+    }
+
+    if (isFavorite) {
+      dispatch(
+        removeFavorite({
+          id: item.ccbaKdcd,
+          type: "heritage",
+        })
+      );
+      setAlertMessage("즐겨찾기가 해제되었습니다.");
+    } else {
+      dispatch(
+        addFavorite({
+          id: item.ccbaKdcd,
+          type: "heritage",
+          ccbaMnm1: item.ccbaMnm1,
+          imageUrl: item.imageUrl,
+          content: item.content,
+          ccbaLcad: item.ccbaLcad,
+          ccceName: item.ccceName,
+        })
+      );
+      setAlertMessage("즐겨찾기에 추가되었습니다.");
+    }
+  };
+
+  const closeAlert = () => {
+    setAlertMessage("");
+  };
+
   const handleImageError = (e) => {
     e.target.src = "/default-image.jpg";
     e.target.alt = "이미지를 불러올 수 없습니다";
@@ -23,12 +69,20 @@ const Modal = ({ item, onClose }) => {
           <h2 className="text-[28px] m-0 MainFont break-words flex-1 pr-5">
             {item.ccbaMnm1}
           </h2>
-          <button
-            onClick={onClose}
-            className="bg-[#121a35] text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
-          >
-            X
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleFavoriteClick}
+              className="text-2xl text-yellow-500 hover:text-yellow-600"
+            >
+              {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-[#121a35] text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
+            >
+              X
+            </button>
+          </div>
         </div>
 
         {item.imageUrl && (
@@ -52,6 +106,22 @@ const Modal = ({ item, onClose }) => {
             <strong className="MainFont">시대:</strong> {item.ccceName}
           </p>
         </div>
+
+        {alertMessage && (
+          <div className="fixed inset-0 bg-black/50 z-[10001] flex items-center justify-center">
+            <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+              <p className="text-center text-lg mb-4">{alertMessage}</p>
+              <div className="flex justify-center">
+                <button
+                  onClick={closeAlert}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  확인
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
