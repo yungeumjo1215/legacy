@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import axios from "../api/axios";
-import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null }, // 전체 보기
@@ -172,7 +171,10 @@ const EventSchedule = () => {
   const { items: favorites } = useSelector((state) => state.favorites);
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const saved = localStorage.getItem("selectedFestivals");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [error, setError] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -182,13 +184,6 @@ const EventSchedule = () => {
     const month = date.getMonth() + 1;
     dispatch(fetchFestivalData({ year, month }));
   }, [date, dispatch]);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const saved = localStorage.getItem("selectedFestivals");
-      setSelectedItems(saved ? JSON.parse(saved) : []);
-    }
-  }, [isLoggedIn]);
 
   const filteredFestivals = useMemo(() => {
     if (!Array.isArray(festivalList)) return [];
@@ -311,17 +306,23 @@ const EventSchedule = () => {
       return;
     }
 
-    if (selectedItems.includes(eventName)) {
-      dispatch(removeFavorite({ eventName }));
-      setSelectedItems((prev) => prev.filter((item) => item !== eventName));
+    const savedFavorites = localStorage.getItem("selectedFestivals");
+    const currentFavorites = savedFavorites ? JSON.parse(savedFavorites) : [];
+
+    let updatedFavorites;
+    if (currentFavorites.includes(eventName)) {
+      // 즐겨찾기 해제
+      updatedFavorites = currentFavorites.filter((item) => item !== eventName);
       toast.success("즐겨찾기가 해제되었습니다.");
     } else {
-      dispatch(addFavorite({ eventName }));
-      setSelectedItems((prev) => [...prev, eventName]);
+      // 즐겨찾기 추가
+      updatedFavorites = [...currentFavorites, eventName];
       toast.success("즐겨찾기에 추가되었습니다.");
     }
 
-    localStorage.setItem("selectedFestivals", JSON.stringify(selectedItems));
+    // localStorage 업데이트
+    localStorage.setItem("selectedFestivals", JSON.stringify(updatedFavorites));
+    setSelectedItems(updatedFavorites);
   };
 
   const handleEventClick = useCallback((event) => {
