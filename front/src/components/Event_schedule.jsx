@@ -66,7 +66,7 @@ const parseYYYYMMDD = (dateArr) => {
 };
 
 const SearchBar = memo(({ value, onChange }) => (
-  <div className="flex justify-end w-full">
+  <div className="flex justify-center w-full">
     <form
       onSubmit={(e) => e.preventDefault()}
       className="flex w-full sm:w-auto md:w-[400px]"
@@ -112,7 +112,7 @@ const EventItem = memo(
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
-            <h3 className="font-semibold text-2xl mb-2">
+            <h3 className="MainFont text-2xl mb-2">
               {formatValue(event.programName)}
             </h3>
             <p className="SubFont text-lg mb-2">
@@ -373,7 +373,7 @@ const EventSchedule = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl font-bold text-gray-900 mb-8">
+        <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl text-gray-900 mb-8">
           문화재 행사 정보
         </h1>
 
@@ -387,7 +387,7 @@ const EventSchedule = () => {
                 <button
                   key={region.id}
                   onClick={() => handleRegionSelect(region.id)}
-                  className={`SubFont px-3 py-1 rounded-full text-lg transition-colors
+                  className={`SubFont px-4 py-2 rounded-md text-lg transition-colors
                     ${
                       selectedRegion === region.id
                         ? "bg-blue-800 text-white"
@@ -412,7 +412,7 @@ const EventSchedule = () => {
           <SearchBar value={search} onChange={handleSearchChange} />
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="MainFont md:text-3xl text-2xl font-semibold mb-6">
+          <h2 className="MainFont md:text-3xl text-2xl  mb-6">
             {date.toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
