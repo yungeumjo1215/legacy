@@ -28,24 +28,24 @@ const EventModal = ({ event, onClose }) => {
               <p className="SubFont">{event.programContent}</p>
             </div>
 
-            <div className="MainFont grid grid-cols-2 gap-4 text-lg">
+            <div className="SubFont grid grid-cols-2 gap-4 text-lg">
               <div>
-                <p className="font-semibold">기간</p>
-                <p className="SubFont">
+                <p>기간</p>
+                <p>
                   {event.startDate} ~ {event.endDate}
                 </p>
               </div>
               <div>
-                <p className="font-semibold">장소</p>
-                <p className="SubFont">{event.location}</p>
+                <p>장소</p>
+                <p>{event.location}</p>
               </div>
               <div>
-                <p className="font-semibold">대상</p>
-                <p className="SubFont">{event.targetAudience}</p>
+                <p>대상</p>
+                <p>{event.targetAudience}</p>
               </div>
               <div>
-                <p className="font-semibold">문의</p>
-                <p className="SubFont">{event.contact}</p>
+                <p>문의</p>
+                <p>{event.contact}</p>
               </div>
             </div>
           </div>

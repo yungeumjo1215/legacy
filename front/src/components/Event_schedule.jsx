@@ -398,7 +398,9 @@ const EventSchedule = () => {
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                   >
-                    {region.name}
+                    <div className="flex items-center gap-2 SubFont">
+                      {region.name}
+                    </div>
                   </button>
                 ))}
               </div>
