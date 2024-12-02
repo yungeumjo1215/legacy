@@ -340,7 +340,7 @@ const SearchPage = () => {
         className={`
         flex-grow 
         ml-0 md:ml-[320px] lg:ml-[380px]
-        h-screen
+        h-[93vh]
         transition-all duration-300 ease-in-out
       `}
       >
