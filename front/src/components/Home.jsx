@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
+import { fetchEvents } from "../redux/slices/eventSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import "./ImageSlider.css";
@@ -13,20 +13,20 @@ import "swiper/css/pagination";
 const Home = () => {
   const dispatch = useDispatch();
   const {
-    festivalList = [],
+    events = [],
     loading,
     error,
-  } = useSelector((state) => state.festival);
+  } = useSelector(
+    (state) => state.events || { events: [], loading: false, error: null }
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [date, setDate] = useState(new Date());
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
   useEffect(() => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    dispatch(fetchFestivalData({ year, month }));
-  }, [date, dispatch]);
+    dispatch(fetchEvents());
+  }, [dispatch]);
 
   if (loading)
     return (
@@ -42,7 +42,7 @@ const Home = () => {
       </div>
     );
 
-  const totalFestivals = festivalList.length;
+  const totalFestivals = events.length;
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? totalFestivals - 1 : prevIndex - 1
@@ -54,14 +54,10 @@ const Home = () => {
     );
   };
   const getVisibleFestivals = () => {
-    if (!festivalList || festivalList.length === 0) return [];
+    if (!events || events.length === 0) return [];
     const prevIndex = (currentIndex - 1 + totalFestivals) % totalFestivals;
     const nextIndex = (currentIndex + 1) % totalFestivals;
-    return [
-      festivalList[prevIndex],
-      festivalList[currentIndex],
-      festivalList[nextIndex],
-    ];
+    return [events[prevIndex], events[currentIndex], events[nextIndex]];
   };
   const visibleFestivals = getVisibleFestivals();
   return (
@@ -84,8 +80,8 @@ const Home = () => {
           <p className="SubFont ">전국 축제 행사 일정</p>
         </h1>
 
-        {festivalList.length === 0 ? (
-          <p>표시할 축제 데이터가 없습니다.</p>
+        {events.length === 0 ? (
+          <p>표시할 행사 데이터가 없습니다.</p>
         ) : (
           <div className="w-full h-[800px] max-w-6xl mx-auto px-4">
             <Swiper
@@ -107,16 +103,33 @@ const Home = () => {
               }}
               className="relative py-10"
             >
-              {festivalList.map((festival) => (
-                <SwiperSlide key={festival.id}>
+              {events.map((event) => (
+                <SwiperSlide key={event.title}>
                   <Link
-                    to={`/festival/${festival.id}`}
+                    to={`/event/${event.title}`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden"
                   >
+                    <div className="relative h-[400px]">
+                      {event.imageUrl ? (
+                        <img
+                          src={event.imageUrl}
+                          alt={event.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                          <p className="text-gray-500">이미지 없음</p>
+                        </div>
+                      )}
+                    </div>
                     <div className="p-6">
                       <h2 className="text-xl font-bold mb-2">
-                        {festival.programName || "Unknown Festival"}
+                        {event.title || "제목 없음"}
                       </h2>
+                      <p className="text-gray-600 mb-2">{event.host_inst_nm}</p>
+                      <p className="text-sm text-gray-500">
+                        {event.begin_de} {event.event_tm_info}
+                      </p>
                     </div>
                   </Link>
                 </SwiperSlide>
@@ -135,7 +148,7 @@ const Home = () => {
                   </div>
                   <button
                     ref={nextRef}
-                    className="bg-white rounded-full p-2 shadow-lg z-10 ml-15 translate-y-2"
+                    className="bg-white rounded-full p-2 shadow-lg z-10 ml-1 translate-y-2"
                     aria-label="다음 축제"
                   >
                     &gt;
