@@ -4,9 +4,10 @@ import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
 import Map from "./map/Map";
 import Modal from "./Modal";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
+import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const SearchPage = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const dispatch = useDispatch();
 
   // 즐겨찾기 상태 저장
   useEffect(() => {
@@ -149,7 +152,7 @@ const SearchPage = () => {
   };
 
   const handleStarClick = useCallback(
-    (index) => {
+    (heritage) => {
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -157,39 +160,88 @@ const SearchPage = () => {
         return;
       }
 
-      setSelectedItems((prev) => {
-        const isAlreadySelected = prev.includes(index);
-        const newItems = isAlreadySelected
-          ? prev.filter((item) => item !== index)
-          : [...prev, index];
+      const isAlreadySelected = selectedItems.includes(heritage.ccbaMnm1);
 
-        if (newItems.length > 0) {
-          localStorage.setItem("selectedHeritages", JSON.stringify(newItems));
-        } else {
-          localStorage.removeItem("selectedHeritages");
-        }
+      if (isAlreadySelected) {
+        dispatch(
+          removeFavorite({
+            ...heritage,
+            id: heritage.ccbaKdcd, // id 필드 추가
+            type: "heritage",
+          })
+        );
+        setSuccessMessage("즐겨찾기가 해제되었습니다.");
+      } else {
+        dispatch(
+          addFavorite({
+            ...heritage,
+            id: heritage.ccbaKdcd, // id 필드 추가
+            type: "heritage",
+          })
+        );
+        setSuccessMessage("즐겨찾기에 추가되었습니다.");
+      }
+
+      setSelectedItems((prev) => {
+        const newItems = isAlreadySelected
+          ? prev.filter((item) => item !== heritage.ccbaMnm1)
+          : [...prev, heritage.ccbaMnm1];
+        localStorage.setItem("selectedHeritages", JSON.stringify(newItems));
         return newItems;
       });
     },
-    [isLoggedIn]
+    [isLoggedIn, selectedItems, dispatch]
   );
 
-  const closeError = useCallback(() => {
+  const closeError = () => {
     setError("");
-  }, []);
+  };
 
-  const handleLoginClick = useCallback(() => {
-    navigate("/login", { state: { from: window.location.pathname } });
+  const handleLoginClick = () => {
+    navigate("/login");
     closeError();
-  }, [navigate, closeError]);
+  };
 
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedHeritage(null);
   };
 
+  // 로그인 상태 변경 시 즐겨찾기 동기화
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (isLoggedIn) {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        if (userId && token) {
+          try {
+            const response = await axios.get(`/favorites/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const heritageNames = response.data
+              .filter((fav) => fav.type === "heritage")
+              .map((fav) => fav.ccbaMnm1);
+            setSelectedItems(heritageNames);
+          } catch (error) {
+            console.error("즐겨찾기 목록 로드 중 오류:", error);
+          }
+        }
+      } else {
+        setSelectedItems([]);
+        localStorage.removeItem("selectedHeritages");
+      }
+    };
+
+    loadFavorites();
+  }, [isLoggedIn]);
+
+  const closeSuccessMessage = () => {
+    setSuccessMessage("");
+  };
+
   return (
-    <div className="pt-16 flex relative">
+    <div className="w-full min-h-screen bg-gray-50 pt-16">
       {/* 사이드바 토글 버튼 */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -257,7 +309,7 @@ const SearchPage = () => {
               {filteredData.map((item, index) => (
                 <li key={index} className="my-3 md:my-5 flex items-center">
                   <div
-                    onClick={() => handleStarClick(index)}
+                    onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
                       selectedItems.includes(index)
                         ? "text-yellow-400"
@@ -331,6 +383,35 @@ const SearchPage = () => {
                 닫기
               </button>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* 성공 메시지 모달 */}
+      {successMessage && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-[9999]"
+            onClick={closeSuccessMessage}
+          />
+          <div
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                     bg-[#e2e2e2] text-black p-4 md:p-5 rounded-lg z-[10000] 
+                     w-[90%] md:w-[400px] max-w-[400px]
+                     h-[150px] md:h-[170px] 
+                     flex flex-col justify-center items-center text-center"
+            role="alert"
+          >
+            <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
+              {successMessage}
+            </p>
+            <button
+              onClick={closeSuccessMessage}
+              className="mt-4 md:mt-6 bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                       cursor-pointer hover:bg-blue-700 transition-colors"
+            >
+              확인
+            </button>
           </div>
         </>
       )}

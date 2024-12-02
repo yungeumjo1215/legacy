@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import axios from "../api/axios";
+import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null }, // 전체 보기
@@ -101,7 +102,7 @@ const EventItem = memo(
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleStarClick(event.programName);
+              handleStarClick(event);
             }}
             className={`star-button mr-3 ${
               isStarred ? "text-yellow-400" : "text-gray-300"
@@ -174,6 +175,7 @@ const EventSchedule = () => {
     return saved ? JSON.parse(saved) : [];
   });
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -297,31 +299,45 @@ const EventSchedule = () => {
     setSelectedRegion(region);
   }, []);
 
-  const handleStarClick = (eventName) => {
-    if (!isLoggedIn) {
-      toast.info("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return;
-    }
+  const handleStarClick = useCallback(
+    (festival) => {
+      if (!isLoggedIn) {
+        setError(
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
+        );
+        return;
+      }
 
-    const savedFavorites = localStorage.getItem("selectedFestivals");
-    const currentFavorites = savedFavorites ? JSON.parse(savedFavorites) : [];
+      const isAlreadySelected = selectedItems.includes(festival.programName);
 
-    let updatedFavorites;
-    if (currentFavorites.includes(eventName)) {
-      // 즐겨찾기 해제
-      updatedFavorites = currentFavorites.filter((item) => item !== eventName);
-      toast.success("즐겨찾기가 해제되었습니다.");
-    } else {
-      // 즐겨찾기 추가
-      updatedFavorites = [...currentFavorites, eventName];
-      toast.success("즐겨찾기에 추가되었습니다.");
-    }
+      if (isAlreadySelected) {
+        dispatch(
+          removeFavorite({
+            ...festival,
+            type: "event",
+          })
+        );
+        setSuccessMessage("즐겨찾기가 해제되었습니다.");
+      } else {
+        dispatch(
+          addFavorite({
+            ...festival,
+            type: "event",
+          })
+        );
+        setSuccessMessage("즐겨찾기에 추가되었습니다.");
+      }
 
-    // localStorage 업데이트
-    localStorage.setItem("selectedFestivals", JSON.stringify(updatedFavorites));
-    setSelectedItems(updatedFavorites);
-  };
+      setSelectedItems((prev) => {
+        const newItems = isAlreadySelected
+          ? prev.filter((item) => item !== festival.programName)
+          : [...prev, festival.programName];
+        localStorage.setItem("selectedFestivals", JSON.stringify(newItems));
+        return newItems;
+      });
+    },
+    [isLoggedIn, selectedItems, dispatch]
+  );
 
   const handleEventClick = useCallback((event) => {
     setSelectedEvent(event);
@@ -331,14 +347,18 @@ const EventSchedule = () => {
     setSelectedEvent(null);
   }, []);
 
-  const closeError = useCallback(() => {
+  const closeError = () => {
     setError("");
-  }, []);
+  };
 
-  const handleLoginClick = useCallback(() => {
-    navigate("/login", { state: { from: window.location.pathname } });
+  const closeSuccessMessage = () => {
+    setSuccessMessage("");
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
     closeError();
-  }, [navigate, closeError]);
+  };
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -450,32 +470,64 @@ const EventSchedule = () => {
           {error && (
             <>
               <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-50"
+                className="fixed inset-0 bg-black/50 z-[9999]"
                 onClick={closeError}
               />
               <div
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                           bg-white rounded-lg shadow-xl z-50 w-96 p-6"
+                           bg-[#e2e2e2] text-black p-4 md:p-5 rounded-lg z-[10000] 
+                           w-[90%] md:w-[400px] max-w-[400px]
+                           h-[180px] md:h-[200px] 
+                           flex flex-col justify-center items-center text-center"
+                role="alert"
               >
-                <p className="text-lg font-semibold text-center mb-6 whitespace-pre-line">
+                <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
                   {error}
                 </p>
-                <div className="flex justify-center gap-4">
+                <div className="mt-4 md:mt-6 flex gap-2 md:gap-2.5">
                   <button
                     onClick={handleLoginClick}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 
-                             transition-colors duration-200"
+                    className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                             cursor-pointer hover:bg-blue-700 transition-colors"
                   >
                     로그인하기
                   </button>
                   <button
                     onClick={closeError}
-                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 
-                             transition-colors duration-200"
+                    className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                             cursor-pointer hover:bg-gray-600 transition-colors"
                   >
                     닫기
                   </button>
                 </div>
+              </div>
+            </>
+          )}
+
+          {successMessage && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/50 z-[9999]"
+                onClick={closeSuccessMessage}
+              />
+              <div
+                className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                           bg-[#e2e2e2] text-black p-4 md:p-5 rounded-lg z-[10000] 
+                           w-[90%] md:w-[400px] max-w-[400px]
+                           h-[150px] md:h-[170px] 
+                           flex flex-col justify-center items-center text-center"
+                role="alert"
+              >
+                <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
+                  {successMessage}
+                </p>
+                <button
+                  onClick={closeSuccessMessage}
+                  className="mt-4 md:mt-6 bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                           cursor-pointer hover:bg-blue-700 transition-colors"
+                >
+                  확인
+                </button>
               </div>
             </>
           )}

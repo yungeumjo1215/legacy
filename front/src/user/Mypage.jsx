@@ -1,49 +1,39 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const [favoriteEvents, setFavoriteEvents] = useState([]);
+  const { heritages, festivals } = useSelector((state) => state.favorites);
 
-  // 사용자 정보
+  // 사용자 정보 가져오기
   const user = {
-    name: "홍길동",
-    email: "hong@example.com",
-    joinDate: "2024-12-02",
+    name: localStorage.getItem("userName") || "사용자",
+    email: localStorage.getItem("userEmail") || "이메일 정보 없음",
+    joinDate: localStorage.getItem("joinDate") || "가입일 정보 없음",
   };
 
-  // 문화재 예시 데이터
-  const culturalItems = [
-    { id: 1, name: "경복궁", type: "문화재" },
-    { id: 2, name: "창덕궁", type: "문화재" },
-    { id: 3, name: "덕수궁", type: "문화재" },
-    { id: 4, name: "창경궁", type: "문화재" },
-    { id: 5, name: "종묘", type: "문화재" },
-    { id: 6, name: "숭례문", type: "문화재" },
-    { id: 7, name: "흥인지문", type: "문화재" },
-  ];
+  // 문화재와 행사 데이터 포맷팅
+  const culturalItems = heritages.map((heritage) => ({
+    id: heritage.id || heritage.ccbaKdcd,
+    name: heritage.ccbaMnm1,
+    type: "문화재",
+  }));
 
-  useEffect(() => {
-    // localStorage에서 즐겨찾기한 행사 가져오기
-    const savedFavorites = localStorage.getItem("selectedFestivals");
-    if (savedFavorites) {
-      const parsedFavorites = JSON.parse(savedFavorites);
-      // 행사 데이터 형식 맞추기
-      const formattedFavorites = parsedFavorites.map((name, index) => ({
-        id: `event-${index}`,
-        name: name,
-        type: "행사",
-      }));
-      setFavoriteEvents(formattedFavorites);
-    }
-  }, []);
+  const favoriteEvents = festivals.map((festival, index) => ({
+    id: `event-${index}`,
+    name: festival.programName,
+    type: "행사",
+  }));
 
   // 로그아웃 핸들러
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("joinDate");
     alert("로그아웃되었습니다.");
     navigate("/home");
   };
@@ -88,7 +78,7 @@ const MyPage = () => {
                   <div className="w-full text-center text-gray-500">
                     {type === "행사"
                       ? "즐겨찾기한 행사가 없습니다."
-                      : "문화재 정보가 없습니다."}
+                      : "즐겨찾기한 문화재가 없습니다."}
                   </div>
                 )}
               </div>
