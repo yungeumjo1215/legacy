@@ -33,12 +33,6 @@ app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
 
-// Task related thingy
-// app.use(require("./routes/getRoutes"));
-// app.use(require("./routes/deleteRoutes"));
-// app.use(require("./routes/postRoutes"));
-// app.use(require("./routes/updateRoutes"));
-
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Internal Server Error" });

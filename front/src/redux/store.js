@@ -5,6 +5,7 @@ import modalReducer from "./slices/modalSlice";
 import heritageReducer from "./slices/heritageDetailSlice";
 import festivalReducer from "./slices/festivalDetailSlice";
 import accountReducer from "./slices/accountSlice";
+import eventReducer from "./slices/eventSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     modal: modalReducer,
     heritage: heritageReducer,
     festival: festivalReducer,
+    event: eventReducer,
   },
 });
 
