@@ -313,7 +313,7 @@ const EventSchedule = () => {
       if (isAlreadySelected) {
         dispatch(
           removeFavorite({
-            ...festival,
+            programName: festival.programName,
             type: "event",
           })
         );
@@ -332,7 +332,6 @@ const EventSchedule = () => {
         const newItems = isAlreadySelected
           ? prev.filter((item) => item !== festival.programName)
           : [...prev, festival.programName];
-        localStorage.setItem("selectedFestivals", JSON.stringify(newItems));
         return newItems;
       });
     },
@@ -371,11 +370,16 @@ const EventSchedule = () => {
             const response = await axios.get(`/favorites/${userId}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
-            setSelectedItems(response.data.map((fav) => fav.event_name));
+            const eventNames = response.data
+              .filter((fav) => fav.type === "event")
+              .map((fav) => fav.programName);
+            setSelectedItems(eventNames);
           } catch (error) {
             console.error("즐겨찾기 목록 로드 중 오류:", error);
           }
         }
+      } else {
+        setSelectedItems([]);
       }
     };
 
