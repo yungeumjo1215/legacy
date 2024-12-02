@@ -146,12 +146,12 @@ const MyPage = () => {
         <h4 className="text-2xl font-medium mb-6">{type}</h4>
         <div className="relative mx-6">
           <div className="flex justify-center">
-            <div ref={ref} className="flex overflow-x-hidden pb-4 w-[1100px]">
+            <div ref={ref} className="flex overflow-x-hidden pb-4 w-[1400px]">
               <div className="flex gap-8">
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[300px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
+                      className="flex-none w-[320px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
                       key={item.id}
                       onClick={() => handleItemClick(item)}
                     >
