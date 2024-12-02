@@ -139,21 +139,24 @@ const MyPage = () => {
 
   const renderSection = (type, ref) => {
     const items = type === "문화재" ? culturalItems : favoriteEvents;
-    const hasMoreThanFour = items.length > 4;
 
     return (
       <div className="relative flex-1 overflow-hidden">
-        <h4 className="text-2xl font-medium mb-6">{type}</h4>
-        <div className="relative mx-6">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-xl font-medium">{type}</h4>
+        </div>
+        <div className="relative mx-4">
           <div className="flex justify-center">
-            <div ref={ref} className="flex overflow-x-hidden pb-4 w-[1400px]">
-              <div className="flex gap-8">
+            <div
+              ref={ref}
+              className="flex overflow-hidden pb-4 w-[1400px] min-h-[320px]"
+            >
+              <div className="flex gap-4">
                 {items.length > 0 ? (
                   items.map((item) => (
                     <div
-                      className="flex-none w-[320px] h-[400px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
+                      className="flex-none w-[338px] h-[300px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden"
                       key={item.id}
-                      onClick={() => handleItemClick(item)}
                     >
                       <div className="w-full h-[200px] overflow-hidden">
                         {item.image ? (
@@ -200,7 +203,7 @@ const MyPage = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="w-full text-center text-gray-500">
+                  <div className="w-[1200px] h-[300px] flex items-center justify-center text-gray-500 text-lg">
                     {type === "행사"
                       ? "즐겨찾기한 행사가 없습니다."
                       : "즐겨찾기한 문화재가 없습니다."}
@@ -210,17 +213,18 @@ const MyPage = () => {
             </div>
           </div>
 
-          {hasMoreThanFour && (
+          {/* 좌우 이동 버튼 */}
+          {items.length > 4 && (
             <>
               <button
                 onClick={() => scroll(ref, "left")}
-                className="absolute -left-10 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
               >
                 <IoChevronBack size={28} />
               </button>
               <button
                 onClick={() => scroll(ref, "right")}
-                className="absolute -right-10 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
               >
                 <IoChevronForward size={28} />
               </button>
