@@ -311,14 +311,14 @@ const SearchPage = () => {
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      selectedItems.includes(index)
+                      selectedItems.includes(item.ccbaMnm1)
                         ? "text-yellow-400"
                         : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      selectedItems.includes(index) ? "해제" : "추가"
+                      selectedItems.includes(item.ccbaMnm1) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
