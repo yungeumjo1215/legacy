@@ -40,6 +40,10 @@ const Navbar = () => {
     e.stopPropagation(); // 이벤트 전파 중단
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+  // location이 변경될 때마다 모바일 메뉴 닫기
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   // 네비게이션 항목 정의
   const navigationItems = [
