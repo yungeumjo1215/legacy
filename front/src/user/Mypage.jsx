@@ -172,21 +172,25 @@ const MyPage = () => {
                           </div>
                         )}
                       </div>
-                      <div className="p-4 w-full flex-1 flex flex-col">
-                        <h3 className="text-xl font-medium text-gray-700 mb-2">
+                      <div className="p-3 w-full flex-1 flex flex-col">
+                        <h3 className="text-lg font-medium text-gray-700 mb-1 truncate">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2 flex-grow">
-                          <span className="font-medium">설명:</span>{" "}
-                          {item.content}
-                        </p>
-                        <div className="mt-auto">
-                          <p className="text-sm text-gray-600 mb-2">
+                        <div className="flex-1 min-h-0">
+                          <div className="inline-block text-sm font-medium text-gray-600">
+                            설명:{" "}
+                          </div>
+                          <div className="text-sm text-gray-600 line-clamp-3 break-all">
+                            {item.content}
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600 mb-1 truncate">
                             <span className="font-medium">위치:</span>{" "}
                             {item.location}
                           </p>
                           {item.type === "행사" && item.date && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-xs text-gray-600 truncate">
                               <span className="font-medium">기간:</span>{" "}
                               {item.date}
                             </p>
