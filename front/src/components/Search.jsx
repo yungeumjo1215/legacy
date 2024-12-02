@@ -67,6 +67,33 @@ const SearchPage = () => {
     return () => controller.abort();
   }, []);
 
+  // 로그인 상태 확인을 위한 useEffect 추가
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await axios.get(
+            "http://localhost:8000/auth/verify",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setIsLoggedIn(response.data.isValid);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("로그인 상태 확인 중 오류 발생:", error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   // 검색 결과 메모이제이션
   const filteredResults = useMemo(() => {
     return heritageData.filter((item) =>
