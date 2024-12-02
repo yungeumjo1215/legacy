@@ -6,6 +6,7 @@ import Map from "./map/Map";
 import Modal from "./Modal";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { MenuIcon } from "lucide-react";
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // 즐겨찾기 상태 저장
   useEffect(() => {
@@ -124,9 +126,9 @@ const SearchPage = () => {
   const handleHeritageClick = async (item) => {
     setSelectedHeritage(item);
     setModalOpen(true);
+    setIsSidebarOpen(false); // 모바일에서 항목 선택 시 사이드바 닫기
 
     try {
-      // Google Geocoding API를 사용하여 주소를 좌표로 변환
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json`,
         {
@@ -188,8 +190,44 @@ const SearchPage = () => {
 
   return (
     <div className="pt-16 flex relative">
-      <div className="w-1/4 h-screen bg-white text-black p-5 box-border fixed top-16 left-2.5 border-r border-[#e2e2e2] shadow-md overflow-y-auto flex flex-col gap-5">
-        <div className="mb-5 flex">
+      {/* 사이드바 토글 버튼 */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="fixed top-20 left-4 z-20 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 md:hidden"
+        aria-label="사이드바 토글"
+      >
+        <MenuIcon className="text-xl" />
+      </button>
+
+      {/* 사이드바 오버레이 */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* 사이드바 */}
+      <div
+        className={`
+        w-[280px] md:w-[320px] lg:w-[380px]
+        h-screen
+        bg-white text-black p-3 md:p-5 
+        box-border 
+        fixed 
+        top-16 
+        ${isSidebarOpen ? "left-0" : "-left-full"} md:left-0
+        border-r border-[#e2e2e2] 
+        shadow-md 
+        overflow-y-auto 
+        flex flex-col 
+        gap-3 md:gap-5
+        z-40
+        transition-all duration-300 ease-in-out
+      `}
+      >
+        {/* 검색 입력 영역 */}
+        <div className="mb-3 md:mb-5 flex">
           <input
             type="text"
             placeholder="문화재를 입력해주세요."
@@ -197,27 +235,30 @@ const SearchPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
             aria-label="문화재 검색"
-            className="w-full p-2 rounded border border-[#77767c] text-base"
+            className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
           />
           <button
-            className="h-[45px] p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center hover:bg-[#191934] hover:text-white"
+            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center hover:bg-[#191934] hover:text-white"
             onClick={handleSearch}
             aria-label="검색하기"
           >
-            <FaSearch className="text-2xl" />
+            <FaSearch className="text-xl md:text-2xl" />
           </button>
         </div>
 
+        {/* 검색 결과 리스트 */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div>데이터를 불러오는 중...</div>
+            <div className="text-center text-sm md:text-base">
+              데이터를 불러오는 중...
+            </div>
           ) : (
             <ul>
               {filteredData.map((item, index) => (
-                <li key={index} className="my-5 flex">
+                <li key={index} className="my-3 md:my-5 flex items-center">
                   <div
                     onClick={() => handleStarClick(index)}
-                    className={`cursor-pointer mr-2.5 ${
+                    className={`cursor-pointer mr-2 md:mr-2.5 ${
                       selectedItems.includes(index)
                         ? "text-yellow-400"
                         : "text-gray-300"
@@ -228,11 +269,12 @@ const SearchPage = () => {
                       selectedItems.includes(index) ? "해제" : "추가"
                     }`}
                   >
-                    <TiStarFullOutline className="text-3xl" />
+                    <TiStarFullOutline className="text-2xl md:text-3xl" />
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
                     aria-label={`${item.ccbaMnm1} 상세정보 보기`}
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors"
                   >
                     {item.ccbaMnm1}
                   </button>
@@ -243,10 +285,19 @@ const SearchPage = () => {
         </div>
       </div>
 
-      <div className="flex-grow ml-[25%]">
+      {/* 지도 영역 */}
+      <div
+        className={`
+        flex-grow 
+        ml-0 md:ml-[320px] lg:ml-[380px]
+        h-screen
+        transition-all duration-300 ease-in-out
+      `}
+      >
         <Map selectedLocation={selectedLocation} />
       </div>
 
+      {/* 에러 모달 */}
       {error && (
         <>
           <div
@@ -254,22 +305,28 @@ const SearchPage = () => {
             onClick={closeError}
           />
           <div
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#e2e2e2] text-black p-5 rounded-lg z-[10000] w-[400px] h-[200px] flex flex-col justify-center items-center text-center"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                     bg-[#e2e2e2] text-black p-4 md:p-5 rounded-lg z-[10000] 
+                     w-[90%] md:w-[400px] max-w-[400px]
+                     h-[180px] md:h-[200px] 
+                     flex flex-col justify-center items-center text-center"
             role="alert"
           >
-            <p className="font-bold text-lg whitespace-pre-wrap mt-5">
+            <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
               {error}
             </p>
-            <div className="mt-6 flex gap-2.5">
+            <div className="mt-4 md:mt-6 flex gap-2 md:gap-2.5">
               <button
                 onClick={handleLoginClick}
-                className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                         cursor-pointer hover:bg-blue-700 transition-colors"
               >
                 로그인하기
               </button>
               <button
                 onClick={closeError}
-                className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors"
+                className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                         cursor-pointer hover:bg-gray-600 transition-colors"
               >
                 닫기
               </button>
@@ -278,6 +335,7 @@ const SearchPage = () => {
         </>
       )}
 
+      {/* 상세 정보 모달 */}
       {modalOpen && selectedHeritage && (
         <Modal item={selectedHeritage} onClose={handleCloseModal} />
       )}
