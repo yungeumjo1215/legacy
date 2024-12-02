@@ -19,6 +19,7 @@ const Home = () => {
   } = useSelector(
     (state) => state.events || { events: [], loading: false, error: null }
   );
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [date, setDate] = useState(new Date());
   const prevRef = useRef(null);
@@ -70,7 +71,8 @@ const Home = () => {
             autoPlay
             loop
             muted
-            className="absolute top-0 left-0 w-full h-full object-cover"></video>
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          ></video>
         </div>
       </div>
       <div className="flex flex-col items-center bg-gray-300 ">
@@ -100,12 +102,14 @@ const Home = () => {
                 swiper.navigation.init();
                 swiper.navigation.update();
               }}
-              className="relative py-10">
-              {events.map((event) => (
-                <SwiperSlide key={event.title}>
+              className="relative py-10"
+            >
+              {events.map((event, index) => (
+                <SwiperSlide key={index}>
                   <Link
                     to={`/event/${event.title}`}
-                    className="block bg-white rounded-lg shadow-lg overflow-hidden">
+                    className="block bg-white rounded-lg shadow-lg overflow-hidden"
+                  >
                     <div className="relative h-[400px]">
                       {event.imageUrl ? (
                         <img
@@ -136,7 +140,8 @@ const Home = () => {
                   <button
                     ref={prevRef}
                     className="bg-white rounded-full p-2 shadow-lg z-10 mr-15 translate-y-2"
-                    aria-label="이전 축제">
+                    aria-label="이전 축제"
+                  >
                     &lt;
                   </button>
                   <div className="pagination-bullets">
@@ -145,7 +150,8 @@ const Home = () => {
                   <button
                     ref={nextRef}
                     className="bg-white rounded-full p-2 shadow-lg z-10 ml-1 translate-y-2"
-                    aria-label="다음 축제">
+                    aria-label="다음 축제"
+                  >
                     &gt;
                   </button>
                 </div>
