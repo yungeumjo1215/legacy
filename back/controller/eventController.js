@@ -18,8 +18,9 @@ exports.getEvents = (req, res) => {
       host_inst_nm: event.HOST_INST_NM,
     }));
 
+    const limitedEvents = events.slice(0, 6);
     // Send response
-    res.status(200).json(events);
+    res.status(200).json(limitedEvents);
   } catch (error) {
     console.error("Error reading or parsing the file:", error.message);
     res.status(500).send("Internal Server Error");
