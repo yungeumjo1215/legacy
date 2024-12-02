@@ -39,7 +39,7 @@ const fetchFestivalData = async (year, month) => {
     }));
 
     // Slice the transformed data to only include the first item
-    return transformedItems.slice(0);
+    return transformedItems.slice(1);
   } catch (error) {
     console.error("Error in fetchFestivalData:", error.message);
     throw new Error(`Failed to fetch festival data for ${year}-${month}`);
