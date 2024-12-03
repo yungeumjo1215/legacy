@@ -183,6 +183,10 @@ const SearchPage = () => {
     setFilteredData(updatedData);
   };
 
+  const isFavorite = (item) => {
+    return heritages.some((h) => h.ccbaMnm1 === item.ccbaMnm1);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
       <button
@@ -249,16 +253,12 @@ const SearchPage = () => {
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
-                        ? "text-yellow-400"
-                        : "text-gray-300"
+                      isFavorite(item) ? "text-yellow-400" : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
-                        ? "해제"
-                        : "추가"
+                      isFavorite(item) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
