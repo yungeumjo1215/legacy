@@ -71,3 +71,7 @@
     font-size: 0.875rem !important;
   }
 }
+.react-calendar__tile--active {
+  background: rgb(30 58 138 / var(--tw-bg-opacity, 1)) !important;
+  color: white;
+}
