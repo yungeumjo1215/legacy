@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import FavoriteList from "./FavoriteList";
 
 const MyPage = () => {

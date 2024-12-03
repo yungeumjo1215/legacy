@@ -1,28 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper function to send data to the backend
-const sendDataToBackend = async (payload) => {
-  try {
-    const response = await fetch("http://localhost:8000/api/store-favorites", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to send data. Status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log("Data successfully sent to backend:", result);
-  } catch (error) {
-    console.error("Error sending data to backend:", error);
-  }
-};
-
-// localStorage에서 초기 상태 불러오기
 const loadInitialState = () => {
   try {
     const savedHeritages = localStorage.getItem("favoriteHeritages");
@@ -40,53 +17,52 @@ const loadInitialState = () => {
   }
 };
 
+const saveToLocalStorage = (state) => {
+  try {
+    localStorage.setItem("favoriteHeritages", JSON.stringify(state.heritages));
+    localStorage.setItem("favoriteFestivals", JSON.stringify(state.festivals));
+  } catch (error) {
+    console.error("Error saving to localStorage:", error);
+  }
+};
+
 const favoriteSlice = createSlice({
   name: "favorites",
   initialState: loadInitialState(),
   reducers: {
     addFavorite: (state, action) => {
-      if (action.payload.type === "event") {
+      const { type, ...itemData } = action.payload;
+
+      if (type === "event") {
         const exists = state.festivals.some(
-          (festival) => festival.programName === action.payload.programName
+          (festival) => festival.programName === itemData.programName
         );
         if (!exists) {
-          state.festivals.push(action.payload);
-          localStorage.setItem(
-            "favoriteFestivals",
-            JSON.stringify(state.festivals)
-          );
+          state.festivals.push(itemData);
         }
       } else {
         const exists = state.heritages.some(
-          (heritage) => heritage.id === action.payload.id
+          (heritage) => heritage.id === itemData.id
         );
         if (!exists) {
-          state.heritages.push(action.payload);
-          localStorage.setItem(
-            "favoriteHeritages",
-            JSON.stringify(state.heritages)
-          );
+          state.heritages.push(itemData);
         }
       }
+      saveToLocalStorage(state);
     },
     removeFavorite: (state, action) => {
-      if (action.payload.type === "event") {
+      const { type, id } = action.payload;
+
+      if (type === "event") {
         state.festivals = state.festivals.filter(
-          (festival) => festival.programName !== action.payload.programName
-        );
-        localStorage.setItem(
-          "favoriteFestivals",
-          JSON.stringify(state.festivals)
+          (festival) => festival.programName !== id
         );
       } else {
         state.heritages = state.heritages.filter(
-          (heritage) => heritage.id !== action.payload.id
-        );
-        localStorage.setItem(
-          "favoriteHeritages",
-          JSON.stringify(state.heritages)
+          (heritage) => heritage.id !== id
         );
       }
+      saveToLocalStorage(state);
     },
     clearFavorites: (state) => {
       state.heritages = [];
@@ -98,21 +74,7 @@ const favoriteSlice = createSlice({
       const { heritages, festivals } = action.payload;
       state.heritages = heritages || [];
       state.festivals = festivals || [];
-      localStorage.setItem(
-        "favoriteHeritages",
-        JSON.stringify(state.heritages)
-      );
-      localStorage.setItem(
-        "favoriteFestivals",
-        JSON.stringify(state.festivals)
-      );
-    },
-    syncFavoritesToBackend: (state) => {
-      const payload = {
-        favoriteFestivals: state.festivals,
-        favoriteHeritages: state.heritages,
-      };
-      sendDataToBackend(payload);
+      saveToLocalStorage(state);
     },
   },
 });
@@ -122,7 +84,6 @@ export const {
   removeFavorite,
   clearFavorites,
   fetchUserFavorites,
-  syncFavoritesToBackend,
 } = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;
