@@ -45,6 +45,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.MainColor {
+  color: rgb(30, 58, 138);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
