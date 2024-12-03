@@ -25,6 +25,7 @@ const SearchPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
+  const [favoriteItems, setFavoriteItems] = useState(new Set());
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -75,6 +76,21 @@ const SearchPage = () => {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      const userId = localStorage.getItem("userId");
+      const savedFavorites = localStorage.getItem(`favorites_${userId}`);
+
+      if (savedFavorites) {
+        const parsedFavorites = JSON.parse(savedFavorites);
+        const heritageNames = parsedFavorites
+          .filter((item) => item.type === "heritage")
+          .map((item) => item.ccbaMnm1);
+        setFavoriteItems(new Set(heritageNames));
+      }
+    }
+  }, [isLoggedIn]);
+
   const filteredResults = useMemo(() => {
     return heritageData.filter((item) =>
       item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase())
@@ -120,40 +136,85 @@ const SearchPage = () => {
     }
   };
 
-  const handleStarClick = useCallback(
-    (heritage) => {
-      if (!isLoggedIn) {
-        setError(
-          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
-        );
-        return;
-      }
-
-      const isAlreadySelected = heritages.some(
-        (h) => h.ccbaKdcd === heritage.ccbaKdcd
+  const handleStarClick = async (heritage) => {
+    if (!isLoggedIn) {
+      setError(
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
       );
+      return;
+    }
+
+    const userId = localStorage.getItem("userId");
+    const isAlreadySelected = isFavorite(heritage);
+
+    try {
+      const newFavorites = new Set(favoriteItems);
 
       if (isAlreadySelected) {
         dispatch(
           removeFavorite({
-            id: heritage.ccbaKdcd,
             type: "heritage",
+            itemId: heritage.ccbaMnm1,
           })
         );
-        setSuccessMessage("즐겨찾기가 해제되었습니다.");
+        newFavorites.delete(heritage.ccbaMnm1);
       } else {
-        dispatch(
-          addFavorite({
-            ...heritage,
-            id: heritage.ccbaKdcd,
-            type: "heritage",
-          })
-        );
-        setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        const heritageData = {
+          type: "heritage",
+          ccbaMnm1: heritage.ccbaMnm1,
+          ccbaLcad: heritage.ccbaLcad,
+          content: heritage.content || heritage.ccbaCtcdNm,
+          imageUrl: heritage.imageUrl || heritage.ccbaAsno,
+          ccbaKdcd: heritage.ccbaKdcd,
+          ccceName: heritage.ccceName,
+        };
+
+        dispatch(addFavorite(heritageData));
+        newFavorites.add(heritage.ccbaMnm1);
       }
-    },
-    [isLoggedIn, dispatch, heritages]
-  );
+
+      setFavoriteItems(newFavorites);
+
+      const savedFavorites =
+        JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
+      let updatedFavorites;
+
+      if (isAlreadySelected) {
+        updatedFavorites = savedFavorites.filter(
+          (item) => item.ccbaMnm1 !== heritage.ccbaMnm1
+        );
+      } else {
+        const newFavorite = {
+          type: "heritage",
+          ccbaMnm1: heritage.ccbaMnm1,
+          ccbaLcad: heritage.ccbaLcad,
+          content: heritage.content || heritage.ccbaCtcdNm,
+          imageUrl: heritage.imageUrl || heritage.ccbaAsno,
+          ccbaKdcd: heritage.ccbaKdcd,
+          ccceName: heritage.ccceName,
+        };
+        updatedFavorites = [...savedFavorites, newFavorite];
+      }
+
+      localStorage.setItem(
+        `favorites_${userId}`,
+        JSON.stringify(updatedFavorites)
+      );
+
+      setSuccessMessage(
+        isAlreadySelected
+          ? "즐겨찾기가 해제되었습니다."
+          : "즐겨찾기에 추가되었습니다."
+      );
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+    } catch (error) {
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setError("즐겨찾기 처리 중 오류가 발생했습니다.");
+    }
+  };
 
   const closeError = () => {
     setError("");
@@ -184,7 +245,7 @@ const SearchPage = () => {
   };
 
   const isFavorite = (item) => {
-    return heritages.some((h) => h.ccbaMnm1 === item.ccbaMnm1);
+    return favoriteItems.has(item.ccbaMnm1);
   };
 
   return (
@@ -249,16 +310,21 @@ const SearchPage = () => {
           ) : (
             <ul>
               {filteredData.map((item, index) => (
-                <li key={index} className="my-3 md:my-5 flex items-center">
+                <li
+                  key={item.ccbaKdcd || index}
+                  className="my-3 md:my-5 flex items-center"
+                >
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      isFavorite(item) ? "text-yellow-400" : "text-gray-300"
+                      favoriteItems.has(item.ccbaMnm1)
+                        ? "text-yellow-400"
+                        : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      isFavorite(item) ? "해제" : "추가"
+                      favoriteItems.has(item.ccbaMnm1) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
