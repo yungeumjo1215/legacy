@@ -72,7 +72,7 @@ const Home = () => {
         <h1 className="main-text">문화재 행사 안내</h1>
         <div className="w-full max-w-6xl mx-auto px-4 mb-8 flex justify-end">
           <Link
-            to="/Event_schedule"
+            to="/event_schedule"
             className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
             style={{
               width: "clamp(120px, 15vw, 200px)",
