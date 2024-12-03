@@ -153,7 +153,7 @@ const Navbar = () => {
           </div>
 
           {/* 데스크톱 네비게이션 */}
-          <div className="hidden md:flex lg:flex-grow justify-center items-center space-x-4 lg:space-x-8">
+          <div className="hidden lg:flex lg:flex-grow justify-center items-center space-x-4 lg:space-x-8">
             {navigationItems.map((item) => (
               <Link
                 key={item.name}
@@ -170,12 +170,12 @@ const Navbar = () => {
           </div>
 
           {/* 데스크톱 인증 버튼 */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {renderAuthButtons()}
           </div>
 
           {/* 모바일 메뉴 버튼 */}
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <button
               className="p-2 rounded-md text-white focus:outline-none"
               onClick={handleMenuButtonClick} // onClick 핸들러 변경
@@ -192,7 +192,7 @@ const Navbar = () => {
 
       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-blue-800" ref={modalRef}>
+        <div className="lg:hidden bg-blue-800" ref={modalRef}>
           <div className="pt-2 pb-3 space-y-1">
             {navigationItems.map((item) => (
               <Link
