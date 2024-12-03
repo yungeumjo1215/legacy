@@ -64,7 +64,7 @@ const SearchPage = () => {
           return;
         }
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
+        setError("데이터를 불러오는데 ��패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
       }
@@ -139,12 +139,13 @@ const SearchPage = () => {
         dispatch(
           removeFavorite({
             type: "heritage",
-            itemId: heritage.ccbaMnm1,
+            id: heritage.ccbaMnm1,
           })
         );
       } else {
         const heritageData = {
           type: "heritage",
+          id: heritage.ccbaMnm1,
           ccbaMnm1: heritage.ccbaMnm1,
           ccbaLcad: heritage.ccbaLcad,
           content: heritage.content || heritage.ccbaCtcdNm,
@@ -155,6 +156,8 @@ const SearchPage = () => {
 
         dispatch(addFavorite(heritageData));
       }
+
+      handleFavoriteChange(heritage.ccbaKdcd, !isAlreadySelected);
 
       setSuccessMessage(
         isAlreadySelected

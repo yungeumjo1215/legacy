@@ -12,10 +12,10 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
 
   useEffect(() => {
     const favoriteStatus = heritages.some(
-      (heritage) => heritage.ccbaKdcd === item.ccbaKdcd
+      (heritage) => heritage.ccbaMnm1 === item.ccbaMnm1
     );
     setIsFavorite(favoriteStatus);
-  }, [heritages, item.ccbaKdcd]);
+  }, [heritages, item.ccbaMnm1]);
 
   const handleFavoriteClick = () => {
     if (!isLoggedIn) {
@@ -26,30 +26,28 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
     if (isFavorite) {
       dispatch(
         removeFavorite({
-          id: item.ccbaMnm1,
           type: "heritage",
+          id: item.ccbaMnm1,
         })
       );
       setAlertMessage("즐겨찾기가 해제되었습니다.");
-      setIsFavorite(false);
       if (onFavoriteChange) {
         onFavoriteChange(item.ccbaKdcd, false);
       }
     } else {
       dispatch(
         addFavorite({
-          id: item.ccbaMnm1,
           type: "heritage",
+          id: item.ccbaMnm1,
           ccbaMnm1: item.ccbaMnm1,
-          imageUrl: item.imageUrl,
-          content: item.content,
           ccbaLcad: item.ccbaLcad,
-          ccceName: item.ccceName,
+          content: item.content,
+          imageUrl: item.imageUrl,
           ccbaKdcd: item.ccbaKdcd,
+          ccceName: item.ccceName,
         })
       );
       setAlertMessage("즐겨찾기에 추가되었습니다.");
-      setIsFavorite(true);
       if (onFavoriteChange) {
         onFavoriteChange(item.ccbaKdcd, true);
       }
