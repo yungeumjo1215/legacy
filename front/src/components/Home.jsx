@@ -17,13 +17,11 @@ const Home = () => {
   const loading = eventState?.loading || false;
   const error = eventState?.error || null;
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [date, setDate] = useState(new Date());
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const [swiperInstance, setSwiperInstance] = useState(null);
 
   useEffect(() => {
-    console.log("Dispatching fetchEvent");
     dispatch(fetchEvent())
       .unwrap()
       .then((result) => {
@@ -33,6 +31,16 @@ const Home = () => {
         console.error("Fetch error:", error);
       });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (swiperInstance) {
+      // Swiper navigation 재설정
+      swiperInstance.params.navigation.prevEl = prevRef.current;
+      swiperInstance.params.navigation.nextEl = nextRef.current;
+      swiperInstance.navigation.init();
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
 
   if (loading)
     return (
@@ -48,24 +56,6 @@ const Home = () => {
       </div>
     );
 
-  const totalFestivals = event.length;
-  const goToPrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? totalFestivals - 1 : prevIndex - 1
-    );
-  };
-  const goToNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === totalFestivals - 1 ? 0 : prevIndex + 1
-    );
-  };
-  const getVisibleFestivals = () => {
-    if (!event || event.length === 0) return [];
-    const prevIndex = (currentIndex - 1 + totalFestivals) % totalFestivals;
-    const nextIndex = (currentIndex + 1) % totalFestivals;
-    return [event[prevIndex], event[currentIndex], event[nextIndex]];
-  };
-  const visibleFestivals = getVisibleFestivals();
   return (
     <div style={{ paddingTop: "4rem" }}>
       <div className="w-full">
@@ -80,10 +70,10 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <div className="flex flex-col items-center bg-gray-300 ">
+      <div className="flex flex-col items-center bg-gray-300">
         <h1 className="main-text">
           문화재 행사 안내
-          <p className="SubFont ">전국 축제 행사 일정</p>
+          <p className="SubFont">전국 축제 행사 일정</p>
         </h1>
 
         {event.length === 0 ? (
@@ -94,23 +84,16 @@ const Home = () => {
               modules={[Navigation, Pagination]}
               spaceBetween={25}
               slidesPerView={3}
-              navigation={{
-                prevEl: prevRef.current,
-                nextEl: nextRef.current,
-              }}
+              onSwiper={setSwiperInstance} // Swiper 인스턴스 저장
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
-                dynamicMainBullets: 6,
+                dynamicMainBullets: 10,
                 el: ".pagination-bullets",
-              }}
-              onBeforeInit={(swiper) => {
-                swiper.params.navigation.prevEl = prevRef.current;
-                swiper.params.navigation.nextEl = nextRef.current;
               }}
               className="relative py-10 pb-20"
             >
-              {event.slice(0, 6).map((event) => (
+              {event.slice(0, 10).map((event) => (
                 <SwiperSlide key={event.title}>
                   <Link
                     to={`/event/${event.title}`}
@@ -124,7 +107,7 @@ const Home = () => {
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = "기본이미지URL"; // 이미지 로드 실패시 기본 이미지
+                            e.target.src = "기본이미지URL";
                           }}
                         />
                       ) : (
@@ -148,33 +131,33 @@ const Home = () => {
                   </Link>
                 </SwiperSlide>
               ))}
-              <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center pb-4"></div>
             </Swiper>
+            <div className="bg-gray-300 flex items-center justify-center w-full">
+              <div className="pagination-bullets-container relative w-full max-w-6xl mx-auto px-4 py-8">
+                <button
+                  ref={prevRef}
+                  className="bg-white rounded-full p-2 shadow-lg z-10"
+                  aria-label="이전 축제"
+                >
+                  &lt;
+                </button>
+                <div className="pagination-bullets">
+                  <div className="swiper-pagination"></div>
+                </div>
+                <button
+                  ref={nextRef}
+                  className="bg-white rounded-full p-2 shadow-lg z-10"
+                  aria-label="다음 축제"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
           </div>
         )}
-      </div>
-      <div className="bg-gray-300 flex items-center justify-center w-full">
-        <div className="pagination-bullets-container relative w-full max-w-6xl mx-auto px-4 py-8">
-          <button
-            ref={prevRef}
-            className="bg-white rounded-full p-2 shadow-lg z-10"
-            aria-label="이전 축제"
-          >
-            &lt;
-          </button>
-          <div className="pagination-bullets">
-            <div className="swiper-pagination"></div>
-          </div>
-          <button
-            ref={nextRef}
-            className="bg-white rounded-full p-2 shadow-lg z-10"
-            aria-label="다음 축제"
-          >
-            &gt;
-          </button>
-        </div>
       </div>
     </div>
   );
 };
+
 export default Home;
