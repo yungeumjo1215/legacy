@@ -162,7 +162,7 @@
 }
 
 .custom-bullet-active {
-  background-color: #3677df !important;
+  background-color: rgb(29, 78, 216) !important;
   opacity: 1 !important;
   transform: scale(1.2) !important;
   box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
