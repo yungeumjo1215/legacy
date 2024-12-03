@@ -92,7 +92,7 @@ const MyPage = () => {
   const eventRef = useRef(null);
 
   const scroll = (ref, direction) => {
-    const scrollAmount = 960;
+    const scrollAmount = 338 + 16; // 카드 너비 + gap
     if (ref.current) {
       ref.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
@@ -221,93 +221,100 @@ const MyPage = () => {
     const items = type === "문화재" ? culturalItems : favoriteEvents;
 
     return (
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-xl font-medium">{type}</h4>
         </div>
-        <div className="relative mx-4">
-          <div className="flex justify-center">
-            <div
-              ref={ref}
-              className="flex overflow-hidden pb-4 w-[1400px] min-h-[320px]"
-            >
-              <div className="flex gap-4">
-                {items.length > 0 ? (
-                  items.map((item) => (
-                    <div
-                      className="flex-none w-[338px] h-[300px] border-2 border-gray-200 rounded-xl flex flex-col justify-start items-center hover:border-blue-500 transition-colors duration-300 overflow-hidden cursor-pointer"
-                      key={item.id}
-                      onClick={() => handleItemClick(item)}
-                    >
-                      <div className="w-full h-[200px] overflow-hidden">
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.target.src = "/default-image.jpg"; // 기본 이미지 경로 설정
-                              e.target.onerror = null;
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                            <span className="text-gray-500">이미지 없음</span>
-                          </div>
-                        )}
+        <div className="relative">
+          <div
+            ref={ref}
+            className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide relative"
+          >
+            {items.length > 0 ? (
+              items.map((item) => (
+                <div
+                  className={`flex-none w-full sm:w-[calc(50%-8px)] xl:w-[338px] border-2 border-gray-200 rounded-xl 
+                           flex flex-col justify-start items-center hover:border-blue-500 transition-colors 
+                           duration-300 overflow-hidden cursor-pointer
+                           ${
+                             type === "행사"
+                               ? "h-[220px] sm:h-[250px]"
+                               : "h-[270px] sm:h-[300px]"
+                           }`}
+                  key={item.id}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <div
+                    className={`w-full overflow-hidden 
+                    ${
+                      type === "행사"
+                        ? "h-[130px] sm:h-[150px]"
+                        : "h-[180px] sm:h-[200px]"
+                    }`}
+                  >
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "/default-image.jpg";
+                          e.target.onerror = null;
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-500">이미지 없음</span>
                       </div>
-                      <div className="p-3 w-full flex-1 flex flex-col">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
-                          {item.name}
-                        </h3>
-                        <div className="flex-1 min-h-0">
-                          <div className="inline-block text-sm font-medium text-gray-600">
-                            설명:{" "}
-                          </div>
-                          <div className="text-sm text-gray-600 line-clamp-3 break-all">
-                            {item.content}
-                          </div>
-                        </div>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-600 mb-1 truncate">
-                            <span className="font-medium">위치:</span>{" "}
-                            {item.location}
-                          </p>
-                          {item.type === "행사" && item.date && (
-                            <p className="text-xs text-gray-600 truncate">
-                              <span className="font-medium">기간:</span>{" "}
-                              {item.date}
-                            </p>
-                          )}
-                        </div>
+                    )}
+                  </div>
+                  <div className="p-3 w-full flex-1 flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
+                      {item.name}
+                    </h3>
+                    <div className="flex-1 min-h-0">
+                      <div className="text-sm text-gray-600 line-clamp-2 break-all">
+                        {item.content}
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="w-[1200px] h-[300px] flex items-center justify-center text-gray-500 text-lg">
-                    {type === "행사"
-                      ? "즐겨찾기한 행사가 없습니다."
-                      : "즐겨찾기한 문화재가 없습니다."}
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600 mb-1 truncate">
+                        <span className="font-medium">위치:</span>{" "}
+                        {item.location}
+                      </p>
+                      {item.type === "행사" && item.date && (
+                        <p className="text-xs text-gray-600 truncate">
+                          <span className="font-medium">기간:</span> {item.date}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                )}
+                </div>
+              ))
+            ) : (
+              <div className="w-full h-[250px] flex items-center justify-center text-gray-500 text-lg">
+                {type === "행사"
+                  ? "즐겨찾기한 행사가 없습니다."
+                  : "즐겨찾기한 문화재가 없습니다."}
               </div>
-            </div>
+            )}
           </div>
 
-          {/* 좌우 이동 버튼 */}
-          {items.length > 4 && (
+          {items.length > 0 && (
             <>
               <button
                 onClick={() => scroll(ref, "left")}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 z-10 xl:flex hidden items-center justify-center"
+                style={{ transform: "translate(0, -50%)" }}
               >
-                <IoChevronBack size={28} />
+                <IoChevronBack size={24} />
               </button>
               <button
                 onClick={() => scroll(ref, "right")}
-                className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300"
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 z-10 xl:flex hidden items-center justify-center"
+                style={{ transform: "translate(0, -50%)" }}
               >
-                <IoChevronForward size={28} />
+                <IoChevronForward size={24} />
               </button>
             </>
           )}
@@ -320,8 +327,8 @@ const MyPage = () => {
     <div className="h-screen bg-gray-100 pt-16">
       <div className="h-[calc(100%-4rem)] p-8">
         <div className="h-full grid grid-cols-6 gap-8">
-          {/* 사용자 정보 섹션 */}
-          <div className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
+          {/* 사용자 정보 섹션 - 1200px 이하에서 숨김 */}
+          <div className="col-span-1 bg-white p-6 rounded-lg shadow-lg hidden xl:block">
             <div>
               <h2 className="text-2xl font-bold mb-8">마이페이지</h2>
               <div className="space-y-6">
@@ -338,8 +345,8 @@ const MyPage = () => {
             </div>
           </div>
 
-          {/* 즐겨찾기 섹션 */}
-          <div className="col-span-5 bg-white p-8 rounded-lg shadow-lg flex flex-col">
+          {/* 즐겨찾기 섹션 - 1200px 이하에서 전체 너비 사용 */}
+          <div className="col-span-6 xl:col-span-5 bg-white p-8 rounded-lg shadow-lg flex flex-col">
             <div>
               <h3 className="text-3xl font-semibold mb-8">나의 즐겨찾기</h3>
               {/* 문화재 섹션 */}
