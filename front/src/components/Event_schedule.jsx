@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
-import axios from "../api/axios";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const REGIONS = [
@@ -308,34 +307,43 @@ const EventSchedule = () => {
         return;
       }
 
-      const isAlreadySelected = selectedItems.includes(festival.programName);
+      try {
+        const isAlreadySelected = isEventStarred(festival.programName);
 
-      if (isAlreadySelected) {
-        dispatch(
-          removeFavorite({
-            programName: festival.programName,
-            type: "event",
-          })
-        );
-        setSuccessMessage("즐겨찾기가 해제되었습니다.");
-      } else {
-        dispatch(
-          addFavorite({
-            ...festival,
-            type: "event",
-          })
-        );
-        setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        if (isAlreadySelected) {
+          dispatch(
+            removeFavorite({
+              type: "event",
+              id: festival.programName,
+            })
+          );
+          setSuccessMessage("즐겨찾기가 해제되었습니다.");
+        } else {
+          dispatch(
+            addFavorite({
+              type: "event",
+              id: festival.programName,
+              programName: festival.programName,
+              programContent: festival.programContent,
+              location: festival.location,
+              startDate: festival.startDate,
+              endDate: festival.endDate,
+              targetAudience: festival.targetAudience,
+              contact: festival.contact,
+            })
+          );
+          setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        }
+
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+      } catch (error) {
+        console.error("즐겨찾기 처리 중 오류 발생:", error);
+        setError("즐겨찾기 처리 중 오류가 발생했습니다.");
       }
-
-      setSelectedItems((prev) => {
-        const newItems = isAlreadySelected
-          ? prev.filter((item) => item !== festival.programName)
-          : [...prev, festival.programName];
-        return newItems;
-      });
     },
-    [isLoggedIn, selectedItems, dispatch]
+    [isLoggedIn, dispatch, isEventStarred]
   );
 
   const handleEventClick = useCallback((event) => {
@@ -360,31 +368,15 @@ const EventSchedule = () => {
   };
 
   useEffect(() => {
-    const loadFavorites = async () => {
-      if (isLoggedIn) {
-        const userId = localStorage.getItem("userId");
-        const token = localStorage.getItem("token");
-
-        if (userId && token) {
-          try {
-            const response = await axios.get(`/favorites/${userId}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const eventNames = response.data
-              .filter((fav) => fav.type === "event")
-              .map((fav) => fav.programName);
-            setSelectedItems(eventNames);
-          } catch (error) {
-            console.error("즐겨찾기 목록 로드 중 오류:", error);
-          }
-        }
-      } else {
-        setSelectedItems([]);
-      }
-    };
-
-    loadFavorites();
-  }, [isLoggedIn]);
+    if (isLoggedIn) {
+      const eventNames = festivals
+        .filter((fav) => fav.type === "event")
+        .map((fav) => fav.programName);
+      setSelectedItems(eventNames);
+    } else {
+      setSelectedItems([]);
+    }
+  }, [isLoggedIn, festivals]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
