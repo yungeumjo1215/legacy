@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
-const Modal = ({ item, onClose }) => {
+const Modal = ({ item, onClose, onFavoriteChange }) => {
   const dispatch = useDispatch();
   const { heritages } = useSelector((state) => state.favorites);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [alertMessage, setAlertMessage] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const isFavorite = heritages.some(
-    (heritage) => heritage.ccbaMnm1 === item.ccbaMnm1
-  );
+  useEffect(() => {
+    const favoriteStatus = heritages.some(
+      (heritage) => heritage.ccbaKdcd === item.ccbaKdcd
+    );
+    setIsFavorite(favoriteStatus);
+  }, [heritages, item.ccbaKdcd]);
 
   const handleFavoriteClick = () => {
     if (!isLoggedIn) {
@@ -27,6 +31,10 @@ const Modal = ({ item, onClose }) => {
         })
       );
       setAlertMessage("즐겨찾기가 해제되었습니다.");
+      setIsFavorite(false);
+      if (onFavoriteChange) {
+        onFavoriteChange(item.ccbaKdcd, false);
+      }
     } else {
       dispatch(
         addFavorite({
@@ -37,9 +45,14 @@ const Modal = ({ item, onClose }) => {
           content: item.content,
           ccbaLcad: item.ccbaLcad,
           ccceName: item.ccceName,
+          ccbaKdcd: item.ccbaKdcd,
         })
       );
       setAlertMessage("즐겨찾기에 추가되었습니다.");
+      setIsFavorite(true);
+      if (onFavoriteChange) {
+        onFavoriteChange(item.ccbaKdcd, true);
+      }
     }
   };
 
