@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import "./ImageSlider.css";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/autoplay";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Home = () => {
@@ -91,7 +92,7 @@ const Home = () => {
         ) : (
           <div className="w-full h-[800px] max-w-[1600px] mx-auto px-4">
             <Swiper
-              modules={[Navigation, Pagination]}
+              modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={20}
               slidesPerView={4}
               loop={true}
@@ -109,6 +110,10 @@ const Home = () => {
                 bulletActiveClass: "swiper-pagination-bullet-active",
                 modifierClass: "custom-pagination-",
                 bulletElement: "span",
+              }}
+              autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
               }}
               breakpoints={{
                 // 320px 이상일 때
