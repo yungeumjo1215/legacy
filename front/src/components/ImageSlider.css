@@ -103,7 +103,7 @@
   display: inline-flex;
   align-items: center;
   width: 100%;
-  max-width: 300px; /* 도트와 버튼 사이의 전체 너비 조절 */
+  max-width: 250px; /* 도트와 버튼 사이의 전체 너비 조절 */
   justify-content: space-between;
 }
 
