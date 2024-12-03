@@ -4,7 +4,6 @@ import { fetchEvent } from "../redux/slices/eventSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
 import b1 from "../assets/b1.mp4"; // 배경 영상
-import c1 from "../assets/c1.png"; // 배경 영상
 import "./ImageSlider.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
