@@ -5,18 +5,17 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const EventModal = ({ event, onClose }) => {
   const dispatch = useDispatch();
-  // festivals 상태 변화를 실시간으로 감지
   const { festivals } = useSelector((state) => state.favorites);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [alertMessage, setAlertMessage] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const isFavorite = festivals.some(
-    (festival) => festival.programName === event.programName
-  );
-  // useEffect를 추가하여 상태 변화 모니터링
   useEffect(() => {
-    console.log("즐겨찾기 상태 변경:", festivals);
-  }, [festivals]);
+    const favoriteStatus = festivals.some(
+      (festival) => festival.programName === event?.programName
+    );
+    setIsFavorite(favoriteStatus);
+  }, [festivals, event?.programName]);
 
   const handleFavoriteClick = () => {
     if (!isLoggedIn) {
@@ -24,28 +23,34 @@ const EventModal = ({ event, onClose }) => {
       return;
     }
 
-    if (isFavorite) {
-      dispatch(
-        removeFavorite({
-          programName: event.programName,
-          type: "event",
-        })
-      );
-      setAlertMessage("즐겨찾기가 해제되었습니다.");
-    } else {
-      dispatch(
-        addFavorite({
-          type: "event",
-          programName: event.programName,
-          programContent: event.programContent,
-          location: event.location,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          targetAudience: event.targetAudience,
-          contact: event.contact,
-        })
-      );
-      setAlertMessage("즐겨찾기에 추가되었습니다.");
+    try {
+      if (isFavorite) {
+        dispatch(
+          removeFavorite({
+            type: "event",
+            id: event.programName,
+          })
+        );
+        setAlertMessage("즐겨찾기가 해제되었습니다.");
+      } else {
+        dispatch(
+          addFavorite({
+            type: "event",
+            id: event.programName,
+            programName: event.programName,
+            programContent: event.programContent,
+            location: event.location,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            targetAudience: event.targetAudience,
+            contact: event.contact,
+          })
+        );
+        setAlertMessage("즐겨찾기에 추가되었습니다.");
+      }
+    } catch (error) {
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setAlertMessage("즐겨찾기 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -112,7 +117,6 @@ const EventModal = ({ event, onClose }) => {
         </div>
       </div>
 
-      {/* 경고 모달 */}
       {alertMessage && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
