@@ -161,7 +161,7 @@
   transform: scale(0.8);
 }
 
-.swiper-pagination-bullet-active {
+.custom-bullet-active {
   background-color: #3677df !important;
   opacity: 1 !important;
   transform: scale(1.2) !important;
