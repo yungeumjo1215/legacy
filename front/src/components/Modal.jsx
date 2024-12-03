@@ -26,7 +26,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
     if (isFavorite) {
       dispatch(
         removeFavorite({
-          id: item.ccbaKdcd,
+          id: item.ccbaMnm1,
           type: "heritage",
         })
       );
@@ -38,7 +38,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
     } else {
       dispatch(
         addFavorite({
-          id: item.ccbaKdcd,
+          id: item.ccbaMnm1,
           type: "heritage",
           ccbaMnm1: item.ccbaMnm1,
           imageUrl: item.imageUrl,

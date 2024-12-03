@@ -1,53 +1,45 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// localStorage에서 초기 상태 불러오기
 const loadInitialState = () => {
   try {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return { heritages: [], festivals: [] };
-
-    const favoriteHeritages = localStorage.getItem("favoriteHeritages");
-    const favoriteFestivals = localStorage.getItem("favoriteFestivals");
-
+    const savedHeritages = localStorage.getItem("favoriteHeritages");
+    const savedFestivals = localStorage.getItem("favoriteFestivals");
     return {
-      heritages: favoriteHeritages ? JSON.parse(favoriteHeritages) : [],
-      festivals: favoriteFestivals ? JSON.parse(favoriteFestivals) : [],
+      heritages: savedHeritages ? JSON.parse(savedHeritages) : [],
+      festivals: savedFestivals ? JSON.parse(savedFestivals) : [],
     };
   } catch (error) {
-    console.error("즐겨찾기 데이터 로드 실패:", error);
-    return { heritages: [], festivals: [] };
+    console.error("Error loading favorites from localStorage:", error);
+    return {
+      heritages: [],
+      festivals: [],
+    };
   }
 };
 
-const initialState = loadInitialState();
-
 const favoriteSlice = createSlice({
   name: "favorites",
-  initialState,
+  initialState: loadInitialState(),
   reducers: {
     addFavorite: (state, action) => {
       if (action.payload.type === "event") {
-        if (
-          !state.festivals.some(
-            (festival) => festival.programName === action.payload.programName
-          )
-        ) {
-          const festivalData = { ...action.payload };
-          delete festivalData.type;
-          state.festivals.push(festivalData);
+        const exists = state.festivals.some(
+          (festival) => festival.programName === action.payload.programName
+        );
+        if (!exists) {
+          state.festivals.push(action.payload);
           localStorage.setItem(
             "favoriteFestivals",
             JSON.stringify(state.festivals)
           );
         }
       } else {
-        if (
-          !state.heritages.some(
-            (heritage) => heritage.ccbaKdcd === action.payload.ccbaKdcd
-          )
-        ) {
-          const heritageData = { ...action.payload };
-          delete heritageData.type;
-          state.heritages.push(heritageData);
+        const exists = state.heritages.some(
+          (heritage) => heritage.id === action.payload.id
+        );
+        if (!exists) {
+          state.heritages.push(action.payload);
           localStorage.setItem(
             "favoriteHeritages",
             JSON.stringify(state.heritages)
@@ -66,7 +58,7 @@ const favoriteSlice = createSlice({
         );
       } else {
         state.heritages = state.heritages.filter(
-          (heritage) => heritage.ccbaKdcd !== action.payload.ccbaKdcd
+          (heritage) => heritage.id !== action.payload.id
         );
         localStorage.setItem(
           "favoriteHeritages",
@@ -80,10 +72,27 @@ const favoriteSlice = createSlice({
       localStorage.removeItem("favoriteHeritages");
       localStorage.removeItem("favoriteFestivals");
     },
+    fetchUserFavorites: (state, action) => {
+      const { heritages, festivals } = action.payload;
+      state.heritages = heritages || [];
+      state.festivals = festivals || [];
+      localStorage.setItem(
+        "favoriteHeritages",
+        JSON.stringify(state.heritages)
+      );
+      localStorage.setItem(
+        "favoriteFestivals",
+        JSON.stringify(state.festivals)
+      );
+    },
   },
 });
 
-export const { addFavorite, removeFavorite, clearFavorites } =
-  favoriteSlice.actions;
+export const {
+  addFavorite,
+  removeFavorite,
+  clearFavorites,
+  fetchUserFavorites,
+} = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

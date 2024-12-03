@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
@@ -25,7 +25,6 @@ const SearchPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const [favoriteItems, setFavoriteItems] = useState(new Set());
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -76,21 +75,6 @@ const SearchPage = () => {
     return () => controller.abort();
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      const userId = localStorage.getItem("userId");
-      const savedFavorites = localStorage.getItem(`favorites_${userId}`);
-
-      if (savedFavorites) {
-        const parsedFavorites = JSON.parse(savedFavorites);
-        const heritageNames = parsedFavorites
-          .filter((item) => item.type === "heritage")
-          .map((item) => item.ccbaMnm1);
-        setFavoriteItems(new Set(heritageNames));
-      }
-    }
-  }, [isLoggedIn]);
-
   const filteredResults = useMemo(() => {
     return heritageData.filter((item) =>
       item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase())
@@ -136,6 +120,10 @@ const SearchPage = () => {
     }
   };
 
+  const isFavorite = (item) => {
+    return heritages.some((heritage) => heritage.ccbaMnm1 === item.ccbaMnm1);
+  };
+
   const handleStarClick = async (heritage) => {
     if (!isLoggedIn) {
       setError(
@@ -144,12 +132,9 @@ const SearchPage = () => {
       return;
     }
 
-    const userId = localStorage.getItem("userId");
     const isAlreadySelected = isFavorite(heritage);
 
     try {
-      const newFavorites = new Set(favoriteItems);
-
       if (isAlreadySelected) {
         dispatch(
           removeFavorite({
@@ -157,7 +142,6 @@ const SearchPage = () => {
             itemId: heritage.ccbaMnm1,
           })
         );
-        newFavorites.delete(heritage.ccbaMnm1);
       } else {
         const heritageData = {
           type: "heritage",
@@ -170,36 +154,7 @@ const SearchPage = () => {
         };
 
         dispatch(addFavorite(heritageData));
-        newFavorites.add(heritage.ccbaMnm1);
       }
-
-      setFavoriteItems(newFavorites);
-
-      const savedFavorites =
-        JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
-      let updatedFavorites;
-
-      if (isAlreadySelected) {
-        updatedFavorites = savedFavorites.filter(
-          (item) => item.ccbaMnm1 !== heritage.ccbaMnm1
-        );
-      } else {
-        const newFavorite = {
-          type: "heritage",
-          ccbaMnm1: heritage.ccbaMnm1,
-          ccbaLcad: heritage.ccbaLcad,
-          content: heritage.content || heritage.ccbaCtcdNm,
-          imageUrl: heritage.imageUrl || heritage.ccbaAsno,
-          ccbaKdcd: heritage.ccbaKdcd,
-          ccceName: heritage.ccceName,
-        };
-        updatedFavorites = [...savedFavorites, newFavorite];
-      }
-
-      localStorage.setItem(
-        `favorites_${userId}`,
-        JSON.stringify(updatedFavorites)
-      );
 
       setSuccessMessage(
         isAlreadySelected
@@ -242,10 +197,6 @@ const SearchPage = () => {
       return item;
     });
     setFilteredData(updatedData);
-  };
-
-  const isFavorite = (item) => {
-    return favoriteItems.has(item.ccbaMnm1);
   };
 
   return (
@@ -317,14 +268,12 @@ const SearchPage = () => {
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      favoriteItems.has(item.ccbaMnm1)
-                        ? "text-yellow-400"
-                        : "text-gray-300"
+                      isFavorite(item) ? "text-yellow-400" : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      favoriteItems.has(item.ccbaMnm1) ? "해제" : "추가"
+                      isFavorite(item) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
