@@ -23,9 +23,7 @@ const FavoriteList = () => {
   return (
     <div className="p-4">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">
-          즐겨찾기한 문화재 ({heritages.length})
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">문화재 ({heritages.length})</h2>
         <div className="grid gap-4">
           {heritages.map((heritage) => (
             <div
@@ -49,11 +47,14 @@ const FavoriteList = () => {
           ))}
         </div>
       </div>
+      {heritages.length === 0 && (
+        <div className="text-center text-gray-500 mt-8">
+          즐겨찾기한 항목이 없습니다.
+        </div>
+      )}
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">
-          즐겨찾기한 행사 ({festivals.length})
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">행사 ({festivals.length})</h2>
         <div className="grid gap-4">
           {festivals.map((festival) => (
             <div
@@ -80,7 +81,7 @@ const FavoriteList = () => {
         </div>
       </div>
 
-      {heritages.length === 0 && festivals.length === 0 && (
+      {festivals.length === 0 && (
         <div className="text-center text-gray-500 mt-8">
           즐겨찾기한 항목이 없습니다.
         </div>
