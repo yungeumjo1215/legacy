@@ -225,79 +225,84 @@ const MyPage = () => {
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-xl font-medium">{type}</h4>
         </div>
-        <div className="relative">
-          <div
-            ref={ref}
-            className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide relative"
-          >
-            {items.length > 0 ? (
-              items.map((item) => (
-                <div
-                  className={`flex-none w-full sm:w-[calc(50%-8px)] xl:w-[338px] border-2 border-gray-200 rounded-xl 
-                           flex flex-col justify-start items-center hover:border-blue-500 transition-colors 
-                           duration-300 overflow-hidden cursor-pointer
-                           ${
-                             type === "행사"
-                               ? "h-[220px] sm:h-[250px]"
-                               : "h-[270px] sm:h-[300px]"
-                           }`}
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                >
-                  <div
-                    className={`w-full overflow-hidden 
-                    ${
-                      type === "행사"
-                        ? "h-[130px] sm:h-[150px]"
-                        : "h-[180px] sm:h-[200px]"
-                    }`}
-                  >
-                    {item.image ? (
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = "/default-image.jpg";
-                          e.target.onerror = null;
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500">이미지 없음</span>
+        <div className="relative mx-4">
+          <div className="flex justify-center">
+            <div
+              ref={ref}
+              className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide relative w-full xl:w-[1400px] min-h-[280px]"
+            >
+              <div className="flex gap-4 w-full">
+                {items.length > 0 ? (
+                  items.map((item) => (
+                    <div
+                      className={`flex-none w-full sm:w-[calc(50%-8px)] xl:w-[338px] border-2 border-gray-200 rounded-xl 
+                               flex flex-col justify-start items-center hover:border-blue-500 transition-colors 
+                               duration-300 overflow-hidden cursor-pointer
+                               ${
+                                 type === "행사"
+                                   ? "h-[220px] sm:h-[250px]"
+                                   : "h-[270px] sm:h-[300px]"
+                               }`}
+                      key={item.id}
+                      onClick={() => handleItemClick(item)}
+                    >
+                      <div
+                        className={`w-full overflow-hidden 
+                        ${
+                          type === "행사"
+                            ? "h-[130px] sm:h-[150px]"
+                            : "h-[180px] sm:h-[200px]"
+                        }`}
+                      >
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = "/default-image.jpg";
+                              e.target.onerror = null;
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-gray-500">이미지 없음</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div className="p-3 w-full flex-1 flex flex-col">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
-                      {item.name}
-                    </h3>
-                    <div className="flex-1 min-h-0">
-                      <div className="text-sm text-gray-600 line-clamp-2 break-all">
-                        {item.content}
+                      <div className="p-3 w-full flex-1 flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-1 truncate">
+                          {item.name}
+                        </h3>
+                        <div className="flex-1 min-h-0">
+                          <div className="text-sm text-gray-600 line-clamp-2 break-all">
+                            {item.content}
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600 mb-1 truncate">
+                            <span className="font-medium">위치:</span>{" "}
+                            {item.location}
+                          </p>
+                          {item.type === "행사" && item.date && (
+                            <p className="text-xs text-gray-600 truncate">
+                              <span className="font-medium">기간:</span>{" "}
+                              {item.date}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-600 mb-1 truncate">
-                        <span className="font-medium">위치:</span>{" "}
-                        {item.location}
-                      </p>
-                      {item.type === "행사" && item.date && (
-                        <p className="text-xs text-gray-600 truncate">
-                          <span className="font-medium">기간:</span> {item.date}
-                        </p>
-                      )}
-                    </div>
+                  ))
+                ) : (
+                  <div className="w-full h-[250px] flex items-center justify-center text-gray-500 text-lg">
+                    {type === "행사"
+                      ? "즐겨찾기한 행사가 없습니다."
+                      : "즐겨찾기한 문화재가 없습니다."}
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="w-full h-[250px] flex items-center justify-center text-gray-500 text-lg">
-                {type === "행사"
-                  ? "즐겨찾기한 행사가 없습니다."
-                  : "즐겨찾기한 문화재가 없습니다."}
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           {items.length > 0 && (
