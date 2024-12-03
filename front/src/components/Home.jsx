@@ -25,10 +25,10 @@ const Home = () => {
     dispatch(fetchEvent())
       .unwrap()
       .then((result) => {
-        console.log("Fetch success:", result);
+        // console.log("Fetch success:", result);
       })
       .catch((error) => {
-        console.error("Fetch error:", error);
+        // console.error("Fetch error:", error);
       });
   }, [dispatch]);
 
