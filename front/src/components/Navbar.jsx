@@ -96,7 +96,7 @@ const Navbar = () => {
       return (
         <Link
           to="/signup"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
         >
           회원가입
         </Link>
@@ -107,7 +107,7 @@ const Navbar = () => {
       return (
         <button
           onClick={() => navigate("/login")}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
         >
           <LogInIcon className="h-4 w-4 mr-2" />
           로그인
@@ -119,14 +119,14 @@ const Navbar = () => {
       <>
         <button
           onClick={() => navigate("/login")}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
         >
           {!isMobile && <LogInIcon className="h-4 w-4 mr-2" />}
           로그인
         </button>
         <Link
           to="/signup"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
         >
           회원가입
         </Link>
@@ -146,7 +146,7 @@ const Navbar = () => {
                 alt="Logo"
                 className="h-16 w-16 md:h-20 md:w-20 mr-1"
               />
-              <span className="text-2xl md:text-3xl font-bold hidden lg:block">
+              <span className=" text-2xl md:text-3xl font-bold hidden lg:block">
                 유산지기
               </span>
             </Link>

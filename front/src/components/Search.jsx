@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
@@ -64,7 +64,7 @@ const SearchPage = () => {
           return;
         }
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
+        setError("데이터를 불러오는데 ��패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
       }
@@ -120,40 +120,59 @@ const SearchPage = () => {
     }
   };
 
-  const handleStarClick = useCallback(
-    (heritage) => {
-      if (!isLoggedIn) {
-        setError(
-          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
-        );
-        return;
-      }
+  const isFavorite = (item) => {
+    return heritages.some((heritage) => heritage.ccbaMnm1 === item.ccbaMnm1);
+  };
 
-      const isAlreadySelected = heritages.some(
-        (h) => h.ccbaKdcd === heritage.ccbaKdcd
+  const handleStarClick = async (heritage) => {
+    if (!isLoggedIn) {
+      setError(
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
       );
+      return;
+    }
 
+    const isAlreadySelected = isFavorite(heritage);
+
+    try {
       if (isAlreadySelected) {
         dispatch(
           removeFavorite({
-            id: heritage.ccbaKdcd,
             type: "heritage",
+            id: heritage.ccbaMnm1,
           })
         );
-        setSuccessMessage("즐겨찾기가 해제되었습니다.");
       } else {
-        dispatch(
-          addFavorite({
-            ...heritage,
-            id: heritage.ccbaKdcd,
-            type: "heritage",
-          })
-        );
-        setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        const heritageData = {
+          type: "heritage",
+          id: heritage.ccbaMnm1,
+          ccbaMnm1: heritage.ccbaMnm1,
+          ccbaLcad: heritage.ccbaLcad,
+          content: heritage.content || heritage.ccbaCtcdNm,
+          imageUrl: heritage.imageUrl || heritage.ccbaAsno,
+          ccbaKdcd: heritage.ccbaKdcd,
+          ccceName: heritage.ccceName,
+        };
+
+        dispatch(addFavorite(heritageData));
       }
-    },
-    [isLoggedIn, dispatch, heritages]
-  );
+
+      handleFavoriteChange(heritage.ccbaKdcd, !isAlreadySelected);
+
+      setSuccessMessage(
+        isAlreadySelected
+          ? "즐겨찾기가 해제되었습니다."
+          : "즐겨찾기에 추가되었습니다."
+      );
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+    } catch (error) {
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setError("즐겨찾기 처리 중 오류가 발생했습니다.");
+    }
+  };
 
   const closeError = () => {
     setError("");
@@ -229,7 +248,7 @@ const SearchPage = () => {
             className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
           />
           <button
-            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center hover:bg-[#191934] hover:text-white"
+            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:bg-blue-700 hover:text-white"
             onClick={handleSearch}
             aria-label="검색하기"
           >
@@ -239,26 +258,25 @@ const SearchPage = () => {
 
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="text-center text-sm md:text-base">
+            <div className="text-center text-sm md:text-base SubFont">
               데이터를 불러오는 중...
             </div>
           ) : (
             <ul>
               {filteredData.map((item, index) => (
-                <li key={index} className="my-3 md:my-5 flex items-center">
+                <li
+                  key={item.ccbaKdcd || index}
+                  className="my-3 md:my-5 flex items-center"
+                >
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
-                        ? "text-yellow-400"
-                        : "text-gray-300"
+                      isFavorite(item) ? "text-yellow-400" : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
-                        ? "해제"
-                        : "추가"
+                      isFavorite(item) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />

@@ -300,35 +300,22 @@ const Map = ({ selectedLocation }) => {
     <div>
       <div className="map-loading-error-container fixed z-[9999] w-[80%] bg-white">
         {isLoading && (
-          <div style={{ textAlign: "center", padding: "20px" }}>
+          <div className="SubFont text-center p-[20px]">
             지도를 불러오는 중...
           </div>
         )}
-
         {error && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "20px",
-              color: "red",
-              backgroundColor: "#ffe6e6",
-              borderRadius: "4px",
-              margin: "10px",
-            }}
-          >
+          <div className="text-center p-5 text-red-600 bg-red-100 rounded-md m-2.5">
             {error}
           </div>
         )}
       </div>
 
       <div
+        className={`w-full h-[888px] border border-gray-300 ${
+          error ? "none" : "block"
+        }`}
         ref={mapRef}
-        style={{
-          width: "100%",
-          height: "888px",
-          border: "1px solid #ccc",
-          display: error ? "none" : "block",
-        }}
       />
     </div>
   );
