@@ -17,40 +17,45 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
     setIsFavorite(favoriteStatus);
   }, [heritages, item.ccbaMnm1]);
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = async () => {
     if (!isLoggedIn) {
       setAlertMessage("로그인이 필요한 서비스입니다.");
       return;
     }
 
-    if (isFavorite) {
-      dispatch(
-        removeFavorite({
-          type: "heritage",
-          id: item.ccbaMnm1,
-        })
-      );
-      setAlertMessage("즐겨찾기가 해제되었습니다.");
-      if (onFavoriteChange) {
-        onFavoriteChange(item.ccbaKdcd, false);
+    try {
+      if (isFavorite) {
+        dispatch(
+          removeFavorite({
+            type: "heritage",
+            id: item.ccbaMnm1,
+          })
+        );
+      } else {
+        dispatch(
+          addFavorite({
+            type: "heritage",
+            id: item.ccbaMnm1,
+            ccbaMnm1: item.ccbaMnm1,
+            ccbaLcad: item.ccbaLcad,
+            content: item.content,
+            imageUrl: item.imageUrl,
+            ccbaKdcd: item.ccbaKdcd,
+            ccceName: item.ccceName,
+          })
+        );
       }
-    } else {
-      dispatch(
-        addFavorite({
-          type: "heritage",
-          id: item.ccbaMnm1,
-          ccbaMnm1: item.ccbaMnm1,
-          ccbaLcad: item.ccbaLcad,
-          content: item.content,
-          imageUrl: item.imageUrl,
-          ccbaKdcd: item.ccbaKdcd,
-          ccceName: item.ccceName,
-        })
+
+      setAlertMessage(
+        isFavorite ? "즐겨찾기가 해제되었습니다." : "즐겨찾기에 추가되었습니다."
       );
-      setAlertMessage("즐겨찾기에 추가되었습니다.");
+
       if (onFavoriteChange) {
-        onFavoriteChange(item.ccbaKdcd, true);
+        onFavoriteChange(item.ccbaKdcd, !isFavorite);
       }
+    } catch (error) {
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setAlertMessage("즐겨찾기 처리 중 오류가 발생했습니다.");
     }
   };
 
