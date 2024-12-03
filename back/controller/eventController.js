@@ -18,7 +18,7 @@ exports.getEvents = (req, res) => {
       host_inst_nm: event.HOST_INST_NM,
     }));
 
-    const limitedEvents = events.slice(0, 6);
+    const limitedEvents = events.slice(0, 10);
     // Send response
     res.status(200).json(limitedEvents);
   } catch (error) {

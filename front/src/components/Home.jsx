@@ -9,6 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -33,10 +34,7 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (swiperInstance) {
-      // Swiper navigation 재설정
-      swiperInstance.params.navigation.prevEl = prevRef.current;
-      swiperInstance.params.navigation.nextEl = nextRef.current;
+    if (swiperInstance?.navigation && prevRef.current && nextRef.current) {
       swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
@@ -70,12 +68,23 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <div className="flex flex-col items-center bg-gray-300">
-        <h1 className="main-text">
-          문화재 행사 안내
-          <p className="SubFont">전국 축제 행사 일정</p>
-        </h1>
-
+      <div className="w-full max-w-6xl mx-auto px-4 relative">
+        <Link
+          to="/Event_schedule"
+          className="absolute right-5 top-11 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out"
+          style={{
+            width: "200px",
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span className="text-center">상세페이지</span>
+        </Link>
+      </div>
+      <div className="flex flex-col items-center bg-white w-full">
+        <h1 className="main-text">문화재 행사 안내</h1>
         {event.length === 0 ? (
           <p>표시할 행사 데이터가 없습니다.</p>
         ) : (
@@ -84,14 +93,21 @@ const Home = () => {
               modules={[Navigation, Pagination]}
               spaceBetween={25}
               slidesPerView={3}
-              onSwiper={setSwiperInstance} // Swiper 인스턴스 저장
+              onSwiper={setSwiperInstance}
+              navigation={{
+                prevEl: prevRef.current,
+                nextEl: nextRef.current,
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
                 dynamicMainBullets: 10,
                 el: ".pagination-bullets",
+                bulletClass: "swiper-pagination-bullet custom-bullet",
+                bulletActiveClass:
+                  "swiper-pagination-bullet-active custom-bullet-active",
               }}
-              className="relative py-10 pb-20"
+              className="relative py-10 pb-20 custom-pagination"
             >
               {event.slice(0, 10).map((event) => (
                 <SwiperSlide key={event.title}>
@@ -132,24 +148,25 @@ const Home = () => {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="bg-gray-300 flex items-center justify-center w-full">
+            <div className="bg-white flex items-center justify-center w-full">
               <div className="pagination-bullets-container relative w-full max-w-6xl mx-auto px-4 py-8">
                 <button
                   ref={prevRef}
-                  className="bg-white rounded-full p-2 shadow-lg z-10"
+                  className="absolute left-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
                   aria-label="이전 축제"
                 >
-                  &lt;
+                  <IoIosArrowBack size={24} />
                 </button>
                 <div className="pagination-bullets">
                   <div className="swiper-pagination"></div>
                 </div>
+
                 <button
                   ref={nextRef}
-                  className="bg-white rounded-full p-2 shadow-lg z-10"
+                  className="absolute right-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
                   aria-label="다음 축제"
                 >
-                  &gt;
+                  <IoIosArrowForward size={24} />
                 </button>
               </div>
             </div>
