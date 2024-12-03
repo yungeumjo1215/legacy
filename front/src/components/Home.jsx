@@ -73,7 +73,7 @@ const Home = () => {
         <div className="w-full max-w-[1600px] mx-auto px-4 mb-8 flex justify-end">
           <Link
             to="/event_schedule"
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
+            className="bg-blue-900 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
             style={{
               width: "clamp(120px, 15vw, 200px)",
               height: "clamp(35px, 5vw, 50px)",
@@ -176,7 +176,7 @@ const Home = () => {
               <div className="pagination-bullets-container relative w-full max-w-6xl mx-auto px-4 py-8">
                 <button
                   ref={prevRef}
-                  className="absolute left-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
+                  className="absolute left-4 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
                   aria-label="이전 축제"
                 >
                   <IoIosArrowBack size={24} />
@@ -187,7 +187,7 @@ const Home = () => {
 
                 <button
                   ref={nextRef}
-                  className="absolute right-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
+                  className="absolute right-4 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg z-10 transition-all duration-300 ease-in-out"
                   aria-label="다음 축제"
                 >
                   <IoIosArrowForward size={24} />

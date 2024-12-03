@@ -192,7 +192,7 @@ const Navbar = () => {
 
       {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-blue-800" ref={modalRef}>
+        <div className="lg:hidden bg-blue-900" ref={modalRef}>
           <div className="pt-2 pb-3 space-y-1">
             {navigationItems.map((item) => (
               <Link
