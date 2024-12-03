@@ -69,7 +69,7 @@ const Home = () => {
         </div>
       </div>
       <div className="flex flex-col items-center bg-white w-full">
-        <h1 className="main-text">문화 행사 안내</h1>
+        <h1 className="main-text text-black">문화 행사 안내</h1>
         <div className="w-full max-w-[1600px] mx-auto px-4 mb-8 flex justify-end">
           <Link
             to="/event_schedule"

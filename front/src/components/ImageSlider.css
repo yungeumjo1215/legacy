@@ -4,8 +4,8 @@
   margin-top: 20px;
   margin-left: 20px;
   font-size: 3.5rem;
-  color: #1e3a8a;
-  font-family: "Do Hyeon";
+  color: rgb(30, 58, 138);
+  font-family: "Jua", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
   margin-left: 20px;
   font-size: 1.5rem;
   color: #333;
-  font-family: "Noto Sans Korean";
+  font-family: "SubFont";
   font-weight: 400;
   font-style: normal;
 }
