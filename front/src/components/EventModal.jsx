@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const EventModal = ({ event, onClose }) => {
   const dispatch = useDispatch();
+  // festivals 상태 변화를 실시간으로 감지
   const { festivals } = useSelector((state) => state.favorites);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [alertMessage, setAlertMessage] = useState("");
@@ -12,6 +13,10 @@ const EventModal = ({ event, onClose }) => {
   const isFavorite = festivals.some(
     (festival) => festival.programName === event.programName
   );
+  // useEffect를 추가하여 상태 변화 모니터링
+  useEffect(() => {
+    console.log("즐겨찾기 상태 변경:", festivals);
+  }, [festivals]);
 
   const handleFavoriteClick = () => {
     if (!isLoggedIn) {

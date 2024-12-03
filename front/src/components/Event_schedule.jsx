@@ -13,16 +13,16 @@ import axios from "../api/axios";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const REGIONS = [
-  { id: "all", name: "전체", sido: null }, // 전체 보기
+  { id: "all", name: "전체", sido: null },
   { id: "seoul", name: "서울", sido: "서울특별시" },
   { id: "incheon", name: "인천", sido: "인천광역시" },
   { id: "busan", name: "부산", sido: "부산광역시" },
   { id: "ulsan", name: "울산", sido: "울산광역시" },
   { id: "gyeonggi", name: "경기도", sido: "경기도" },
   { id: "gangwon", name: "강원도", sido: "강원도" },
-  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] }, // 충청남도 포함 가능
-  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] }, // 경상남도 포함 가능
-  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] }, // 전라남도 포함 가능
+  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] },
+  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] },
+  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] },
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
 
@@ -167,17 +167,21 @@ const EventSchedule = () => {
     error: fetchError,
   } = useSelector((state) => state.festival);
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { items: favorites } = useSelector((state) => state.favorites);
+  const { festivals } = useSelector((state) => state.favorites); // 추가된 부분
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
-  const [selectedItems, setSelectedItems] = useState(() => {
-    const saved = localStorage.getItem("selectedFestivals");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const isEventStarred = useCallback(
+    (programName) => {
+      return festivals.some((festival) => festival.programName === programName);
+    },
+    [festivals]
+  );
 
   useEffect(() => {
     const year = date.getFullYear();
@@ -205,17 +209,14 @@ const EventSchedule = () => {
 
         let matchesRegion = selectedRegion === "all";
 
-        // Ensure sido is processed correctly
         if (!matchesRegion && festival.sido) {
           let regionSido;
           if (Array.isArray(festival.sido)) {
-            // If `sido` is an array, use the first element
             regionSido = festival.sido[0]?.toLowerCase() || "";
           } else if (typeof festival.sido === "string") {
-            // If `sido` is a string, use it directly
             regionSido = festival.sido.toLowerCase();
           } else {
-            regionSido = ""; // Fallback for unexpected types
+            regionSido = "";
           }
 
           switch (selectedRegion) {
@@ -543,10 +544,9 @@ const EventSchedule = () => {
                   <EventItem
                     key={`${festival.programName}-${index}`}
                     event={festival}
-                    isStarred={selectedItems.includes(festival.programName)}
+                    isStarred={isEventStarred(festival.programName)} // festivals 사용
                     handleStarClick={handleStarClick}
                     onEventClick={handleEventClick}
-                    className=""
                   />
                 ))
               ) : (
