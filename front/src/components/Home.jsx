@@ -137,7 +137,7 @@ const Home = () => {
               {event.slice(0, 10).map((event) => (
                 <SwiperSlide key={event.title}>
                   <Link
-                    to={`/event/${event.title}`}
+                    to={`/event_schedule`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
                     <div className="relative h-[500px]">
