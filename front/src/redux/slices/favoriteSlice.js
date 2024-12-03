@@ -1,13 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  heritages: [],
-  festivals: [],
+// localStorage에서 초기 상태 불러오기
+const loadInitialState = () => {
+  try {
+    const savedHeritages = localStorage.getItem("favoriteHeritages");
+    const savedFestivals = localStorage.getItem("favoriteFestivals");
+    return {
+      heritages: savedHeritages ? JSON.parse(savedHeritages) : [],
+      festivals: savedFestivals ? JSON.parse(savedFestivals) : [],
+    };
+  } catch (error) {
+    console.error("Error loading favorites from localStorage:", error);
+    return {
+      heritages: [],
+      festivals: [],
+    };
+  }
 };
 
 const favoriteSlice = createSlice({
   name: "favorites",
-  initialState,
+  initialState: loadInitialState(),
   reducers: {
     addFavorite: (state, action) => {
       if (action.payload.type === "event") {
