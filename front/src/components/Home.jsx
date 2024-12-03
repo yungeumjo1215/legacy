@@ -68,23 +68,24 @@ const Home = () => {
           ></video>
         </div>
       </div>
-      <div className="w-full max-w-6xl mx-auto px-4 relative">
-        <Link
-          to="/Event_schedule"
-          className="absolute right-5 top-11 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out"
-          style={{
-            width: "200px",
-            height: "50px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span className="text-center">상세페이지</span>
-        </Link>
-      </div>
       <div className="flex flex-col items-center bg-white w-full">
         <h1 className="main-text">문화재 행사 안내</h1>
+        <div className="w-full max-w-6xl mx-auto px-4 mb-8 flex justify-end">
+          <Link
+            to="/Event_schedule"
+            className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
+            style={{
+              width: "clamp(120px, 15vw, 200px)",
+              height: "clamp(35px, 5vw, 50px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "clamp(14px, 1.5vw, 16px)",
+            }}
+          >
+            <span className="text-center">상세페이지</span>
+          </Link>
+        </div>
         {event.length === 0 ? (
           <p>표시할 행사 데이터가 없습니다.</p>
         ) : (
@@ -106,6 +107,23 @@ const Home = () => {
                 bulletClass: "swiper-pagination-bullet custom-bullet",
                 bulletActiveClass:
                   "swiper-pagination-bullet-active custom-bullet-active",
+              }}
+              breakpoints={{
+                // 320px 이상일 때
+                320: {
+                  slidesPerView: 1,
+                  spaceBetween: 10,
+                },
+                // 768px 이상일 때
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 20,
+                },
+                // 1024px 이상일 때
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 25,
+                },
               }}
               className="relative py-10 pb-20 custom-pagination"
             >
