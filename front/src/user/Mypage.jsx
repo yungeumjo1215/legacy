@@ -47,7 +47,7 @@ const MyPage = () => {
               </div>
             </div>
           </div>
-          <div className="h-[calc(80%-4rem)] p-8 bg-white rounded-lg shadow-lg w-full">
+          <div className="h-full p-8 bg-white rounded-lg shadow-lg w-full col-span-5">
             <FavoriteList />
           </div>
         </div>
