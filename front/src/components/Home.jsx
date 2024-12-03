@@ -94,6 +94,7 @@ const Home = () => {
               modules={[Navigation, Pagination]}
               spaceBetween={25}
               slidesPerView={3}
+              loop={true}
               onSwiper={setSwiperInstance}
               navigation={{
                 prevEl: prevRef.current,
