@@ -83,7 +83,7 @@ const Home = () => {
               fontSize: "clamp(14px, 1.5vw, 16px)",
             }}
           >
-            <span className="text-center">상세페이지</span>
+            <span className="text-center SubFont">상세페이지</span>
           </Link>
         </div>
         {event.length === 0 ? (
