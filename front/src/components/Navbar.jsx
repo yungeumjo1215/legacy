@@ -138,21 +138,27 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* 로고 */}
+          {/* 로고*/}
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <img src={logo_w} alt="Logo" className="h-20 w-20 mr-1" />
-              <span className="text-3xl font-bold">유산지기</span>
+              <img
+                src={logo_w}
+                alt="Logo"
+                className="h-16 w-16 md:h-20 md:w-20 mr-1"
+              />
+              <span className="text-2xl md:text-3xl font-bold hidden lg:block">
+                유산지기
+              </span>
             </Link>
           </div>
 
           {/* 데스크톱 네비게이션 */}
-          <div className="hidden lg:flex flex-grow justify-center space-x-8">
+          <div className="hidden md:flex lg:flex-grow justify-center items-center space-x-4 lg:space-x-8">
             {navigationItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`px-3 py-2 rounded-md text-base font-medium ${
+                className={`px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-colors duration-200 ${
                   location.pathname === item.path
                     ? "bg-blue-700 text-white"
                     : "text-white hover:bg-blue-700"
@@ -164,12 +170,12 @@ const Navbar = () => {
           </div>
 
           {/* 데스크톱 인증 버튼 */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             {renderAuthButtons()}
           </div>
 
           {/* 모바일 메뉴 버튼 */}
-          <div className="flex items-center lg:hidden">
+          <div className="flex items-center md:hidden">
             <button
               className="p-2 rounded-md text-white focus:outline-none"
               onClick={handleMenuButtonClick} // onClick 핸들러 변경
