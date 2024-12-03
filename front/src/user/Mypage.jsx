@@ -35,8 +35,8 @@ const MyPage = () => {
     content: heritage.content || heritage.ccbaCtcdNm || "설명 정보 없음",
   }));
 
-  const favoriteEvents = festivals.map((festival, index) => ({
-    id: `event-${index}`,
+  const favoriteEvents = festivals.map((festival) => ({
+    id: festival.programName, // 프로그램 이름을 id로 사용
     name: festival.programName,
     type: "행사",
     image: festival.image || null,
@@ -229,7 +229,7 @@ const MyPage = () => {
           <div className="flex justify-center">
             <div
               ref={ref}
-              className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide relative w-full xl:w-[1400px] min-h-[280px]"
+              className="flex overflow-x-auto gap-4 pb-4 relative w-full xl:w-[1400px] min-h-[280px]"
             >
               <div className="flex gap-4 w-full">
                 {items.length > 0 ? (
