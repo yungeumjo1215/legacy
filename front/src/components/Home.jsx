@@ -69,8 +69,8 @@ const Home = () => {
         </div>
       </div>
       <div className="flex flex-col items-center bg-white w-full">
-        <h1 className="main-text">문화재 행사 안내</h1>
-        <div className="w-full max-w-6xl mx-auto px-4 mb-8 flex justify-end">
+        <h1 className="main-text">문화 행사 안내</h1>
+        <div className="w-full max-w-[1600px] mx-auto px-4 mb-8 flex justify-end">
           <Link
             to="/event_schedule"
             className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
@@ -89,11 +89,11 @@ const Home = () => {
         {event.length === 0 ? (
           <p>표시할 행사 데이터가 없습니다.</p>
         ) : (
-          <div className="w-full h-[800px] max-w-6xl mx-auto px-4">
+          <div className="w-full h-[800px] max-w-[1600px] mx-auto px-4">
             <Swiper
               modules={[Navigation, Pagination]}
-              spaceBetween={25}
-              slidesPerView={3}
+              spaceBetween={20}
+              slidesPerView={4}
               loop={true}
               onSwiper={setSwiperInstance}
               navigation={{
@@ -118,12 +118,17 @@ const Home = () => {
                 // 768px 이상일 때
                 768: {
                   slidesPerView: 2,
-                  spaceBetween: 20,
+                  spaceBetween: 15,
                 },
                 // 1024px 이상일 때
                 1024: {
                   slidesPerView: 3,
-                  spaceBetween: 25,
+                  spaceBetween: 20,
+                },
+                // 1280px 이상일 때 (새로 추가)
+                1280: {
+                  slidesPerView: 4,
+                  spaceBetween: 20,
                 },
               }}
               className="relative py-10 pb-20 custom-pagination"
