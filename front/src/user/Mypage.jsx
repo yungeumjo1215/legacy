@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
-import Modal from "../components/Modal";
-import EventModal from "../components/EventModal";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
