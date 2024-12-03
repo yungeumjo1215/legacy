@@ -12,14 +12,11 @@ import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 const SearchPage = () => {
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { heritages } = useSelector((state) => state.favorites);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [heritageData, setHeritageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedItems, setSelectedItems] = useState(() => {
-    const saved = localStorage.getItem("selectedHeritages");
-    return saved ? JSON.parse(saved) : [];
-  });
   const [error, setError] = useState("");
   const [selectedHeritage, setSelectedHeritage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,32 +26,6 @@ const SearchPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
 
-  // 즐겨찾기 상태 저장
-  useEffect(() => {
-    if (isLoggedIn && selectedItems.length > 0) {
-      localStorage.setItem("selectedHeritages", JSON.stringify(selectedItems));
-    }
-  }, [selectedItems, isLoggedIn]);
-
-  // 로그인 상태 변경 시 즐겨찾기 처리
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setSelectedItems([]);
-      localStorage.removeItem("selectedHeritages");
-    } else {
-      const saved = localStorage.getItem("selectedHeritages");
-      if (saved) {
-        try {
-          setSelectedItems(JSON.parse(saved));
-        } catch (error) {
-          console.error("저장된 즐겨찾기 불러오기 실패:", error);
-          localStorage.removeItem("selectedHeritages");
-        }
-      }
-    }
-  }, [isLoggedIn]);
-
-  // 디바운스 처리
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -63,7 +34,6 @@ const SearchPage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // 디바운스된 검색어로 검색 실행
   useEffect(() => {
     if (debouncedSearchTerm) {
       handleSearch();
@@ -86,7 +56,7 @@ const SearchPage = () => {
           throw new Error("데이터를 불러오는데 실패했습니다");
         }
 
-        const slicedData = response.data.slice(0, 10); // 문화재 갯수 조절
+        const slicedData = response.data.slice(0, 10);
         setHeritageData(slicedData);
         setFilteredData(slicedData);
       } catch (error) {
@@ -105,7 +75,6 @@ const SearchPage = () => {
     return () => controller.abort();
   }, []);
 
-  // 검색 결과 메모이제이션
   const filteredResults = useMemo(() => {
     return heritageData.filter((item) =>
       item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase())
@@ -129,7 +98,7 @@ const SearchPage = () => {
   const handleHeritageClick = async (item) => {
     setSelectedHeritage(item);
     setModalOpen(true);
-    setIsSidebarOpen(false); // 모바일에서 항목 선택 시 사이드바 닫기
+    setIsSidebarOpen(false);
 
     try {
       const response = await axios.get(
@@ -160,7 +129,9 @@ const SearchPage = () => {
         return;
       }
 
-      const isAlreadySelected = selectedItems.includes(heritage.ccbaMnm1);
+      const isAlreadySelected = heritages.some(
+        (h) => h.ccbaKdcd === heritage.ccbaKdcd
+      );
 
       if (isAlreadySelected) {
         dispatch(
@@ -180,15 +151,8 @@ const SearchPage = () => {
         );
         setSuccessMessage("즐겨찾기에 추가되었습니다.");
       }
-
-      setSelectedItems((prev) => {
-        const newItems = isAlreadySelected
-          ? prev.filter((item) => item !== heritage.ccbaMnm1)
-          : [...prev, heritage.ccbaMnm1];
-        return newItems;
-      });
     },
-    [isLoggedIn, selectedItems, dispatch]
+    [isLoggedIn, dispatch, heritages]
   );
 
   const closeError = () => {
@@ -205,42 +169,22 @@ const SearchPage = () => {
     setSelectedHeritage(null);
   };
 
-  // 로그인 상태 변경 시 즐겨찾기 동기화
-  useEffect(() => {
-    const loadFavorites = async () => {
-      if (isLoggedIn) {
-        const userId = localStorage.getItem("userId");
-        const token = localStorage.getItem("token");
-
-        if (userId && token) {
-          try {
-            const response = await axios.get(`/favorites/${userId}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const heritageNames = response.data
-              .filter((fav) => fav.type === "heritage")
-              .map((fav) => fav.ccbaMnm1);
-            setSelectedItems(heritageNames);
-          } catch (error) {
-            console.error("즐겨찾기 목록 로드 중 오류:", error);
-          }
-        }
-      } else {
-        setSelectedItems([]);
-        localStorage.removeItem("selectedHeritages");
-      }
-    };
-
-    loadFavorites();
-  }, [isLoggedIn]);
-
   const closeSuccessMessage = () => {
     setSuccessMessage("");
   };
 
+  const handleFavoriteChange = (id, isFavorite) => {
+    const updatedData = filteredData.map((item) => {
+      if (item.ccbaKdcd === id) {
+        return { ...item, isFavorite };
+      }
+      return item;
+    });
+    setFilteredData(updatedData);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
-      {/* 사이드바 토글 버튼 */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="fixed top-20 left-4 z-20 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 md:hidden"
@@ -249,7 +193,6 @@ const SearchPage = () => {
         <MenuIcon className="text-xl" />
       </button>
 
-      {/* 사이드바 오버레이 */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"
@@ -257,7 +200,6 @@ const SearchPage = () => {
         />
       )}
 
-      {/* 사이드바 */}
       <div
         className={`
         w-[280px] md:w-[320px] lg:w-[380px]
@@ -276,7 +218,6 @@ const SearchPage = () => {
         transition-all duration-300 ease-in-out
       `}
       >
-        {/* 검색 입력 영역 */}
         <div className="mb-3 md:mb-5 flex">
           <input
             type="text"
@@ -296,7 +237,6 @@ const SearchPage = () => {
           </button>
         </div>
 
-        {/* 검색 결과 리스트 */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="text-center text-sm md:text-base">
@@ -309,14 +249,16 @@ const SearchPage = () => {
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      selectedItems.includes(item.ccbaMnm1)
+                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
                         ? "text-yellow-400"
                         : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      selectedItems.includes(item.ccbaMnm1) ? "해제" : "추가"
+                      heritages.some((h) => h.ccbaKdcd === item.ccbaKdcd)
+                        ? "해제"
+                        : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
@@ -335,7 +277,6 @@ const SearchPage = () => {
         </div>
       </div>
 
-      {/* 지도 영역 */}
       <div
         className={`
         flex-grow 
@@ -347,7 +288,6 @@ const SearchPage = () => {
         <Map selectedLocation={selectedLocation} />
       </div>
 
-      {/* 에러 모달 */}
       {error && (
         <>
           <div
@@ -385,7 +325,6 @@ const SearchPage = () => {
         </>
       )}
 
-      {/* 성공 메시지 모달 */}
       {successMessage && (
         <>
           <div
@@ -414,9 +353,12 @@ const SearchPage = () => {
         </>
       )}
 
-      {/* 상세 정보 모달 */}
       {modalOpen && selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={handleCloseModal} />
+        <Modal
+          item={selectedHeritage}
+          onClose={handleCloseModal}
+          onFavoriteChange={handleFavoriteChange}
+        />
       )}
     </div>
   );
