@@ -5,7 +5,6 @@ import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
@@ -389,18 +388,6 @@ const EventSchedule = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <h1 className="MainFont md:text-5xl text-center sm:text-left text-4xl text-gray-900 mb-8">
           문화재 행사 정보
