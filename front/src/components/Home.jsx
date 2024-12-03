@@ -75,12 +75,12 @@ const Home = () => {
             to="/event_schedule"
             className="bg-blue-900 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
             style={{
-              width: "clamp(120px, 15vw, 200px)",
+              width: "clamp(120px, 15vw, 160px)",
               height: "clamp(35px, 5vw, 50px)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "clamp(16px, 1.2vw, 20px)",
+              fontSize: "clamp(18px, 1.2vw, 22px)",
             }}
           >
             <span className="text-center SubFont">상세페이지</span>
