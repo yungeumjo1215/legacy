@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEvent } from "../redux/slices/eventSlice";
 import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4"; // 배경 영상
+import b1 from "../assets/b1.mp4"; // 배경 영상
+import c1 from "../assets/c1.png"; // 배경 영상
 import "./ImageSlider.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -202,6 +204,27 @@ const Home = () => {
             </div>
           </div>
         )}
+        <div className="w-full max-w-[1600px] h-[400px] mx-auto mt-8 mb-16 px-4">
+          <Link to="/search" className="w-full h-full block">
+            <div className="w-full h-full bg-gray-100 rounded-lg shadow-lg overflow-hidden relative">
+              <video
+                src={b1}
+                autoPlay
+                loop
+                muted
+                className="w-full h-full object-cover"
+              ></video>
+              <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-start items-start text-white p-8">
+                <h2 className="MainFont text-4xl font-bold mb-4">
+                  국가 유산 위치 검색
+                </h2>
+                <p className="SubFont text-sm max-w-2xl">
+                  국가유산 정보와 지도 정보가 결합한 공간 정보 활용체계입니다.
+                </p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
