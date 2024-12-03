@@ -307,15 +307,13 @@ const MyPage = () => {
             <>
               <button
                 onClick={() => scroll(ref, "left")}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 z-10 xl:flex hidden items-center justify-center"
-                style={{ transform: "translate(0, -50%)" }}
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 z-10 xl:flex hidden items-center justify-center "
               >
                 <IoChevronBack size={24} />
               </button>
               <button
                 onClick={() => scroll(ref, "right")}
                 className="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 z-10 xl:flex hidden items-center justify-center"
-                style={{ transform: "translate(0, -50%)" }}
               >
                 <IoChevronForward size={24} />
               </button>
