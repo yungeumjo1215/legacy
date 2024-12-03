@@ -243,7 +243,7 @@ const SearchPage = () => {
 
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="text-center text-sm md:text-base">
+            <div className="text-center text-sm md:text-base SubFont">
               데이터를 불러오는 중...
             </div>
           ) : (
