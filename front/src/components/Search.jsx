@@ -16,12 +16,12 @@ const SearchPage = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [heritageData, setHeritageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedItems, setSelectedItems] = useState(() => {
+  const [favoriteItems, setFavoriteItems] = useState(() => {
     const saved = localStorage.getItem("selectedHeritages");
     return saved ? JSON.parse(saved) : [];
   });
   const [error, setError] = useState("");
-  const [selectedHeritage, setSelectedHeritage] = useState(null);
+  const [favoriteHeritages, setFavoriteHeritages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -31,24 +31,24 @@ const SearchPage = () => {
 
   // 즐겨찾기 상태 저장
   useEffect(() => {
-    if (isLoggedIn && selectedItems.length > 0) {
-      localStorage.setItem("selectedHeritages", JSON.stringify(selectedItems));
+    if (isLoggedIn && favoriteItems.length > 0) {
+      localStorage.setItem("favoriteHeritages", JSON.stringify(favoriteItems));
     }
-  }, [selectedItems, isLoggedIn]);
+  }, [favoriteItems, isLoggedIn]);
 
   // 로그인 상태 변경 시 즐겨찾기 처리
   useEffect(() => {
     if (!isLoggedIn) {
-      setSelectedItems([]);
-      localStorage.removeItem("selectedHeritages");
+      setFavoriteHeritages([]);
+      localStorage.removeItem("favoriteHeritages");
     } else {
-      const saved = localStorage.getItem("selectedHeritages");
+      const saved = localStorage.getItem("favoriteHeritages");
       if (saved) {
         try {
-          setSelectedItems(JSON.parse(saved));
+          setFavoriteHeritages(JSON.parse(saved));
         } catch (error) {
           console.error("저장된 즐겨찾기 불러오기 실패:", error);
-          localStorage.removeItem("selectedHeritages");
+          localStorage.removeItem("favoriteHeritages");
         }
       }
     }
@@ -127,7 +127,7 @@ const SearchPage = () => {
   };
 
   const handleHeritageClick = async (item) => {
-    setSelectedHeritage(item);
+    setFavoriteHeritages(item);
     setModalOpen(true);
     setIsSidebarOpen(false); // 모바일에서 항목 선택 시 사이드바 닫기
 
@@ -160,7 +160,7 @@ const SearchPage = () => {
         return;
       }
 
-      const isAlreadySelected = selectedItems.includes(heritage.ccbaMnm1);
+      const isAlreadySelected = favoriteItems.includes(heritage.ccbaMnm1);
 
       if (isAlreadySelected) {
         dispatch(
@@ -181,14 +181,14 @@ const SearchPage = () => {
         setSuccessMessage("즐겨찾기에 추가되었습니다.");
       }
 
-      setSelectedItems((prev) => {
+      setFavoriteItems((prev) => {
         const newItems = isAlreadySelected
           ? prev.filter((item) => item !== heritage.ccbaMnm1)
           : [...prev, heritage.ccbaMnm1];
         return newItems;
       });
     },
-    [isLoggedIn, selectedItems, dispatch]
+    [isLoggedIn, favoriteItems, dispatch]
   );
 
   const closeError = () => {
@@ -202,7 +202,7 @@ const SearchPage = () => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
-    setSelectedHeritage(null);
+    setFavoriteHeritages(null);
   };
 
   // 로그인 상태 변경 시 즐겨찾기 동기화
@@ -220,14 +220,14 @@ const SearchPage = () => {
             const heritageNames = response.data
               .filter((fav) => fav.type === "heritage")
               .map((fav) => fav.ccbaMnm1);
-            setSelectedItems(heritageNames);
+            setFavoriteItems(heritageNames);
           } catch (error) {
             console.error("즐겨찾기 목록 로드 중 오류:", error);
           }
         }
       } else {
-        setSelectedItems([]);
-        localStorage.removeItem("selectedHeritages");
+        setFavoriteItems([]);
+        localStorage.removeItem("favoriteHeritages");
       }
     };
 
@@ -309,14 +309,14 @@ const SearchPage = () => {
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
-                      selectedItems.includes(item.ccbaMnm1)
+                      favoriteItems.includes(item.ccbaMnm1)
                         ? "text-yellow-400"
                         : "text-gray-300"
                     }`}
                     role="button"
                     tabIndex={0}
                     aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
-                      selectedItems.includes(item.ccbaMnm1) ? "해제" : "추가"
+                      favoriteItems.includes(item.ccbaMnm1) ? "해제" : "추가"
                     }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
@@ -415,8 +415,8 @@ const SearchPage = () => {
       )}
 
       {/* 상세 정보 모달 */}
-      {modalOpen && selectedHeritage && (
-        <Modal item={selectedHeritage} onClose={handleCloseModal} />
+      {modalOpen && favoriteHeritages && (
+        <Modal item={favoriteHeritages} onClose={handleCloseModal} />
       )}
     </div>
   );
