@@ -146,7 +146,7 @@ const Navbar = () => {
                 alt="Logo"
                 className="h-16 w-16 md:h-20 md:w-20 mr-1"
               />
-              <span className="text-2xl md:text-3xl font-bold hidden lg:block">
+              <span className=" text-2xl md:text-3xl font-bold hidden lg:block">
                 유산지기
               </span>
             </Link>
