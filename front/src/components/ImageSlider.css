@@ -152,7 +152,7 @@
   opacity: 0.8;
 }
 
-.custom-bullet {
+.swiper-pagination-bullet {
   width: 12px !important;
   height: 12px !important;
   background-color: #aebdd1 !important;
@@ -161,7 +161,7 @@
   transform: scale(0.8);
 }
 
-.custom-bullet-active {
+.swiper-pagination-bullet-active {
   background-color: #3677df !important;
   opacity: 1 !important;
   transform: scale(1.2) !important;

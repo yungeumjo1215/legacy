@@ -105,9 +105,10 @@ const Home = () => {
                 dynamicBullets: true,
                 dynamicMainBullets: 10,
                 el: ".pagination-bullets",
-                bulletClass: "swiper-pagination-bullet custom-bullet",
-                bulletActiveClass:
-                  "swiper-pagination-bullet-active custom-bullet-active",
+                bulletClass: "swiper-pagination-bullet",
+                bulletActiveClass: "swiper-pagination-bullet-active",
+                modifierClass: "custom-pagination-",
+                bulletElement: "span",
               }}
               breakpoints={{
                 // 320px 이상일 때
