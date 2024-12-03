@@ -1,5 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Helper function to send data to the backend
+const sendDataToBackend = async (payload) => {
+  try {
+    const response = await fetch("http://localhost:8000/api/store-favorites", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to send data. Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Data successfully sent to backend:", result);
+  } catch (error) {
+    console.error("Error sending data to backend:", error);
+  }
+};
+
 // localStorage에서 초기 상태 불러오기
 const loadInitialState = () => {
   try {
@@ -85,6 +107,13 @@ const favoriteSlice = createSlice({
         JSON.stringify(state.festivals)
       );
     },
+    syncFavoritesToBackend: (state) => {
+      const payload = {
+        favoriteFestivals: state.festivals,
+        favoriteHeritages: state.heritages,
+      };
+      sendDataToBackend(payload);
+    },
   },
 });
 
@@ -93,6 +122,7 @@ export const {
   removeFavorite,
   clearFavorites,
   fetchUserFavorites,
+  syncFavoritesToBackend,
 } = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;
