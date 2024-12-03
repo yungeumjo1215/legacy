@@ -2,19 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loadInitialState = () => {
   try {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return { heritages: [], festivals: [] };
-
-    const favoriteHeritages = localStorage.getItem("favoriteHeritages");
-    const favoriteFestivals = localStorage.getItem("favoriteFestivals");
-
+    const savedHeritages = localStorage.getItem("favoriteHeritages");
+    const savedFestivals = localStorage.getItem("favoriteFestivals");
     return {
-      heritages: favoriteHeritages ? JSON.parse(favoriteHeritages) : [],
-      festivals: favoriteFestivals ? JSON.parse(favoriteFestivals) : [],
+      heritages: savedHeritages ? JSON.parse(savedHeritages) : [],
+      festivals: savedFestivals ? JSON.parse(savedFestivals) : [],
     };
   } catch (error) {
-    console.error("즐겨찾기 데이터 로드 실패:", error);
-    return { heritages: [], festivals: [] };
+    console.error("Error loading favorites from localStorage:", error);
+    return {
+      heritages: [],
+      festivals: [],
+    };
   }
 };
 
