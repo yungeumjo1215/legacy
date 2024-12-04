@@ -40,19 +40,26 @@ exports.getKGfestival = (req, res) => {
 
     // Extract TITLE and IMAGE_URL
     const festival = data.map((item) => ({
-      programName: item.subTitle || "N/A",
-      programContent: item.subContent || "N/A",
-      startDate: item.sDate || "N/A",
-      endDate: item.eDate || "N/A",
-      location: item.subDesc || "N/A",
-      contact: item.contact || "N/A",
-      sido: item.sido || "N/A",
-      targetAudience: item.subDesc2 || "N/A",
+      programName: [item.subTitle] || "N/A",
+      programContent: [item.subContent] || "N/A",
+      startDate: [item.sDate] || "N/A",
+      endDate: [item.eDate] || "N/A",
+      location: [item.subDesc] || "N/A",
+      contact: [item.contact] || "N/A",
+      sido: [item.sido] || "N/A",
+      targetAudience: [item.subDesc2] || "N/A",
     }));
 
     const limitedFestivals = festival.slice(0, 100000);
-    // Send response
-    res.status(200).json(limitedFestivals);
+    const year = parseInt(req.query.year, 10) || new Date().getFullYear();
+    const month = parseInt(req.query.month, 10) || new Date().getMonth() + 1;
+
+    // Send the structured response
+    res.status(200).json({
+      year,
+      month,
+      data: limitedFestivals,
+    });
   } catch (error) {
     console.error("Error reading or parsing the file:", error.message);
     res.status(500).send("Internal Server Error");
