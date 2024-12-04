@@ -52,7 +52,11 @@ const FavoriteList = () => {
             >
               <div className="flex-1 items-center justify-center">
                 <div className="flex justify-center items-center size-24">
-                  <img src={heritage.imageUrl} alt={heritage.ccbaMnm1} />
+                  <img
+                    src={heritage.imageUrl}
+                    alt={heritage.ccbaMnm1}
+                    className="mb-8"
+                  />
                 </div>
                 <h3 className="text-lg font-semibold">{heritage.ccbaMnm1}</h3>
                 <p className="text-gray-600 text-sm mt-1">
