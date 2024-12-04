@@ -3677,7 +3677,7 @@
     "EVENT_TM_INFO": "토요일 14:00-16:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-645-0623",
-    "HOST_INST_NM": "경기문화재단, 경기문화예술교육지원센터, 한국도자재단, 경기도자미술관",
+    "subDesc": "경기문화재단, 경기문화예술교육지원센터, 한국도자재단, 경기도자미술관",
     "subPath": "https://www.gmocca.org/",
     "sido": "경기도"
   },
@@ -3693,7 +3693,7 @@
     "EVENT_TM_INFO": "10:00~18:00",
     "PARTCPT_EXPN_INFO": "5,000원",
     "contact": "031-535-3607",
-    "HOST_INST_NM": "포천문화관광재단",
+    "subDesc": "포천문화관광재단",
     "subPath": "https://www.pcfac.or.kr/sub02/sub01-1.php?type=view&uid=1815956",
     "sido": "경기도"
   },
@@ -3709,7 +3709,7 @@
     "EVENT_TM_INFO": "2024년 12월 6일(금) 19:00 | 7일(토) 13:00, 17:00",
     "PARTCPT_EXPN_INFO": "전석 10,000원",
     "contact": "010-3224-6294",
-    "HOST_INST_NM": "공간서커스살롱",
+    "subDesc": "공간서커스살롱",
     "subPath": "인스타그램 @circusalon_korea",
     "sido": "경기도"
   },
@@ -3725,7 +3725,7 @@
     "EVENT_TM_INFO": "17:00-18:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "02-2621-8876",
-    "HOST_INST_NM": "광명문화재단 / 후원 경기도, 경기문화재단",
+    "subDesc": "광명문화재단 / 후원 경기도, 경기문화재단",
     "subPath": "www.gmcf.or.kr",
     "sido": "경기도"
   },
@@ -3741,7 +3741,7 @@
     "EVENT_TM_INFO": "14:00, 17:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-850-5175",
-    "HOST_INST_NM": "의정부문화재단",
+    "subDesc": "의정부문화재단",
     "subPath": "www.uac.or.kr",
     "sido": "경기도"
   },
@@ -3757,7 +3757,7 @@
     "EVENT_TM_INFO": "15:00",
     "PARTCPT_EXPN_INFO": "R석 3만원, S석 2만원",
     "contact": "031-660-0666",
-    "HOST_INST_NM": "안성시, 안성맞춤아트홀",
+    "subDesc": "안성시, 안성맞춤아트홀",
     "subPath": "www.anseoung.go.kr/arthall",
     "sido": "경기도"
   },
@@ -3772,8 +3772,8 @@
     "eDate": "20241205",
     "EVENT_TM_INFO": "11:00",
     "PARTCPT_EXPN_INFO": "전석 1만원",
-    "TELNO_INFO": "032-327-7523",
-    "contact": "부천시, 부천시립예술단",
+    "contact": "032-327-7523",
+    "subDesc": "부천시, 부천시립예술단",
     "subPath": "bucheonphil.or.kr",
     "sido": "경기도"
   },
@@ -3789,7 +3789,7 @@
     "EVENT_TM_INFO": "10:00~18:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-783-8000",
-    "HOST_INST_NM": "성남문화재단, 성남시",
+    "subDesc": "성남문화재단, 성남시",
     "subPath": "www.suart.or.kr",
     "sido": "경기도"
   },
@@ -3805,7 +3805,7 @@
     "EVENT_TM_INFO": "17:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "02-2621-8876",
-    "HOST_INST_NM": "광명문화재단",
+    "subDesc": "광명문화재단",
     "subPath": "www.gmcf.or.kr",
     "sido": "경기도"
   },
@@ -3821,7 +3821,7 @@
     "EVENT_TM_INFO": "15:00",
     "PARTCPT_EXPN_INFO": "10,000원",
     "contact": "031-260-3355",
-    "HOST_INST_NM": "용인문화재단",
+    "subDesc": "용인문화재단",
     "subPath": "용인문화재단  www.yicf.or.kr",
     "sido": "경기도"
   },
@@ -3837,7 +3837,7 @@
     "EVENT_TM_INFO": "10:00~18:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-783-8000",
-    "HOST_INST_NM": "성남문화재단, 성남시",
+    "subDesc": "성남문화재단, 성남시",
     "subPath": "www.suart.or.kr",
     "sido": "경기도"
   },
@@ -3853,7 +3853,7 @@
     "EVENT_TM_INFO": "17:00",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "02-2621-8876",
-    "HOST_INST_NM": "광명문화재단",
+    "subDesc": "광명문화재단",
     "subPath": "www.gmcf.or.kr",
     "sido": "경기도"
   },
@@ -3869,7 +3869,7 @@
     "EVENT_TM_INFO": "15:00",
     "PARTCPT_EXPN_INFO": "10,000원",
     "contact": "031-260-3355",
-    "HOST_INST_NM": "용인문화재단",
+    "subDesc": "용인문화재단",
     "subPath": "용인문화재단  www.yicf.or.kr",
     "sido": "경기도"
   },
@@ -3885,7 +3885,7 @@
     "EVENT_TM_INFO": "15시~20시",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "",
-    "HOST_INST_NM": "경기도/경기아트센터",
+    "subDesc": "경기도/경기아트센터",
     "subPath": "undefined",
     "sido": "경기도"
   },
@@ -3901,7 +3901,7 @@
     "EVENT_TM_INFO": "11월 19일~11월 30일 / 12월12일~12월 31  11시, 14시, 16시",
     "PARTCPT_EXPN_INFO": "30,000원",
     "contact": "031-333-2114",
-    "HOST_INST_NM": "벗이미술관",
+    "subDesc": "벗이미술관",
     "subPath": "벗이미술관  https://www.instagram.com/artmuseumversi",
     "sido": "경기도"
   },
@@ -3917,7 +3917,7 @@
     "EVENT_TM_INFO": "15시~20시",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "",
-    "HOST_INST_NM": "경기도/경기아트센터",
+    "subDesc": "경기도/경기아트센터",
     "subPath": "undefined",
     "sido": "경기도"
   },
@@ -3933,7 +3933,7 @@
     "EVENT_TM_INFO": "11월 19일~11월 30일 / 12월12일~12월 31  11시, 14시, 16시",
     "PARTCPT_EXPN_INFO": "30,000원",
     "contact": "031-333-2114",
-    "HOST_INST_NM": "벗이미술관",
+    "subDesc": "벗이미술관",
     "subPath": "벗이미술관  https://www.instagram.com/artmuseumversi",
     "sido": "경기도"
   },
@@ -3949,7 +3949,7 @@
     "EVENT_TM_INFO": "",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-323-6630",
-    "HOST_INST_NM": "용인문화재단",
+    "subDesc": "용인문화재단",
     "subPath": "https://www.yicf.or.kr/ccity/",
     "sido": "경기도"
   },
@@ -3965,7 +3965,7 @@
     "EVENT_TM_INFO": "10시~18시 (17시30분 입장마감)",
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-960-9721",
-    "HOST_INST_NM": "고양문화재단",
+    "subDesc": "고양문화재단",
     "subPath": "www.artgy.or.kr",
     "sido": "경기도"
   }
