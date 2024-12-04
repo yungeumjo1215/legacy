@@ -106,7 +106,7 @@ const Mypage = () => {
         {/* 메인 컨텐츠 */}
         <div className="flex-1 p-8 ml-80">
           <div className="max-w-8xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">
               마이페이지
             </h1>
             <div className="bg-white rounded-xl shadow-sm">
