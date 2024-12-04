@@ -80,7 +80,7 @@ const Mypage = () => {
           }`}
         >
           <div className="text-center mb-8">
-            <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105">
+            <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105 ">
               <FaUser className="text-blue-500 text-3xl" />
             </div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -90,7 +90,7 @@ const Mypage = () => {
 
           {userInfo && (
             <div className="space-y-4">
-              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
+              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-100">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
                     <FaEnvelope className="text-blue-500" />
@@ -101,7 +101,7 @@ const Mypage = () => {
                   {userInfo.email}
                 </p>
               </div>
-              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
+              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-100">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
                     <FaUser className="text-blue-500" />
@@ -113,7 +113,7 @@ const Mypage = () => {
                 </p>
               </div>
               {userInfo.created_at && (
-                <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
+                <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-100">
                   <div className="flex items-center space-x-3 mb-2">
                     <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
                       <FaCalendar className="text-blue-500" />
