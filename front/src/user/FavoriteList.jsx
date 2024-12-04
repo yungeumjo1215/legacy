@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar } from "react-icons/ai";
@@ -16,7 +16,27 @@ const FavoriteList = () => {
   const [heritagePage, setHeritagePage] = useState(0);
   const [festivalPage, setFestivalPage] = useState(0);
 
-  const itemsPerPage = 4;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const getItemsPerPage = () => {
+    if (windowWidth <= 640) return 1; // 모바일
+    if (windowWidth <= 1024) return 2; // 태블릿
+    if (windowWidth <= 1280) return 3; // 작은 데스크톱
+    return 4; // 큰 데스크톱
+  };
+
+  const itemsPerPage = getItemsPerPage();
 
   const handleRemoveFavorite = (item, type) => {
     try {
@@ -105,11 +125,11 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             {getCurrentItems(heritages, heritagePage).map((heritage) => (
               <div
                 key={heritage.ccbaKdcd}
-                className="bg-white p-4 rounded-lg shadow-md flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer"
+                className="bg-white p-4 rounded-lg shadow-md w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] xl:w-[calc(25%-1rem)] max-h-[400px] cursor-pointer"
                 onClick={() => openModal(heritage, "heritage")}
               >
                 <div className="flex flex-col h-full">
@@ -185,11 +205,11 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             {getCurrentItems(festivals, festivalPage).map((festival) => (
               <div
                 key={festival.programName}
-                className="bg-white p-4 rounded-lg shadow-md flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer"
+                className="bg-white p-4 rounded-lg shadow-md w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] xl:w-[calc(25%-1rem)] max-h-[400px] cursor-pointer"
                 onClick={() => openModal(festival, "festival")}
               >
                 <div className="flex flex-col h-full">
