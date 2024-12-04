@@ -16,6 +16,7 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
+import { BsChatDotsFill } from "react-icons/bs"; // 챗봇 아이콘 추가
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -346,6 +347,14 @@ const Home = () => {
           </div>
         </div>
       </div>
+      {/* 챗봇 버튼 추가 */}
+      <Link
+        to="/chatbot"
+        className="fixed bottom-8 left-8 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all duration-300 ease-in-out hover:scale-110 animate-bounce"
+        aria-label="챗봇으로 이동"
+      >
+        <BsChatDotsFill size={24} />
+      </Link>
     </div>
   );
 };
