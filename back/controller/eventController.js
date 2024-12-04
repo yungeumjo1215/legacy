@@ -16,6 +16,7 @@ exports.getEvents = (req, res) => {
       URL: event.URL,
       begin_de: event.BEGIN_DE,
       end_de: event.END_DE,
+
       event_tm_info: event.EVENT_TM_INFO,
       host_inst_nm: event.HOST_INST_NM,
       event_sido: event.EVENT_SIDO,
@@ -48,6 +49,7 @@ exports.getKGfestival = (req, res) => {
       contact: [item.contact] || "N/A",
       sido: [item.sido] || "N/A",
       targetAudience: [item.subDesc2] || "N/A",
+      imageUrl: [item.imageUrl] || "N/A",
     }));
 
     const limitedFestivals = festival.slice(0, 100000);
