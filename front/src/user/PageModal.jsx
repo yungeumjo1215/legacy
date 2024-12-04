@@ -1,5 +1,5 @@
 import React from "react";
-import default_Img from "../assets/eventIamge.png";
+import default_Img from "../assets/festival.png";
 
 const PageModal = ({ isOpen, onClose, item, type }) => {
   const onErrorImg = (e) => {
