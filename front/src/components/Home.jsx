@@ -297,25 +297,25 @@ const Home = () => {
             {isRecentBoxOpen ? ">" : "<"}
           </button>
 
-          <div className="bg-white shadow-lg rounded-l-lg w-64">
+          <div className="bg-white shadow-lg rounded-l-lg w-52">
             <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
               <h3 className="text-lg font-bold text-center">최근 본 목록</h3>
             </div>
 
-            <div className="p-4 max-h-[500px] overflow-y-auto">
+            <div className="p-3 max-h-[400px] overflow-y-auto">
               {recentItems.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   최근 본 행사가 없습니다
                 </p>
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {recentItems.map((item, index) => (
-                    <li key={index} className="border-b pb-3 last:border-b-0">
+                    <li key={index} className="border-b pb-2 last:border-b-0">
                       <Link
                         to={`/event_schedule`}
-                        className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded"
                       >
-                        <div className="w-20 h-20 flex-shrink-0">
+                        <div className="w-16 h-16 flex-shrink-0">
                           {item.imageUrl ? (
                             <img
                               src={item.imageUrl}
