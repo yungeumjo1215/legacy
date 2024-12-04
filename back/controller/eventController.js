@@ -50,7 +50,7 @@ exports.getKGfestival = (req, res) => {
       targetAudience: item.subDesc2 || "N/A",
     }));
 
-    const limitedFestivals = festival.slice(0, 10);
+    const limitedFestivals = festival.slice(0, 10000);
     // Send response
     res.status(200).json(limitedFestivals);
   } catch (error) {
