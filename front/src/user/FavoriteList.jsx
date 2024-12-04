@@ -77,14 +77,25 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "heritage")}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
+                  ${
+                    heritagePage === 0
+                      ? "text-gray-300"
+                      : "text-blue-600 hover:text-blue-800"
+                  }`}
                 disabled={heritagePage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "heritage")}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
+                  ${
+                    heritagePage >=
+                    Math.ceil(heritages.length / itemsPerPage) - 1
+                      ? "text-gray-300"
+                      : "text-blue-600 hover:text-blue-800"
+                  }`}
                 disabled={
                   heritagePage >= Math.ceil(heritages.length / itemsPerPage) - 1
                 }
@@ -94,7 +105,7 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex gap-6">
+          <div className="flex justify-center gap-6">
             {getCurrentItems(heritages, heritagePage).map((heritage) => (
               <div
                 key={heritage.ccbaKdcd}
@@ -146,14 +157,25 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "festival")}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
+                  ${
+                    festivalPage === 0
+                      ? "text-gray-300"
+                      : "text-blue-600 hover:text-blue-800"
+                  }`}
                 disabled={festivalPage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "festival")}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
+                  ${
+                    festivalPage >=
+                    Math.ceil(festivals.length / itemsPerPage) - 1
+                      ? "text-gray-300"
+                      : "text-blue-600 hover:text-blue-800"
+                  }`}
                 disabled={
                   festivalPage >= Math.ceil(festivals.length / itemsPerPage) - 1
                 }
@@ -163,7 +185,7 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex gap-6">
+          <div className="flex justify-center gap-6">
             {getCurrentItems(festivals, festivalPage).map((festival) => (
               <div
                 key={festival.programName}
