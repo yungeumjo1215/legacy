@@ -77,7 +77,7 @@ const FavoriteList = () => {
             >
               <div className="flex-1 items-center justify-center">
                 <div className="flex justify-center items-center size-24">
-                  <img src={festival.imageUrl} onError={onErrorImg} alt="" />
+                  <img src={default_Img} onError={onErrorImg} alt="" />
                 </div>
                 <h3 className="text-lg font-semibold">
                   {festival.programName}
