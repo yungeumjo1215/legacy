@@ -8,13 +8,19 @@ const heritageRoutes = require("./routes/heritageRoutes");
 // const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
+
 const festivalRoutes = require("./routes/kgfestivalRoutes");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
 
 const PORT = 8000;
 const app = express();
 app.use(bodyParser.json());
 
 dotenv.config();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
 
