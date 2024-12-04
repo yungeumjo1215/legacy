@@ -41,7 +41,7 @@ const Mypage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen pt-16">
+      <div className="flex justify-center items-center h-screen pt-16">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-800" />
       </div>
     );
@@ -58,10 +58,10 @@ const Mypage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen bg-gray-50 pt-16 overflow-hidden">
       <div className="flex">
         {/* 사이드바 */}
-        <div className="w-80 bg-white shadow-lg min-h-[calc(100vh-4rem)] p-8 fixed left-0">
+        <div className="w-80 bg-white shadow-lg h-full p-8 fixed left-0">
           <div className="text-center mb-8">
             <div className="w-24 h-24 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
               <FaUser className="text-blue-500 text-3xl" />
@@ -104,7 +104,7 @@ const Mypage = () => {
         </div>
 
         {/* 메인 컨텐츠 */}
-        <div className="flex-1 p-4 ml-80">
+        <div className="flex-1 p-4 ml-80 overflow-y-auto">
           <div className="max-w-8xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               마이페이지

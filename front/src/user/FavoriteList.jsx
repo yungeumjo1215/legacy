@@ -63,7 +63,7 @@ const FavoriteList = () => {
   };
 
   return (
-    <div className="p-4 pt-12">
+    <div className="p-4 pb-2 pt-12 border-t border-gray-200">
       <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
 
       {/* 문화재 섹션 */}
