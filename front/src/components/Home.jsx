@@ -16,7 +16,8 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { BsChatDotsFill } from "react-icons/bs"; // 챗봇 아이콘 추가
+import { useAuth } from "../hooks/useAuth";
+import { BsChatDotsFill } from "react-icons/bs";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,9 @@ const Home = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [recentItems, setRecentItems] = useState([]);
   const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
+
+  // 로그인 상태 감시
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     dispatch(fetchEvent())
