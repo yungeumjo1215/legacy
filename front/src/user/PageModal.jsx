@@ -1,6 +1,11 @@
 import React from "react";
+import default_Img from "../assets/festival.png";
 
 const PageModal = ({ isOpen, onClose, item, type }) => {
+  const onErrorImg = (e) => {
+    e.target.src = default_Img;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -19,13 +24,25 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="w-full md:w-1/2">
-            <img
-              src={item.imageUrl}
-              alt={type === "heritage" ? item.ccbaMnm1 : item.programName}
-              className="w-full h-64 object-cover rounded-lg"
-            />
-          </div>
+          {type === "event" && (
+            <div className="w-full md:w-1/2">
+              {item.imageUrl ? (
+                <img
+                  src={item.imageUrl}
+                  onError={onErrorImg}
+                  alt=""
+                  className="w-full h-auto rounded-lg"
+                />
+              ) : (
+                <img
+                  src={default_Img}
+                  onError={onErrorImg}
+                  alt=""
+                  className="w-full h-auto rounded-lg"
+                />
+              )}
+            </div>
+          )}
 
           <div className="w-full md:w-1/2">
             {type === "heritage" ? (
@@ -55,9 +72,9 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
                 <p className="mb-2">
                   <span className="font-semibold">장소:</span> {item.location}
                 </p>
-                <p className="mb-2">
-                  <span className="font-semibold">기간:</span> {item.startDate}{" "}
-                  ~ {item.endDate}
+                <p className="mb-2 text-base">
+                  <span className="font-semibold ">기간:</span> {item.startDate}
+                  ~{item.endDate}
                 </p>
                 <p className="mb-2">
                   <span className="font-semibold">요금:</span>{" "}
