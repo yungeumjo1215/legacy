@@ -87,7 +87,7 @@ const login = async (req, res) => {
         username: account.username,
       },
       SECRET_KEY,
-      { expiresIn: "3h" }
+      { expiresIn: "24h" }
     );
 
     await pool.query(
@@ -222,10 +222,81 @@ const updateAccountPermissions = async (req, res) => {
   }
 };
 
+/**
+ * Get user information
+ */
+const getUserInfo = async (req, res) => {
+  try {
+    // req.user에서 이메일 가져오기 (authenticate 미들웨어에서 설정됨)
+    const email = req.user.email;
+
+    console.log("Fetching user info for email:", email); // 디버깅용 로그
+
+    // 기본 사용자 정보 조회
+    const userResult = await pool.query(
+      `SELECT 
+        email, 
+        username, 
+        created_at
+       FROM accounts 
+       WHERE email = $1`,
+      [email]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "사용자를 찾을 수 없습니다.",
+      });
+    }
+
+    // 사용자 기본 정보
+    const userInfo = {
+      ...userResult.rows[0],
+      favoriteHeritages: [],
+      favoriteFestivals: [],
+    };
+
+    try {
+      // 즐겨찾기 정보 조회 (없으면 빈 배열 반환)
+      const favoritesResult = await pool.query(
+        `SELECT event_name, event_type 
+         FROM favorites 
+         WHERE user_id = $1`,
+        [email]
+      );
+
+      // 즐겨찾기 정보 분류
+      if (favoritesResult.rows.length > 0) {
+        userInfo.favoriteHeritages = favoritesResult.rows
+          .filter((f) => f.event_type === "heritage")
+          .map((f) => f.event_name);
+
+        userInfo.favoriteFestivals = favoritesResult.rows
+          .filter((f) => f.event_type === "festival")
+          .map((f) => f.event_name);
+      }
+    } catch (favoriteError) {
+      console.error("Error fetching favorites:", favoriteError);
+      // 즐겨찾기 조회 실패시에도 기본 정보는 반환
+    }
+
+    console.log("Sending user info:", userInfo); // 디버깅용 로그
+    res.status(200).json(userInfo);
+  } catch (error) {
+    console.error("Error in getUserInfo:", error);
+    res.status(500).json({
+      message: "서버 오류가 발생했습니다.",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createAccount,
   login,
   logout,
   deleteAccount,
   updateAccountPermissions,
+  getUserInfo,
 };

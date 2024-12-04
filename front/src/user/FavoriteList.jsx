@@ -26,92 +26,105 @@ const FavoriteList = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-10">나의 즐겨찾기</h1>
+
+      {/* 문화재 섹션 */}
+      <div className="mb-12">
+        <h2 className="text-xl font-semibold mb-6">
           문화재 ({heritages.length})
         </h2>
-
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {heritages.map((heritage) => (
             <div
               key={heritage.ccbaKdcd}
-              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="flex-1 items-center justify-center">
-                <div className="flex justify-center items-center size-24">
-                  <img
-                    src={heritage.imageUrl}
-                    alt={heritage.ccbaMnm1}
-                    className="mb-8"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold">{heritage.ccbaMnm1}</h3>
-                <p className="text-gray-600 text-sm mt-1">
-                  {heritage.ccbaLcad}
-                </p>
+              <div className="aspect-w-16 aspect-h-9 mb-4">
+                <img
+                  src={heritage.imageUrl}
+                  alt={heritage.ccbaMnm1}
+                  className="w-full h-48 object-cover rounded-md"
+                />
               </div>
-              <button
-                onClick={() => handleRemoveFavorite(heritage, "heritage")}
-                className="text-yellow-400 hover:text-yellow-500 transition-colors"
-                aria-label="즐겨찾기 해제"
-              >
-                <AiFillStar className="text-2xl" />
-              </button>
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    {heritage.ccbaMnm1}
+                  </h3>
+                  <p className="text-gray-600 text-sm">{heritage.ccbaLcad}</p>
+                </div>
+                <button
+                  onClick={() => handleRemoveFavorite(heritage, "heritage")}
+                  className="text-yellow-400 hover:text-yellow-500 transition-colors"
+                  aria-label="즐겨찾기 해제"
+                >
+                  <AiFillStar className="text-2xl" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
+        {heritages.length === 0 && (
+          <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
+            즐겨찾기한 문화재가 없습니다.
+          </div>
+        )}
       </div>
-      {heritages.length === 0 && (
-        <div className="text-center text-gray-500 mt-8">
-          즐겨찾기한 항목이 없습니다.
-        </div>
-      )}
 
+      {/* 행사 섹션 */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-xl font-semibold mb-6">
           행사 ({festivals.length})
         </h2>
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {festivals.map((festival) => (
             <div
               key={festival.programName}
-              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="flex-1 items-center justify-center">
-                <div className="flex justify-center items-center size-24">
-                  {festival.imageUrl ? (
-                    <img src={festival.imageUrl} onError={onErrorImg} alt="" />
-                  ) : (
-                    <img src={default_Img} onError={onErrorImg} alt="" />
-                  )}
-                </div>
-                <h3 className="text-lg font-semibold">
-                  {festival.programName}
-                </h3>
-                <p className="text-gray-600 text-sm mt-1">
-                  {festival.location}
-                </p>
+              <div className="aspect-w-16 aspect-h-9 mb-4">
+                {festival.imageUrl ? (
+                  <img
+                    src={festival.imageUrl}
+                    onError={onErrorImg}
+                    alt=""
+                    className="w-full h-48 object-cover rounded-md"
+                  />
+                ) : (
+                  <img
+                    src={default_Img}
+                    alt=""
+                    className="w-full h-48 object-cover rounded-md"
+                  />
+                )}
               </div>
-              <button
-                onClick={() => handleRemoveFavorite(festival, "event")}
-                className="text-yellow-400 hover:text-yellow-500 transition-colors"
-                aria-label="즐겨찾기 해제"
-              >
-                <AiFillStar className="text-2xl" />
-              </button>
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    {festival.programName}
+                  </h3>
+                  <p className="text-gray-600 text-sm">{festival.location}</p>
+                </div>
+                <button
+                  onClick={() => handleRemoveFavorite(festival, "event")}
+                  className="text-yellow-400 hover:text-yellow-500 transition-colors"
+                  aria-label="즐겨찾기 해제"
+                >
+                  <AiFillStar className="text-2xl" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
+        {festivals.length === 0 && (
+          <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
+            즐겨찾기한 행사가 없습니다.
+          </div>
+        )}
       </div>
-
-      {festivals.length === 0 && (
-        <div className="text-center text-gray-500 mt-8">
-          즐겨찾기한 항목이 없습니다.
-        </div>
-      )}
     </div>
   );
 };
+
 export default FavoriteList;

@@ -5,6 +5,7 @@ const {
   login,
   logout,
   updateAccountPermissions,
+  getUserInfo,
 } = require("../controller/accountController");
 const { authenticate } = require("../utils/authenticate"); // Middleware for authentication
 
@@ -24,5 +25,8 @@ router.post("/logout", logout);
 
 // Route for updating account permissions (protected route)
 router.put("/permissions/:uuid", authenticate, updateAccountPermissions);
+
+// Route for getting user information (protected route)
+router.get("/info", authenticate, getUserInfo);
 
 module.exports = router;
