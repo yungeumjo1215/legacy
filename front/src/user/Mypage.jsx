@@ -13,7 +13,9 @@ const Mypage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    const token = localStorage.getItem("token");
+
+    if (!isLoggedIn && !token) {
       navigate("/login");
       return;
     }
@@ -24,6 +26,10 @@ const Mypage = () => {
         setUserInfo(response.data);
       } catch (err) {
         console.error("사용자 정보 로드 에러:", err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
         setError("사용자 정보를 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
@@ -99,7 +105,7 @@ const Mypage = () => {
 
         {/* 메인 컨텐츠 */}
         <div className="flex-1 p-8 ml-80">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-900 mb-8 pb-4 border-b border-gray-200">
               마이페이지
             </h1>
