@@ -94,7 +94,7 @@ const FavoriteList = () => {
       {/* 문화재 섹션 */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">
-          문화재 ({heritages.length})
+          ◎ 문화재 ({heritages.length})
         </h2>
 
         <div className="relative px-8">
@@ -109,7 +109,7 @@ const FavoriteList = () => {
               </button>
               <button
                 onClick={() => handlePageChange(1, "heritage")}
-                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-blue-200 text-white"
                 disabled={
                   heritagePage >= Math.ceil(heritages.length / itemsPerPage) - 1
                 }
@@ -165,7 +165,7 @@ const FavoriteList = () => {
       {/* 행사 섹션 */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">
-          행사 ({festivals.length})
+          ◎ 행사 ({festivals.length})
         </h2>
 
         <div className="relative px-8">
