@@ -165,7 +165,7 @@ const EventSchedule = () => {
     error: fetchError,
   } = useSelector((state) => state.festival);
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { festivals } = useSelector((state) => state.favorites); // 추가된 부분
+  const { festivals } = useSelector((state) => state.favorites);
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -173,6 +173,9 @@ const EventSchedule = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const isEventStarred = useCallback(
     (programName) => {
@@ -378,6 +381,64 @@ const EventSchedule = () => {
     }
   }, [isLoggedIn, festivals]);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = formattedFestivals.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(formattedFestivals.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const Pagination = () => {
+    return (
+      <div className="flex justify-center items-center mt-6 gap-2">
+        {currentPage > 1 && (
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+          >
+            이전
+          </button>
+        )}
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+          <button
+            key={number}
+            onClick={() => handlePageChange(number)}
+            className={`px-3 py-1 rounded ${
+              currentPage === number
+                ? "bg-blue-800 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+
+        {currentPage < totalPages && (
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+          >
+            다음
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedRegion]);
+
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
@@ -430,7 +491,7 @@ const EventSchedule = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="MainFont md:text-3xl text-2xl  mb-6">
+          <h2 className="MainFont md:text-3xl text-2xl mb-6">
             {date.toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
@@ -517,23 +578,26 @@ const EventSchedule = () => {
           )}
 
           {!loading && !fetchError && !error && (
-            <ul className="SubFont text-3xl space-y-4 overflow-hidden">
-              {formattedFestivals.length > 0 ? (
-                formattedFestivals.map((festival, index) => (
-                  <EventItem
-                    key={`${festival.programName}-${index}`}
-                    event={festival}
-                    isStarred={isEventStarred(festival.programName)} // festivals 사용
-                    handleStarClick={handleStarClick}
-                    onEventClick={handleEventClick}
-                  />
-                ))
-              ) : (
-                <p className="text-center text-gray-500 py-8">
-                  해당 날짜에 예정된 행사가 없습니다.
-                </p>
-              )}
-            </ul>
+            <>
+              <ul className="SubFont text-3xl space-y-4 overflow-hidden">
+                {currentItems.length > 0 ? (
+                  currentItems.map((festival, index) => (
+                    <EventItem
+                      key={`${festival.programName}-${index}`}
+                      event={festival}
+                      isStarred={isEventStarred(festival.programName)}
+                      handleStarClick={handleStarClick}
+                      onEventClick={handleEventClick}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-8">
+                    해당 날짜에 예정된 행사가 없습니다.
+                  </p>
+                )}
+              </ul>
+              {formattedFestivals.length > itemsPerPage && <Pagination />}
+            </>
           )}
         </div>
       </div>
