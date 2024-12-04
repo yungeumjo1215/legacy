@@ -20,7 +20,7 @@ const createAccount = async (req, res) => {
   if (!username || !email || !password) {
     return res.status(400).json({ message: "All fields are required." });
   }
-
+  // 특수문자 입력
   if (!isValidPassword(password)) {
     return res.status(400).json({
       message:
@@ -31,17 +31,6 @@ const createAccount = async (req, res) => {
   try {
     // Check registration limit per domain
     const emailDomain = email.split("@")[1];
-    const { rowCount } = await pool.query(
-      "SELECT * FROM accounts WHERE email LIKE $1 AND created_at > NOW() - INTERVAL '1 day'",
-      [`%@${emailDomain}`]
-    );
-
-    console.log(rowCount);
-    // if (rowCount >= 3) {
-    //   return res.status(429).json({
-    //     message: "Registration limit exceeded for this email domain.",
-    //   });
-    // }
 
     // Hash password and create account
     const hashedPassword = await bcrypt.hash(password, 10);
