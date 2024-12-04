@@ -77,7 +77,10 @@
   background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
   color: white !important;
 }
-
+.react-calendar__tile--now:enabled:hover {
+  background: #e5e7eb !important;
+  color: black !important;
+}
 .react-calendar__tile--now:enabled:focus {
   background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
   color: white !important;
