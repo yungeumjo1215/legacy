@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar } from "react-icons/ai";
 import default_Img from "../assets/eventIamge.png";
+import PageModal from "./PageModal";
 
 const FavoriteList = () => {
   const onErrorImg = (e) => {
@@ -11,6 +12,9 @@ const FavoriteList = () => {
 
   const dispatch = useDispatch();
   const { heritages, festivals } = useSelector((state) => state.favorites);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalType, setModalType] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleRemoveFavorite = (item, type) => {
     try {
@@ -25,6 +29,12 @@ const FavoriteList = () => {
     }
   };
 
+  const openModal = (item, type) => {
+    setSelectedItem(item);
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
@@ -37,7 +47,8 @@ const FavoriteList = () => {
           {heritages.map((heritage) => (
             <div
               key={heritage.ccbaKdcd}
-              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center cursor-pointer"
+              onClick={() => openModal(heritage, "heritage")}
             >
               <div className="flex-1 items-center justify-center">
                 <div className="flex justify-center items-center size-24">
@@ -73,7 +84,8 @@ const FavoriteList = () => {
           {festivals.map((festival) => (
             <div
               key={festival.programName}
-              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center cursor-pointer"
+              onClick={() => openModal(festival, "event")}
             >
               <div className="flex-1 items-center justify-center">
                 <div className="flex justify-center items-center size-24">
@@ -107,6 +119,13 @@ const FavoriteList = () => {
           즐겨찾기한 항목이 없습니다.
         </div>
       )}
+
+      <PageModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={selectedItem}
+        type={modalType}
+      />
     </div>
   );
 };
