@@ -77,7 +77,7 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "heritage")}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md
+                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
                   ${
                     heritagePage === 0
                       ? "text-gray-300"
@@ -89,7 +89,7 @@ const FavoriteList = () => {
               </button>
               <button
                 onClick={() => handlePageChange(1, "heritage")}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md
+                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
                   ${
                     heritagePage >=
                     Math.ceil(heritages.length / itemsPerPage) - 1
@@ -157,7 +157,7 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "festival")}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md
+                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
                   ${
                     festivalPage === 0
                       ? "text-gray-300"
@@ -169,7 +169,7 @@ const FavoriteList = () => {
               </button>
               <button
                 onClick={() => handlePageChange(1, "festival")}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md
+                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
                   ${
                     festivalPage >=
                     Math.ceil(festivals.length / itemsPerPage) - 1
