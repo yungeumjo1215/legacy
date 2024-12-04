@@ -153,7 +153,7 @@ const Navbar = () => {
           </div>
 
           {/* 데스크톱 네비게이션 */}
-          <div className="hidden lg:flex lg:flex-grow justify-center items-center space-x-4 lg:space-x-8">
+          <div className="hidden lg:flex lg:flex-grow justify-center items-center space-x-2 lg:space-x-4">
             {navigationItems.map((item) => (
               <Link
                 key={item.name}
@@ -170,7 +170,7 @@ const Navbar = () => {
           </div>
 
           {/* 데스크톱 인증 버튼 */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-2">
             {renderAuthButtons()}
           </div>
 
