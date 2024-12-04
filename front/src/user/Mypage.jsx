@@ -27,8 +27,8 @@ const MyPage = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-100 pt-16">
-      <div className="h-[calc(100%-4rem)] p-8">
+    <div className="min-h-screen bg-gray-100 pt-16">
+      <div className="min-h-[calc(100%-4rem)] p-8">
         <div className="h-full grid grid-cols-6 gap-8">
           {/* 사용자 정보 섹션 - 1200px 이하에서 숨김 */}
           <div className="col-span-1 bg-white p-6 rounded-lg shadow-lg hidden xl:block">

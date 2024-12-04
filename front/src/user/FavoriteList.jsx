@@ -22,8 +22,11 @@ const FavoriteList = () => {
 
   return (
     <div className="p-4">
+      <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">문화재 ({heritages.length})</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          문화재 ({heritages.length})
+        </h2>
         <div className="grid gap-4">
           {heritages.map((heritage) => (
             <div
@@ -54,7 +57,9 @@ const FavoriteList = () => {
       )}
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">행사 ({festivals.length})</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          행사 ({festivals.length})
+        </h2>
         <div className="grid gap-4">
           {festivals.map((festival) => (
             <div
