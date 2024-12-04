@@ -11,6 +11,19 @@ const Mypage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,10 +71,14 @@ const Mypage = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-gray-50 mt-16">
+    <div className="h-[calc(100vh-64px)] bg-gray-50 mt-16 ">
       <div className="flex h-full">
         {/* 사이드바 */}
-        <div className="w-80 bg-white shadow-lg p-8">
+        <div
+          className={`w-80 bg-white shadow-lg p-8 ${
+            windowWidth <= 800 ? "hidden" : ""
+          }`}
+        >
           <div className="text-center mb-8">
             <div className="w-24 h-24 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
               <FaUser className="text-blue-500 text-3xl" />
