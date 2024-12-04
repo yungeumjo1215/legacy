@@ -258,7 +258,6 @@ const Home = () => {
           <IoIosArrowUp size={24} />
         </button>
       )}
-      ㄴ
     </div>
   );
 };
