@@ -13,7 +13,9 @@ const Mypage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    const token = localStorage.getItem("token");
+
+    if (!isLoggedIn && !token) {
       navigate("/login");
       return;
     }
@@ -24,6 +26,10 @@ const Mypage = () => {
         setUserInfo(response.data);
       } catch (err) {
         console.error("사용자 정보 로드 에러:", err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
         setError("사용자 정보를 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
