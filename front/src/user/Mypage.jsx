@@ -71,32 +71,37 @@ const Mypage = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-gray-50 mt-16 ">
-      <div className="flex h-full">
+    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-tr from-blue-50 via-white to-purple-50 mt-16">
+      <div className="flex h-full p-4 gap-4">
         {/* 사이드바 */}
         <div
-          className={`w-80 bg-white shadow-lg p-8 ${
+          className={`w-80 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-8 transition-all duration-300 hover:shadow-xl ${
             windowWidth <= 800 ? "hidden" : ""
           }`}
         >
           <div className="text-center mb-8">
-            <div className="w-24 h-24 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105">
               <FaUser className="text-blue-500 text-3xl" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">내 정보</h2>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              내 정보
+            </h2>
           </div>
+
           {userInfo && (
-            <div className="space-y-6">
-              <div className="hover:bg-gray-50 p-4 rounded-lg transition-colors">
+            <div className="space-y-4">
+              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
                 <div className="flex items-center space-x-3 mb-2">
-                  <FaEnvelope className="text-blue-500" />
+                  <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
+                    <FaEnvelope className="text-blue-500" />
+                  </div>
                   <p className="text-gray-600 font-medium">이메일</p>
                 </div>
                 <p className="text-gray-900 font-medium pl-8">
                   {userInfo.email}
                 </p>
               </div>
-              <div className="hover:bg-gray-50 p-4 rounded-lg transition-colors">
+              <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
                 <div className="flex items-center space-x-3 mb-2">
                   <FaUser className="text-blue-500" />
                   <p className="text-gray-600 font-medium">이름</p>
@@ -106,7 +111,7 @@ const Mypage = () => {
                 </p>
               </div>
               {userInfo.created_at && (
-                <div className="hover:bg-gray-50 p-4 rounded-lg transition-colors">
+                <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
                   <div className="flex items-center space-x-3 mb-2">
                     <FaCalendar className="text-blue-500" />
                     <p className="text-gray-600 font-medium">가입일</p>
@@ -121,7 +126,7 @@ const Mypage = () => {
         </div>
 
         {/* 메인 컨텐츠 */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg  transition-all duration-300 hover:shadow-xl">
           <FavoriteList />
         </div>
       </div>

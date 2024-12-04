@@ -88,13 +88,13 @@ const FavoriteList = () => {
   };
 
   return (
-    <div className="p-4 pb-2 pt-12 border-t border-gray-200">
+    <div className="p-4 pb-2 pt-12">
       <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
 
       {/* 문화재 섹션 */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">
-          문화재 ({heritages.length})
+          ◎ 문화재 ({heritages.length})
         </h2>
 
         <div className="relative px-8">
@@ -102,14 +102,14 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "heritage")}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={heritagePage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "heritage")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-blue-200 text-white"
                 disabled={
                   heritagePage >= Math.ceil(heritages.length / itemsPerPage) - 1
                 }
@@ -124,7 +124,7 @@ const FavoriteList = () => {
               {getCurrentItems(heritages, heritagePage).map((heritage) => (
                 <div
                   key={heritage.ccbaKdcd}
-                  className="bg-white p-4 rounded-lg shadow-md flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer"
+                  className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
                   onClick={() => openModal(heritage, "heritage")}
                 >
                   <div className="flex flex-col h-full">
@@ -165,7 +165,7 @@ const FavoriteList = () => {
       {/* 행사 섹션 */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">
-          행사 ({festivals.length})
+          ◎ 행사 ({festivals.length})
         </h2>
 
         <div className="relative px-8">
@@ -173,14 +173,14 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "festival")}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={festivalPage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "festival")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
+                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={
                   festivalPage >= Math.ceil(festivals.length / itemsPerPage) - 1
                 }
