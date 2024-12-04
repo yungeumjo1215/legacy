@@ -3722,7 +3722,7 @@
     "PARTCPT_EXPN_INFO": "무료",
     "contact": "031-850-5175",
     "HOST_INST_NM": "의정부문화재단",
-    "HMPG_URL": "www.uac.or.kr",
+    "subPath": "www.uac.or.kr",
     "sido": "경기도"
   },
   {
@@ -3734,7 +3734,7 @@
     "eDate": "20241228",
     "EVENT_TM_INFO": "15:00",
     "PARTCPT_EXPN_INFO": "R석 3만원, S석 2만원",
-    "TELNO_INFO": "031-660-0666",
+    "contact": "031-660-0666",
     "HOST_INST_NM": "안성시, 안성맞춤아트홀",
     "subPath": "www.anseoung.go.kr/arthall",
     "sido": "경기도"
@@ -3749,7 +3749,7 @@
     "EVENT_TM_INFO": "11:00",
     "PARTCPT_EXPN_INFO": "전석 1만원",
     "TELNO_INFO": "032-327-7523",
-    "HOST_INST_NM": "부천시, 부천시립예술단",
+    "contact": "부천시, 부천시립예술단",
     "subPath": "bucheonphil.or.kr",
     "sido": "경기도"
   },
@@ -3856,8 +3856,8 @@
     "CATEGORY_NM": "교육",
     "URL": "https://ggc.ggcf.kr/cultureEvents/view/673fd8c7915cffcf59c846b8",
     "imageUrl": "https://ggc.ggcf.kr/uploadimg/2023/file/벗이미술관크리스마스_1732237509951.jpg",
-    "BEGIN_DE": "2024-11-19",
-    "END_DE": "2024-12-31",
+    "sDate": "2024-11-19",
+    "eDate": "2024-12-31",
     "EVENT_TM_INFO": "11월 19일~11월 30일 / 12월12일~12월 31  11시, 14시, 16시",
     "PARTCPT_EXPN_INFO": "30,000원",
     "contact": "031-333-2114",
