@@ -58,15 +58,15 @@ const Home = () => {
 
   return (
     <div style={{ paddingTop: "4rem" }}>
-      <div className="w-full">
-        <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+      <div className="w-full h-[calc(100vh-4rem)] bg-white">
+        <div className="relative w-full h-full">
           <div className="overlay w-full h-full left-0 top-0 absolute opacity-20"></div>
           <video
             src={a0}
             autoPlay
             loop
             muted
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            className="absolute top-0 left-0 w-full h-full object-contain"
           ></video>
         </div>
       </div>
