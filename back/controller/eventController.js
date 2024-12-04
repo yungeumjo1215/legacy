@@ -21,7 +21,7 @@ exports.getEvents = (req, res) => {
       event_sido: event.EVENT_SIDO,
     }));
 
-    const limitedEvents = events.slice(0, 10);
+    const limitedEvents = events.slice(0, 20);
     // Send response
     res.status(200).json(limitedEvents);
   } catch (error) {
