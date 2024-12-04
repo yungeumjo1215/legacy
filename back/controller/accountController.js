@@ -20,7 +20,7 @@ const createAccount = async (req, res) => {
   if (!username || !email || !password) {
     return res.status(400).json({ message: "All fields are required." });
   }
-
+  // 특수문자 입력
   if (!isValidPassword(password)) {
     return res.status(400).json({
       message:
