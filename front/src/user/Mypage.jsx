@@ -103,7 +103,9 @@ const Mypage = () => {
               </div>
               <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
                 <div className="flex items-center space-x-3 mb-2">
-                  <FaUser className="text-blue-500" />
+                  <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
+                    <FaUser className="text-blue-500" />
+                  </div>
                   <p className="text-gray-600 font-medium">이름</p>
                 </div>
                 <p className="text-gray-900 font-medium pl-8">
@@ -113,7 +115,9 @@ const Mypage = () => {
               {userInfo.created_at && (
                 <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl transition-all duration-200 hover:bg-white/80 hover:shadow-md border border-gray-50">
                   <div className="flex items-center space-x-3 mb-2">
-                    <FaCalendar className="text-blue-500" />
+                    <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
+                      <FaCalendar className="text-blue-500" />
+                    </div>
                     <p className="text-gray-600 font-medium">가입일</p>
                   </div>
                   <p className="text-gray-900 font-medium pl-8">
