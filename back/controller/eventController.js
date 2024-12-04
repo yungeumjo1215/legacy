@@ -15,6 +15,7 @@ exports.getEvents = (req, res) => {
       imageUrl: event.IMAGE_URL,
       URL: event.URL,
       begin_de: event.BEGIN_DE,
+      END_DE: event.END_DE,
       event_tm_info: event.EVENT_TM_INFO,
       host_inst_nm: event.HOST_INST_NM,
     }));
