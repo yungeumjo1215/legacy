@@ -71,7 +71,23 @@
     font-size: 0.875rem !important;
   }
 }
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
+  color: white !important;
+}
+
+.react-calendar__tile--now:enabled:focus {
+  background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
+  color: white !important;
+}
+.react-calendar__tile--now {
+  background: white !important;
+  border: 1px solid !important;
+  color: black !important;
+}
 .react-calendar__tile--active {
   background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
-  color: white;
+  color: white !important;
 }
