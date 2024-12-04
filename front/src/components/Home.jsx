@@ -28,6 +28,8 @@ const Home = () => {
   const nextRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [recentItems, setRecentItems] = useState([]);
+  const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(true);
 
   useEffect(() => {
     dispatch(fetchEvent())
@@ -65,6 +67,29 @@ const Home = () => {
     });
   };
 
+  // 최근 본 항목 불러오기
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("recentItems")) || [];
+    setRecentItems(items);
+  }, []);
+
+  // 최근 본 항목 추가 함수
+  const addToRecentItems = (event) => {
+    const newItem = {
+      id: event.id,
+      title: event.title,
+      imageUrl: event.imageUrl,
+      begin_de: event.begin_de,
+    };
+
+    setRecentItems((prev) => {
+      const filtered = prev.filter((item) => item.id !== newItem.id);
+      const updated = [newItem, ...filtered].slice(0, 5);
+      localStorage.setItem("recentItems", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -81,7 +106,7 @@ const Home = () => {
 
   return (
     <div style={{ paddingTop: "4rem" }}>
-      <div className="w-full h-[calc(100vh-4rem)] bg-white">
+      <div className="w-full max-w-[1600px] h-[calc(100vh-4rem)] mx-auto px-4 mb-8 flex justify-center items-center bg-white">
         <div className="relative w-full h-full">
           <div className="overlay w-full h-full left-0 top-0 absolute opacity-20"></div>
           <video
@@ -168,6 +193,7 @@ const Home = () => {
                   <Link
                     to={`/event_schedule`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                    onClick={() => addToRecentItems(event)}
                   >
                     <div className="relative h-[500px]">
                       {event.imageUrl ? (
@@ -258,6 +284,67 @@ const Home = () => {
           <IoIosArrowUp size={24} />
         </button>
       )}
+      <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
+        <div
+          className={`relative transition-transform duration-300 ${
+            isRecentBoxOpen ? "translate-x-0" : "translate-x-[calc(100%-32px)]"
+          }`}
+        >
+          <button
+            onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
+            className="absolute -left-8 top-0 bg-blue-900 text-white px-2 py-4 rounded-l-lg"
+          >
+            {isRecentBoxOpen ? ">" : "<"}
+          </button>
+
+          <div className="bg-white shadow-lg rounded-l-lg w-64">
+            <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
+              <h3 className="text-lg font-bold text-center">최근 본 목록</h3>
+            </div>
+
+            <div className="p-4 max-h-[500px] overflow-y-auto">
+              {recentItems.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">
+                  최근 본 행사가 없습니다
+                </p>
+              ) : (
+                <ul className="space-y-4">
+                  {recentItems.map((item, index) => (
+                    <li key={index} className="border-b pb-3 last:border-b-0">
+                      <Link
+                        to={`/event_schedule`}
+                        className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded"
+                      >
+                        <div className="w-20 h-20 flex-shrink-0">
+                          {item.imageUrl ? (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 rounded flex items-center justify-center">
+                              <span className="text-gray-400">No Image</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-sm truncate">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {item.begin_de}
+                          </p>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
