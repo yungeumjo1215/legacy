@@ -29,3 +29,32 @@ exports.getEvents = (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+exports.getKGfestival = (req, res) => {
+  try {
+    // Resolve the path to the JSON file
+    const filePath = path.resolve(__dirname, "../data/festival.json");
+
+    // Read and parse JSON file
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+    // Extract TITLE and IMAGE_URL
+    const festival = data.map((item) => ({
+      programName: item.subTitle || "N/A",
+      programContent: item.subContent || "N/A",
+      startDate: item.sDate || "N/A",
+      endDate: item.eDate || "N/A",
+      location: item.subDesc || "N/A",
+      contact: item.contact || "N/A",
+      sido: item.sido || "N/A",
+      targetAudience: item.subDesc2 || "N/A",
+    }));
+
+    const limitedFestivals = festival.slice(0, 10000);
+    // Send response
+    res.status(200).json(limitedFestivals);
+  } catch (error) {
+    console.error("Error reading or parsing the file:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
