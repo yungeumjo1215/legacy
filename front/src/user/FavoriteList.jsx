@@ -27,7 +27,8 @@ const FavoriteList = () => {
         <h2 className="text-xl font-semibold mb-4">
           문화재 ({heritages.length})
         </h2>
-        <div className="grid gap-4">
+
+        <div className="flex gap-4">
           {heritages.map((heritage) => (
             <div
               key={heritage.ccbaKdcd}
@@ -60,7 +61,7 @@ const FavoriteList = () => {
         <h2 className="text-xl font-semibold mb-4">
           행사 ({festivals.length})
         </h2>
-        <div className="grid gap-4">
+        <div className="flex gap-4">
           {festivals.map((festival) => (
             <div
               key={festival.programName}
