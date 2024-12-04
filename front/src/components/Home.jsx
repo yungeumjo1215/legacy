@@ -11,7 +11,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import {
+  IoIosArrowBack,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -23,6 +27,7 @@ const Home = () => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEvent())
@@ -41,6 +46,24 @@ const Home = () => {
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
+
+  //스크롤 핸들러
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300); //300px 이상 스크롤 시 맨 위로 가기 버튼 표시
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  //맨 위로 스크롤하는 함수
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   if (loading)
     return (
@@ -225,6 +248,16 @@ const Home = () => {
           </Link>
         </div>
       </div>
+      {/* 맨 위로 가기 버튼 */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all duration-300 ease-in-out"
+          aria-label="맨 위로 가기"
+        >
+          <IoIosArrowUp size={24} />
+        </button>
+      )}
     </div>
   );
 };

@@ -36,11 +36,12 @@ const createAccount = async (req, res) => {
       [`%@${emailDomain}`]
     );
 
-    if (rowCount >= 3) {
-      return res.status(429).json({
-        message: "Registration limit exceeded for this email domain.",
-      });
-    }
+    console.log(rowCount);
+    // if (rowCount >= 3) {
+    //   return res.status(429).json({
+    //     message: "Registration limit exceeded for this email domain.",
+    //   });
+    // }
 
     // Hash password and create account
     const hashedPassword = await bcrypt.hash(password, 10);

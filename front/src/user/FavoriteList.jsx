@@ -86,7 +86,7 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex gap-6 transition-all duration-300">
+          <div className="flex gap- transition-all duration-300">
             {getCurrentItems(heritages, heritagePage).map((heritage) => (
               <div
                 key={heritage.ccbaKdcd}
