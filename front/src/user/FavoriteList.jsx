@@ -2,8 +2,13 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar } from "react-icons/ai";
+import default_Img from "../assets/eventIamge.png";
 
 const FavoriteList = () => {
+  const onErrorImg = (e) => {
+    e.target.src = default_Img;
+  };
+
   const dispatch = useDispatch();
   const { heritages, festivals } = useSelector((state) => state.favorites);
 
@@ -70,7 +75,10 @@ const FavoriteList = () => {
               key={festival.programName}
               className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
             >
-              <div className="flex-1">
+              <div className="flex-1 items-center justify-center">
+                <div className="flex justify-center items-center size-24">
+                  <img src={festival.imageUrl} onError={onErrorImg} alt="" />
+                </div>
                 <h3 className="text-lg font-semibold">
                   {festival.programName}
                 </h3>
@@ -98,5 +106,4 @@ const FavoriteList = () => {
     </div>
   );
 };
-
 export default FavoriteList;
