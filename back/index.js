@@ -5,10 +5,10 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
-const festivalRoutes = require("./routes/festivalRoutes");
+// const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-const kgfestivalRoutes = require("./routes/kgfestivalRoutes");
+const festivalRoutes = require("./routes/kgfestivalRoutes");
 
 const PORT = 8000;
 const app = express();
@@ -39,7 +39,7 @@ app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
-app.use("/kgfestival", kgfestivalRoutes);
+// app.use("/kgfestival", kgfestivalRoutes);
 
 app.use("/account", accountRoutes);
 app.post("/api/store-favorites", (req, res) => {
