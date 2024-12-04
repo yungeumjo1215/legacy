@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar } from "react-icons/ai";
@@ -16,7 +16,32 @@ const FavoriteList = () => {
   const [heritagePage, setHeritagePage] = useState(0);
   const [festivalPage, setFestivalPage] = useState(0);
 
-  const itemsPerPage = 4;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const getItemsPerPage = () => {
+    if (windowWidth <= 640) return 1; // 모바일
+    if (windowWidth <= 960) return 2; // 태블릿
+    if (windowWidth <= 1280) return 3; // 작은 데스크톱
+    return 4; // 큰 데스크톱
+  };
+
+  const itemsPerPage = getItemsPerPage();
+
+  useEffect(() => {
+    setHeritagePage(0);
+    setFestivalPage(0);
+  }, [itemsPerPage]);
 
   const handleRemoveFavorite = (item, type) => {
     try {
@@ -63,7 +88,7 @@ const FavoriteList = () => {
   };
 
   return (
-    <div className="p-4 pb-2 pt-12">
+    <div className="p-4">
       <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
 
       {/* 문화재 섹션 */}
@@ -77,25 +102,14 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "heritage")}
-                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
-                  ${
-                    heritagePage === 0
-                      ? "text-gray-300"
-                      : "text-blue-600 hover:text-blue-800"
-                  }`}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={heritagePage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "heritage")}
-                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
-                  ${
-                    heritagePage >=
-                    Math.ceil(heritages.length / itemsPerPage) - 1
-                      ? "text-gray-300"
-                      : "text-blue-600 hover:text-blue-800"
-                  }`}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={
                   heritagePage >= Math.ceil(heritages.length / itemsPerPage) - 1
                 }
@@ -105,7 +119,7 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6">
+          <div className="flex gap-6">
             {getCurrentItems(heritages, heritagePage).map((heritage) => (
               <div
                 key={heritage.ccbaKdcd}
@@ -157,25 +171,14 @@ const FavoriteList = () => {
             <>
               <button
                 onClick={() => handlePageChange(-1, "festival")}
-                className={`absolute left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
-                  ${
-                    festivalPage === 0
-                      ? "text-gray-300"
-                      : "text-blue-600 hover:text-blue-800"
-                  }`}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={festivalPage === 0}
               >
                 <IoIosArrowBack size={24} />
               </button>
               <button
                 onClick={() => handlePageChange(1, "festival")}
-                className={`absolute right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-300
-                  ${
-                    festivalPage >=
-                    Math.ceil(festivals.length / itemsPerPage) - 1
-                      ? "text-gray-300"
-                      : "text-blue-600 hover:text-blue-800"
-                  }`}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md"
                 disabled={
                   festivalPage >= Math.ceil(festivals.length / itemsPerPage) - 1
                 }
@@ -185,7 +188,7 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6">
+          <div className="flex gap-6">
             {getCurrentItems(festivals, festivalPage).map((festival) => (
               <div
                 key={festival.programName}
