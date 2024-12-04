@@ -198,10 +198,11 @@ const FavoriteList = () => {
                   className="bg-white p-4 rounded-lg shadow-md flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer"
                   onClick={() => openModal(festival, "festival")}
                 >
+                  <p>{festival.imageUrl}</p>
                   <div className="flex flex-col h-full">
                     <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                       <img
-                        src={festival.imageUrl || "default_Img"}
+                        src={festival.imageUrl}
                         alt={festival.programName}
                         className="w-full h-[160px] object-cover"
                         onError={onErrorImg}
