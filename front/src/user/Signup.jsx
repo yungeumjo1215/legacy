@@ -1,168 +1,133 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axios";
 
 const Signup = () => {
-  const [form, setForm] = useState({
-    name: "",
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
+    username: "",
   });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    // 비밀번호 확인
+    if (formData.password !== formData.confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
     try {
-      // API 호출 전 로딩 상태 표시 가능
-      setError("");
+      const response = await axios.post("/account/create", {
+        email: formData.email,
+        password: formData.password,
+        username: formData.username,
+      });
 
-      const response = await axios.post(
-        "http://localhost:8000/account/create",
-        {
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        }
-      );
-
-      console.log("서버 응답:", response); // 디버깅용
-
-      if (response.data.success) {
-        alert("회원가입이 완료되었습니다!");
+      if (response.status === 201) {
+        alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
         navigate("/login");
       }
     } catch (error) {
-      console.error("회원가입 에러:", error); // 디버깅용
-
-      if (error.response) {
-        // 서버가 응답을 반환한 경우
-        if (error.response.status === 409) {
-          setError("이미 등록된 이메일입니다.");
-        } else if (error.response.status === 400) {
-          setError("입력하신 정보가 유효하지 않습니다.");
-        } else {
-          setError(
-            error.response.data.message ||
-              "회원가입 처리 중 오류가 발생했습니다."
-          );
-        }
-      } else if (error.request) {
-        // 서버에 요청이 도달하지 못한 경우
-        setError("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
-      } else {
-        // 요청 설정 중 문제가 발생한 경우
-        setError("요청 처리 중 오류가 발생했습니다.");
-      }
+      setError(
+        error.response?.data?.message || "회원가입 중 오류가 발생했습니다."
+      );
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
-
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">회원가입</h2>
-
-        {error && (
-          <div className="bg-red-100 text-red-600 p-2 mb-4 rounded">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              이름
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="이름 입력"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              이메일
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="이메일 입력"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              비밀번호
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="비밀번호 입력"
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              비밀번호 확인
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="비밀번호 확인"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none"
-          >
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             회원가입
-          </button>
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="text-red-500 text-center text-sm">{error}</div>
+          )}
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <input
+                name="email"
+                type="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="이메일 주소"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                name="password"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="비밀번호"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                name="confirmPassword"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="비밀번호 확인"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                name="username"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="사용자 이름"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                <svg
+                  className="h-5 w-5 text-blue-500 group-hover:text-blue-300"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5 9V4a5 5 0 0110 0v5a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a5 5 0 1110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H9a2 2 0 01-2-2v-5a2 2 0 012-2z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+              회원가입
+            </button>
+          </div>
         </form>
       </div>
     </div>
