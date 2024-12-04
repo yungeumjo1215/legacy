@@ -31,16 +31,6 @@ const createAccount = async (req, res) => {
   try {
     // Check registration limit per domain
     const emailDomain = email.split("@")[1];
-    const { rowCount } = await pool.query(
-      "SELECT * FROM accounts WHERE email LIKE $1 AND created_at > NOW() - INTERVAL '1 day'",
-      [`%@${emailDomain}`]
-    );
-
-    if (rowCount >= 3) {
-      return res.status(429).json({
-        message: "Registration limit exceeded for this email domain.",
-      });
-    }
 
     // Hash password and create account
     const hashedPassword = await bcrypt.hash(password, 10);
