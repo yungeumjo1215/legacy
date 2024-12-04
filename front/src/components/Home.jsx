@@ -29,7 +29,7 @@ const Home = () => {
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [recentItems, setRecentItems] = useState([]);
-  const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(true);
+  const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEvent())
@@ -287,12 +287,13 @@ const Home = () => {
       <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
         <div
           className={`relative transition-transform duration-300 ${
-            isRecentBoxOpen ? "translate-x-0" : "translate-x-[calc(100%-32px)]"
+            isRecentBoxOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <button
             onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
-            className="absolute -left-8 top-0 bg-blue-900 text-white px-2 py-4 rounded-l-lg"
+            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-4 rounded-l-lg shadow-lg transition-all duration-300"
+            style={{ height: "50px" }}
           >
             {isRecentBoxOpen ? ">" : "<"}
           </button>
