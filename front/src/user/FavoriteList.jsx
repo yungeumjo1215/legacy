@@ -47,7 +47,7 @@ const FavoriteList = () => {
     try {
       dispatch(
         removeFavorite({
-          type,
+          type: type === "heritage" ? "heritage" : "event", // "festival"을 "event"로 변경
           id: type === "heritage" ? item.ccbaMnm1 : item.id,
         })
       );
