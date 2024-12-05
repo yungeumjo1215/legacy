@@ -119,11 +119,11 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6 overflow-hidden">
-            <div className="flex gap-6 transition-transform duration-300 ease-in-out">
-              {getCurrentItems(heritages, heritagePage).map((heritage) => (
+          <div className="flex justify-center gap-6 overflow-hidden w-full">
+            <div className="flex gap-6 transition-transform duration-300 ease-in-out w-full">
+              {getCurrentItems(heritages, heritagePage).map((heritage, idx) => (
                 <div
-                  key={heritage.ccbaKdcd}
+                  key={idx}
                   className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
                   onClick={() => openModal(heritage, "heritage")}
                 >
@@ -190,12 +190,12 @@ const FavoriteList = () => {
             </>
           )}
 
-          <div className="flex justify-center gap-6 overflow-hidden">
-            <div className="flex gap-6 transition-transform duration-300 ease-in-out">
+          <div className="flex justify-center gap-6 overflow-hidden w-full">
+            <div className="flex gap-6 transition-transform duration-300 ease-in-out w-full">
               {getCurrentItems(festivals, festivalPage).map((festival) => (
                 <div
                   key={festival.programName}
-                  className="bg-white p-4 rounded-lg shadow-md flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer"
+                  className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
                   onClick={() => openModal(festival, "festival")}
                 >
                   <div className="flex flex-col h-full">
