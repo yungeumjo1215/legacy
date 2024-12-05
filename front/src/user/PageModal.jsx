@@ -70,12 +70,12 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
           {type === "heritage" ? (
             <>
               <div>
-                <span className="font-semibold text-gray-700">위치</span>
-                <p className="mt-1 text-gray-600">{item.ccbaLcad}</p>
-              </div>
-              <div>
                 <span className="font-semibold text-gray-700">시대</span>
                 <p className="mt-1 text-gray-600">{item.ccceName}</p>
+              </div>
+              <div>
+                <span className="font-semibold text-gray-700">위치</span>
+                <p className="mt-1 text-gray-600">{item.ccbaLcad}</p>
               </div>
             </>
           ) : (
@@ -89,6 +89,10 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
                 <p className="mt-1 text-gray-600">
                   {item.startDate} ~ {item.endDate}
                 </p>
+              </div>
+              <div>
+                <span className="font-semibold text-gray-700">문의</span>
+                <p className="mt-1 text-gray-600">{item.contact}</p>
               </div>
             </>
           )}

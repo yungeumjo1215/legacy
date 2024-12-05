@@ -50,6 +50,10 @@ const formatDateString = (dateArr) => {
   }
 };
 
+const onErrorImg = (e) => {
+  e.target.src = default_Img;
+};
+
 const parseYYYYMMDD = (dateArr) => {
   if (!dateArr || !dateArr[0] || dateArr[0].length !== 8) return null;
 
@@ -117,39 +121,48 @@ const EventItem = memo(
             <h3 className="MainFont text-2xl mb-2">
               {formatValue(event.programName)}
             </h3>
-            <p className="SubFont text-lg mb-2">
-              {formatValue(event.programContent)}
-            </p>
-            <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 text-lg">
-              <div>
-                <p>
-                  <span className="font-medium">기간:</span>{" "}
-                  {formatValue(event.startDate)} ~ {formatValue(event.endDate)}
-                </p>
-                <p>
-                  <span className="font-medium">장소:</span>{" "}
-                  {formatValue(event.location)}
-                </p>
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                <img
+                  src={
+                    event.image && event.image !== "N/A"
+                      ? event.image
+                      : default_Img
+                  }
+                  alt={event.programName}
+                  className="rounded-md w-1/2 h-auto object-cover"
+                  loading="lazy"
+                  onError={onErrorImg}
+                />
               </div>
-              <div>
-                <p>
-                  <span className="font-medium">대상:</span>{" "}
-                  {formatValue(event.targetAudience)}
-                </p>
-                <p>
-                  <span className="font-medium">문의:</span>{" "}
-                  {formatValue(event.contact)}
-                </p>
+              <div className="flex flex-col gap-4">
+                <div className="w-1/2 flex items-center">
+                  <p className="SubFont text-lg">
+                    {formatValue(event.programContent)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-lg w-1/2">
+                  <p>
+                    <span className="font-medium">기간:</span>{" "}
+                    {formatValue(event.startDate)} ~{" "}
+                    {formatValue(event.endDate)}
+                  </p>
+                  <p>
+                    <span className="font-medium">장소:</span>{" "}
+                    {formatValue(event.location)}
+                  </p>
+                  <p>
+                    <span className="font-medium">대상:</span>{" "}
+                    {formatValue(event.targetAudience)}
+                  </p>
+                  <p>
+                    <span className="font-medium">문의:</span>{" "}
+                    {formatValue(event.contact)}
+                  </p>
+                </div>
               </div>
             </div>
-            {event.image && event.image !== "N/A" && (
-              <img
-                src={event.image}
-                alt={event.programName}
-                className="mt-3 rounded-md w-full max-w-md h-auto"
-                loading="lazy"
-              />
-            )}
           </div>
         </div>
       </div>
@@ -304,7 +317,8 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
-      // console.log(festival);
+      console.log("Adding festival with image:", festival.image);
+
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -315,15 +329,7 @@ const EventSchedule = () => {
       try {
         const isAlreadySelected = isEventStarred(festival.programName);
 
-        if (isAlreadySelected) {
-          dispatch(
-            removeFavorite({
-              type: "event",
-              id: festival.programName,
-            })
-          );
-          setSuccessMessage("즐겨찾기가 해제되었습니다.");
-        } else {
+        if (!isAlreadySelected) {
           dispatch(
             addFavorite({
               type: "event",
@@ -335,10 +341,18 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
-              imageUrl: festival.imageUrl || default_Img,
+              imageUrl: festival.image,
             })
           );
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        } else {
+          dispatch(
+            removeFavorite({
+              type: "event",
+              id: festival.programName,
+            })
+          );
+          setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
 
         setTimeout(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import default_Img from "../assets/festival.png";
 
 const EventModal = ({ event, onClose }) => {
   const dispatch = useDispatch();
@@ -9,6 +10,10 @@ const EventModal = ({ event, onClose }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [alertMessage, setAlertMessage] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const onErrorImg = (e) => {
+    e.target.src = default_Img;
+  };
 
   useEffect(() => {
     const favoriteStatus = festivals.some(
@@ -44,6 +49,7 @@ const EventModal = ({ event, onClose }) => {
             endDate: event.endDate,
             targetAudience: event.targetAudience,
             contact: event.contact,
+            imageUrl: event.image,
           })
         );
         setAlertMessage("즐겨찾기에 추가되었습니다.");
@@ -112,6 +118,17 @@ const EventModal = ({ event, onClose }) => {
                 <p>문의</p>
                 <p>{event.contact}</p>
               </div>
+              <img
+                src={
+                  event.image && event.image !== "N/A"
+                    ? event.image
+                    : default_Img
+                }
+                alt={event.programName}
+                className="rounded-md w-0 h-auto object-cover opacity-0"
+                loading="lazy"
+                onError={onErrorImg}
+              />
             </div>
           </div>
         </div>
