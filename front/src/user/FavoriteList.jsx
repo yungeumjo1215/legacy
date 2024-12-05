@@ -97,70 +97,79 @@ const FavoriteList = () => {
           ◎ 문화재 ({heritages.length})
         </h2>
 
-        <div className="relative px-8">
-          {heritages.length > itemsPerPage && (
-            <>
-              <button
-                onClick={() => handlePageChange(-1, "heritage")}
-                className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                disabled={heritagePage === 0}
-              >
-                <IoIosArrowBack size={24} />
-              </button>
-              <button
-                onClick={() => handlePageChange(1, "heritage")}
-                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200 "
-                disabled={
-                  heritagePage >= Math.ceil(heritages.length / itemsPerPage) - 1
-                }
-              >
-                <IoIosArrowForward size={24} />
-              </button>
-            </>
-          )}
-
-          <div className="flex justify-center gap-6 overflow-hidden w-full">
-            <div className="flex gap-6 transition-transform duration-300 justify-center ease-in-out w-full">
-              {getCurrentItems(heritages, heritagePage).map((heritage, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
-                  onClick={() => openModal(heritage, "heritage")}
+        {heritages.length === 0 ? (
+          <div className="text-center text-gray-500 mt-8">
+            즐겨찾기한 문화재가 없습니다.
+          </div>
+        ) : (
+          <div className="relative px-8">
+            {heritages.length > itemsPerPage && (
+              <>
+                <button
+                  onClick={() => handlePageChange(-1, "heritage")}
+                  className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
+                  disabled={heritagePage === 0}
                 >
-                  <div className="flex flex-col h-full">
-                    <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
-                      <img
-                        src={heritage.imageUrl}
-                        alt={heritage.ccbaMnm1}
-                        className="w-full h-[160px] object-cover"
-                        onError={onErrorImg}
-                      />
+                  <IoIosArrowBack size={24} />
+                </button>
+                <button
+                  onClick={() => handlePageChange(1, "heritage")}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200 "
+                  disabled={
+                    heritagePage >=
+                    Math.ceil(heritages.length / itemsPerPage) - 1
+                  }
+                >
+                  <IoIosArrowForward size={24} />
+                </button>
+              </>
+            )}
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFavorite(heritage, "heritage");
-                        }}
-                        className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                        aria-label="즐겨찾기 해제"
-                      >
-                        <AiFillStar className="text-2xl filter drop-shadow-md" />
-                      </button>
+            <div className="flex justify-center gap-6 overflow-hidden w-full">
+              <div className="flex gap-6 transition-transform duration-300 justify-center ease-in-out w-full">
+                {getCurrentItems(heritages, heritagePage).map(
+                  (heritage, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
+                      onClick={() => openModal(heritage, "heritage")}
+                    >
+                      <div className="flex flex-col h-full">
+                        <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
+                          <img
+                            src={heritage.imageUrl}
+                            alt={heritage.ccbaMnm1}
+                            className="w-full h-[160px] object-cover"
+                            onError={onErrorImg}
+                          />
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveFavorite(heritage, "heritage");
+                            }}
+                            className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
+                            aria-label="즐겨찾기 해제"
+                          >
+                            <AiFillStar className="text-2xl filter drop-shadow-md" />
+                          </button>
+                        </div>
+                        <div className="flex flex-col flex-1">
+                          <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
+                            {heritage.ccbaMnm1}
+                          </h3>
+                          <p className="mt-auto text-gray-600 text-xs truncate">
+                            {heritage.ccbaLcad}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex flex-col flex-1">
-                      <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
-                        {heritage.ccbaMnm1}
-                      </h3>
-                      <p className="mt-auto text-gray-600 text-xs truncate">
-                        {heritage.ccbaLcad}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  )
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 행사 섹션 */}
@@ -169,76 +178,77 @@ const FavoriteList = () => {
           ◎ 행사 ({festivals.length})
         </h2>
 
-        <div className="relative px-8">
-          {festivals.length > itemsPerPage && (
-            <>
-              <button
-                onClick={() => handlePageChange(-1, "festival")}
-                className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                disabled={festivalPage === 0}
-              >
-                <IoIosArrowBack size={24} />
-              </button>
-              <button
-                onClick={() => handlePageChange(1, "festival")}
-                className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                disabled={
-                  festivalPage >= Math.ceil(festivals.length / itemsPerPage) - 1
-                }
-              >
-                <IoIosArrowForward size={24} />
-              </button>
-            </>
-          )}
-
-          <div className="flex justify-center gap-6 overflow-hidden w-full">
-            <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center  w-full">
-              {getCurrentItems(festivals, festivalPage).map((festival) => (
-                <div
-                  key={festival.programName}
-                  className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
-                  onClick={() => openModal(festival, "festival")}
+        {festivals.length === 0 ? (
+          <div className="text-center text-gray-500 mt-8">
+            즐겨찾기한 행사가 없습니다.
+          </div>
+        ) : (
+          <div className="relative px-8">
+            {festivals.length > itemsPerPage && (
+              <>
+                <button
+                  onClick={() => handlePageChange(-1, "festival")}
+                  className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
+                  disabled={festivalPage === 0}
                 >
-                  <div className="flex flex-col h-full">
-                    <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
-                      <img
-                        className="w-full h-[160px] object-cover"
-                        src={festival.imageUrl || default_Img}
-                        alt={festival.programName}
-                        onError={onErrorImg}
-                      />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFavorite(festival, "festival");
-                        }}
-                        className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                        aria-label="즐겨찾기 해제"
-                      >
-                        <AiFillStar className="text-2xl filter drop-shadow-md" />
-                      </button>
-                    </div>
-                    <div className="flex flex-col flex-1">
-                      <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
-                        {festival.programName}
-                      </h3>
-                      <p className="mt-auto text-gray-600 text-xs truncate">
-                        {festival.location}
-                      </p>
+                  <IoIosArrowBack size={24} />
+                </button>
+                <button
+                  onClick={() => handlePageChange(1, "festival")}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
+                  disabled={
+                    festivalPage >=
+                    Math.ceil(festivals.length / itemsPerPage) - 1
+                  }
+                >
+                  <IoIosArrowForward size={24} />
+                </button>
+              </>
+            )}
+
+            <div className="flex justify-center gap-6 overflow-hidden w-full">
+              <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center  w-full">
+                {getCurrentItems(festivals, festivalPage).map((festival) => (
+                  <div
+                    key={festival.programName}
+                    className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
+                    onClick={() => openModal(festival, "festival")}
+                  >
+                    <div className="flex flex-col h-full">
+                      <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
+                        <img
+                          className="w-full h-[160px] object-cover"
+                          src={festival.imageUrl || default_Img}
+                          alt={festival.programName}
+                          onError={onErrorImg}
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveFavorite(festival, "festival");
+                          }}
+                          className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
+                          aria-label="즐겨찾기 해제"
+                        >
+                          <AiFillStar className="text-2xl filter drop-shadow-md" />
+                        </button>
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
+                          {festival.programName}
+                        </h3>
+                        <p className="mt-auto text-gray-600 text-xs truncate">
+                          {festival.location}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
-
-      {heritages.length === 0 && festivals.length === 0 && (
-        <div className="text-center text-gray-500 mt-8">
-          즐겨찾기한 항목이 없습니다.
-        </div>
-      )}
 
       <PageModal
         isOpen={isModalOpen}
