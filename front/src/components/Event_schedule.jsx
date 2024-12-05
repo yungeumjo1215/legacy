@@ -105,23 +105,25 @@ const EventItem = memo(
         onClick={() => onEventClick(event)}
       >
         <div className="flex items-start">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStarClick(event);
-            }}
-            className={`star-button mr-3 ${
-              isStarred ? "text-yellow-400" : "text-gray-300"
-            }`}
-            tabIndex={0}
-            aria-label={`${event.programName} 즐겨찾기 ${
-              isStarred ? "제거" : "추가"
-            }`}
-          >
-            <TiStarFullOutline className="text-3xl" />
-          </button>
-          <div className="flex-1">
-            <h3 className="MainFont text-2xl mb-2">{event.programName}</h3>
+          <div className="flex-1 ml-8">
+            <h3 className="MainFont text-xl sm:text-2xl mb-2 ml-4 sm:ml-56">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStarClick(event);
+                }}
+                className={`star-button mr-2 sm:mr-3 ${
+                  isStarred ? "text-yellow-400" : "text-gray-300"
+                }`}
+                tabIndex={0}
+                aria-label={`${event.programName} 즐겨찾기 ${
+                  isStarred ? "제거" : "추가"
+                }`}
+              >
+                <TiStarFullOutline className="text-2xl sm:text-3xl" />
+              </button>
+              {event.programName}
+            </h3>
             <div className="flex flex-col lg:flex-row gap-4 mb-4">
               <div className="lg:max-w-56 w-full">
                 <img
@@ -148,25 +150,25 @@ const EventItem = memo(
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">기간:</span>
                       {event.startDate}
-                      {event.endDate}
+                      {formatValue(event.endDate)}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">장소:</span>
-                      {event.location}
+                      {formatValue(event.location)}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">대상:</span>
-                      {event.targetAudience}
+                      {formatValue(event.targetAudience)}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">문의:</span>
-                      {event.contact}
+                      {formatValue(event.contact)}
                     </p>
                   </div>
                 </div>
