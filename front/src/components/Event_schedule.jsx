@@ -193,7 +193,6 @@ const EventSchedule = () => {
   const { festivals } = useSelector((state) => state.favorites);
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
@@ -414,17 +413,6 @@ const EventSchedule = () => {
     closeError();
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      const eventNames = festivals
-        .filter((fav) => fav.type === "event")
-        .map((fav) => fav.programName);
-      setSelectedItems(eventNames);
-    } else {
-      setSelectedItems([]);
-    }
-  }, [isLoggedIn, festivals]);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = formattedFestivals.slice(
@@ -490,7 +478,7 @@ const EventSchedule = () => {
           문화재 행사 정보
         </h1>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-white min-h-[410px] rounded-lg shadow-md p-6 mb-8">
           <div className="xl:flex xl:flex-row flex-col justify-between items-start gap-6">
             <div
               className="xl:w-1/2 w-full flex flex-wrap justify-center sm:justify-start items-center 

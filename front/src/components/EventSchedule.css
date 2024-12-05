@@ -20,23 +20,32 @@
   border: 2px solid rgb(30 58 138 / var(--tw-bg-opacity, 1));
 }
 
-.region-btn-경상도 {
-  margin-left: 76px;
-}
-
-.region-btn-서울,
-.region-btn-인천 {
-  padding: 3px 17px;
-}
-
 .Event-sc {
   border: 2px solid rgb(30 58 138 / var(--tw-bg-opacity, 1));
 }
 
 .react-calendar {
   width: 100%;
-  max-height: 280px; /* 높이를 제한 */
-  overflow-y: auto; /* 스크롤 추가 */
+  min-height: 350px;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 1024px) {
+  .react-calendar {
+    min-height: 362px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .react-calendar {
+    min-height: 362px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .react-calendar {
+    min-height: 291.75px;
+  }
 }
 
 .Event-information {
