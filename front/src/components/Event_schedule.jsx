@@ -26,7 +26,11 @@ const REGIONS = [
 ];
 
 const formatValue = (value) => {
-  return value === "N/A" ? "모두" : value;
+  if (value === "N/A") return "모두";
+  if (typeof value === "string" && value.length > 30) {
+    return value.substring(0, 30) + "...";
+  }
+  return value;
 };
 
 const formatDateString = (dateArr) => {
