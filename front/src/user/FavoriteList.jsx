@@ -98,7 +98,7 @@ const FavoriteList = () => {
         </h2>
         <div className="-mb-24">
           {heritages.length === 0 ? (
-            <div className="text-center text-gray-500 mt-8 min-h-[400px] flex items-center justify-center">
+            <div className="text-center text-gray-500 mt-8 mb-4 min-h-[300px] flex items-center justify-center">
               즐겨찾기한 문화재가 없습니다.
             </div>
           ) : (
