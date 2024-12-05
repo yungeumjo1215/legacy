@@ -105,23 +105,23 @@ const EventItem = memo(
         onClick={() => onEventClick(event)}
       >
         <div className="flex items-start">
-          <div className="flex-1 ml-8">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStarClick(event);
+            }}
+            className={`star-button mr-2 sm:mr-3 ${
+              isStarred ? "text-yellow-400" : "text-gray-300"
+            }`}
+            tabIndex={0}
+            aria-label={`${event.programName} 즐겨찾기 ${
+              isStarred ? "제거" : "추가"
+            }`}
+          >
+            <TiStarFullOutline className="text-2xl sm:text-3xl" />
+          </button>
+          <div className="flex-1">
             <h3 className="MainFont text-xl sm:text-2xl mb-2 ml-4 sm:ml-56">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleStarClick(event);
-                }}
-                className={`star-button mr-2 sm:mr-3 ${
-                  isStarred ? "text-yellow-400" : "text-gray-300"
-                }`}
-                tabIndex={0}
-                aria-label={`${event.programName} 즐겨찾기 ${
-                  isStarred ? "제거" : "추가"
-                }`}
-              >
-                <TiStarFullOutline className="text-2xl sm:text-3xl" />
-              </button>
               {event.programName}
             </h3>
             <div className="flex flex-col lg:flex-row gap-4 mb-4">
