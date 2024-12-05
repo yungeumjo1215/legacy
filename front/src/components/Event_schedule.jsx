@@ -123,15 +123,17 @@ const EventItem = memo(
             </h3>
             <div className="flex gap-4 mb-4">
               <div className="w-1/2">
-                {event.image && event.image !== "N/A" && (
-                  <img
-                    src={event.image || default_Img}
-                    alt={event.programName}
-                    className="rounded-md w-full h-auto object-cover"
-                    loading="lazy"
-                    onError={onErrorImg}
-                  />
-                )}
+                <img
+                  src={
+                    event.image && event.image !== "N/A"
+                      ? event.image
+                      : default_Img
+                  }
+                  alt={event.programName}
+                  className="rounded-md w-full h-auto object-cover"
+                  loading="lazy"
+                  onError={onErrorImg}
+                />
               </div>
               <div className="flex flex-col gap-4">
                 <div className="w-1/2 flex items-center">
@@ -319,7 +321,7 @@ const EventSchedule = () => {
 
       if (!isLoggedIn) {
         setError(
-          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시��습니까?"
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
         );
         return;
       }
@@ -342,8 +344,15 @@ const EventSchedule = () => {
               imageUrl: festival.image,
             })
           );
-          console.log("Dispatched festival with imageUrl:", festival.image);
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
+        } else {
+          dispatch(
+            removeFavorite({
+              type: "event",
+              id: festival.programName,
+            })
+          );
+          setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
 
         setTimeout(() => {
