@@ -148,25 +148,25 @@ const EventItem = memo(
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">기간:</span>
                       {event.startDate}
-                      {formatValue(event.endDate)}
+                      {event.endDate}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">장소:</span>
-                      {formatValue(event.location)}
+                      {event.location}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">대상:</span>
-                      {formatValue(event.targetAudience)}
+                      {event.targetAudience}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">문의:</span>
-                      {formatValue(event.contact)}
+                      {event.contact}
                     </p>
                   </div>
                 </div>
