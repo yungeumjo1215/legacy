@@ -23,6 +23,7 @@ export const fetchFestivalData = createAsyncThunk(
           contact: item.contact,
           sido: item.sido,
           targetAudience: item.targetAudience || item.subDesc_2,
+          image: item.imageUrl,
         }));
       }
       return [];

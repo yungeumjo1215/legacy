@@ -74,14 +74,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 via-white to-white">
       <div className="max-w-md w-full m-4 space-y-8 p-10 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-2xl">
         <div>
-          <h2 className="mt-4 text-center text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="mt-4 text-center text-3xl font-bold bg-gradient-to-r from-blue-900 via-blue-600 to-blue-400 bg-clip-text text-transparent">
             로그인
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-500">
-            서비스를 이용하시려면 로그인해주세요
+          <p className="mt-2 text-center text-base text-gray-900 font-medium">
+            계정에 로그인하세요
           </p>
         </div>
 
@@ -90,7 +90,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-bold text-gray-700 mb-1"
               >
                 이메일
               </label>
@@ -99,7 +99,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 required
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-100 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out hover:border-blue-200"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-100 placeholder-gray-500 text-gray-900 font-medium rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out hover:border-blue-200"
                 placeholder="name@example.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -108,7 +108,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-bold text-gray-700 mb-1"
               >
                 비밀번호
               </label>
@@ -117,7 +117,7 @@ const Login = () => {
                 name="password"
                 type="password"
                 required
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-100 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out hover:border-blue-200"
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-100 placeholder-gray-500 text-gray-900 font-medium rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ease-in-out hover:border-blue-200"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
@@ -135,7 +135,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5"
+              className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-900 via-blue-600 to-blue-400 hover:from-blue-800 hover:via-blue-500 hover:to-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5"
             >
               {loading ? (
                 <span className="flex items-center">
@@ -168,12 +168,12 @@ const Login = () => {
         </form>
 
         <div className="text-center">
-          <span className="text-sm text-gray-500">
+          <span className="text-base text-gray-900">
             아직 회원이 아니신가요?{" "}
           </span>
           <Link
             to="/signup"
-            className="text-sm bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-medium hover:underline transition duration-150 ease-in-out"
+            className="text-base bg-gradient-to-r from-blue-900 via-blue-600 to-blue-500 bg-clip-text text-transparent font-medium hover:underline"
           >
             회원가입
           </Link>
