@@ -47,8 +47,8 @@ const FavoriteList = () => {
     try {
       dispatch(
         removeFavorite({
-          type,
-          id: type === "heritage" ? item.ccbaMnm1 : item.programName,
+          type: type === "heritage" ? "heritage" : "event", // "festival"을 "event"로 변경
+          id: type === "heritage" ? item.ccbaMnm1 : item.id,
         })
       );
     } catch (error) {
@@ -201,7 +201,7 @@ const FavoriteList = () => {
                   <div className="flex flex-col h-full">
                     <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                       <img
-                        src={festival.imageUrl || "default_Img"}
+                        src={festival.imageUrl || default_Img}
                         alt={festival.programName}
                         className="w-full h-[160px] object-cover"
                         onError={onErrorImg}

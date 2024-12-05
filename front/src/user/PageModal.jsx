@@ -14,8 +14,8 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     try {
       dispatch(
         removeFavorite({
-          type,
-          id: type === "heritage" ? item.ccbaMnm1 : item.programName,
+          type: type === "heritage" ? "heritage" : "event",
+          id: type === "heritage" ? item.ccbaMnm1 : item.id,
         })
       );
       onClose();

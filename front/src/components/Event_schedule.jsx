@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import default_Img from "../assets/festival.png";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null },
@@ -303,6 +304,7 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
+      console.log(festival);
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -333,6 +335,7 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
+              imageUrl: festival.imageUrl || default_Img,
             })
           );
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
