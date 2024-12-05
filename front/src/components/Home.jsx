@@ -196,7 +196,7 @@ const Home = () => {
               {event.slice(0, 10).map((event) => (
                 <SwiperSlide key={event.title}>
                   <Link
-                    to={`/event_schedule`}
+                    to={`/event_schedule/${event.title}`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                     onClick={() => addToRecentItems(event)}
                   >
