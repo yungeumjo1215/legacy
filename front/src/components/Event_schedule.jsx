@@ -24,9 +24,12 @@ const REGIONS = [
   { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] },
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
-
 const formatValue = (value) => {
-  return value === "N/A" ? "모두" : value;
+  if (value === "N/A") return "모두";
+  if (typeof value === "string" && value.length > 20) {
+    return value.substring(0, 20) + "...";
+  }
+  return value;
 };
 
 const formatDateString = (dateArr) => {
@@ -118,11 +121,9 @@ const EventItem = memo(
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
-            <h3 className="MainFont text-2xl mb-2">
-              {formatValue(event.programName)}
-            </h3>
-            <div className="flex gap-4 mb-4">
-              <div className="max-w-56 h-auto">
+            <h3 className="MainFont text-2xl mb-2">{event.programName}</h3>
+            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+              <div className="lg:max-w-56 w-full">
                 <img
                   src={
                     event.image && event.image !== "N/A"
@@ -130,42 +131,42 @@ const EventItem = memo(
                       : default_Img
                   }
                   alt={event.programName}
-                  className="flex justify-center overflow-hidden w-100% border"
+                  className="w-full h-auto object-cover border rounded-lg"
                   loading="lazy"
                   onError={onErrorImg}
                 />
               </div>
               <div className="flex-1">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className=" p-3 rounded">
-                    <p className="SubFont text-lg">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">행사 내용:</span>
                       {formatValue(event.programContent)}
                     </p>
                   </div>
-                  <div className=" p-3 rounded">
-                    <p className="SubFont text-lg">
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">기간:</span>
-                      {formatValue(event.startDate)} ~{" "}
-                      {formatValue(event.endDate)}
+                      {event.startDate}
+                      {event.endDate}
                     </p>
                   </div>
-                  <div className=" p-3 rounded">
-                    <p className="SubFont text-lg">
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">장소:</span>
-                      {formatValue(event.location)}
+                      {event.location}
                     </p>
                   </div>
-                  <div className=" p-3 rounded">
-                    <p className="SubFont text-lg">
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">대상:</span>
-                      {formatValue(event.targetAudience)}
+                      {event.targetAudience}
                     </p>
                   </div>
-                  <div className=" p-3 rounded md:col-span-2">
-                    <p className="SubFont text-lg">
+                  <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
+                    <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">문의:</span>
-                      {formatValue(event.contact)}
+                      {event.contact}
                     </p>
                   </div>
                 </div>

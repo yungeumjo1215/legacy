@@ -107,14 +107,14 @@ const FavoriteList = () => {
                 <>
                   <button
                     onClick={() => handlePageChange(-1, "heritage")}
-                    className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
+                    className="absolute left-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
                     disabled={heritagePage === 0}
                   >
                     <IoIosArrowBack size={24} />
                   </button>
                   <button
                     onClick={() => handlePageChange(1, "heritage")}
-                    className="absolute right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200 "
+                    className="absolute right-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200 "
                     disabled={
                       heritagePage >=
                       Math.ceil(heritages.length / itemsPerPage) - 1
