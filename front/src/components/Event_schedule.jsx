@@ -304,7 +304,8 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
-      // console.log(festival);
+      console.log("Adding festival with image:", festival.image);
+
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -315,15 +316,7 @@ const EventSchedule = () => {
       try {
         const isAlreadySelected = isEventStarred(festival.programName);
 
-        if (isAlreadySelected) {
-          dispatch(
-            removeFavorite({
-              type: "event",
-              id: festival.programName,
-            })
-          );
-          setSuccessMessage("즐겨찾기가 해제되었습니다.");
-        } else {
+        if (!isAlreadySelected) {
           dispatch(
             addFavorite({
               type: "event",
@@ -335,9 +328,10 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
-              imageUrl: festival.imageUrl || default_Img,
+              imageUrl: festival.image,
             })
           );
+          console.log("Dispatched festival with imageUrl:", festival.image);
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         }
 
