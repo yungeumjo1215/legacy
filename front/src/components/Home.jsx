@@ -300,7 +300,7 @@ const Home = () => {
               <h3 className="text-lg font-bold text-center">최근 본 목록</h3>
             </div>
 
-            <div className="p-3 max-h-[400px] overflow-y-auto">
+            <div className="p-3 max-h-[600px] overflow-y-auto">
               {recentItems.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   최근 본 항목이 없습니다
