@@ -304,7 +304,7 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
-      console.log(festival);
+      // console.log(festival);
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -406,7 +406,7 @@ const EventSchedule = () => {
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
           >
             이전
           </button>
@@ -419,8 +419,8 @@ const EventSchedule = () => {
             className={`px-3 py-1 rounded ${
               currentPage === number
                 ? "bg-blue-800 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 hover:text-white"
-            } transition-all duration-300`}
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
           >
             {number}
           </button>
@@ -429,7 +429,7 @@ const EventSchedule = () => {
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
           >
             다음
           </button>
