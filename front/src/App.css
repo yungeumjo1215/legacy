@@ -1,5 +1,11 @@
+/* 전역 폰트 설정 추가 */
+body {
+  font-family: "Gowun Batang", serif;
+}
+
 .App {
   text-align: center;
+  font-family: "Gowun Batang", serif;
 }
 
 .App-logo {

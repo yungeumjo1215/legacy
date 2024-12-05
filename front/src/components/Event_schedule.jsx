@@ -403,7 +403,7 @@ const EventSchedule = () => {
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
           >
             이전
           </button>
@@ -416,8 +416,8 @@ const EventSchedule = () => {
             className={`px-3 py-1 rounded ${
               currentPage === number
                 ? "bg-blue-800 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
+                : "bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 hover:text-white"
+            } transition-all duration-300`}
           >
             {number}
           </button>
@@ -426,7 +426,7 @@ const EventSchedule = () => {
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
           >
             다음
           </button>
