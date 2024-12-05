@@ -315,7 +315,8 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
-      console.log(festival);
+      console.log("Adding festival with image:", festival.image);
+
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시��습니까?"
@@ -326,15 +327,7 @@ const EventSchedule = () => {
       try {
         const isAlreadySelected = isEventStarred(festival.programName);
 
-        if (isAlreadySelected) {
-          dispatch(
-            removeFavorite({
-              type: "event",
-              id: festival.programName,
-            })
-          );
-          setSuccessMessage("즐겨찾기가 해제되었습니다.");
-        } else {
+        if (!isAlreadySelected) {
           dispatch(
             addFavorite({
               type: "event",
@@ -346,9 +339,10 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
-              imageUrl: festival.imageUrl || default_Img,
+              imageUrl: festival.image,
             })
           );
+          console.log("Dispatched festival with imageUrl:", festival.image);
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         }
 
@@ -365,6 +359,22 @@ const EventSchedule = () => {
 
   const handleEventClick = useCallback((event) => {
     setSelectedEvent(event);
+
+    // 최근 본 목록에 추가
+    const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
+    const newItem = {
+      id: event.id || `event-${event.programName}`,
+      type: "event",
+      title: event.programName,
+      imageUrl: event.image,
+      begin_de: event.startDate,
+      location: event.location,
+      content: event.programContent,
+    };
+
+    const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
+    const updated = [newItem, ...filtered].slice(0, 5);
+    localStorage.setItem("recentItems", JSON.stringify(updated));
   }, []);
 
   const handleCloseModal = useCallback(() => {
