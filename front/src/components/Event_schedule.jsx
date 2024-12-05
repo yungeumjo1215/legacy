@@ -122,7 +122,7 @@ const EventItem = memo(
               {formatValue(event.programName)}
             </h3>
             <div className="flex gap-4 mb-4">
-              <div className="w-1/2">
+              <div className="max-w-56 h-auto">
                 <img
                   src={
                     event.image && event.image !== "N/A"
@@ -130,36 +130,44 @@ const EventItem = memo(
                       : default_Img
                   }
                   alt={event.programName}
-                  className="rounded-md w-1/2 h-auto object-cover"
+                  className="flex justify-center overflow-hidden w-100% border"
                   loading="lazy"
                   onError={onErrorImg}
                 />
               </div>
-              <div className="flex flex-col gap-4">
-                <div className="w-1/2 flex items-center">
-                  <p className="SubFont text-lg">
-                    {formatValue(event.programContent)}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 text-lg w-1/2">
-                  <p>
-                    <span className="font-medium">기간:</span>{" "}
-                    {formatValue(event.startDate)} ~{" "}
-                    {formatValue(event.endDate)}
-                  </p>
-                  <p>
-                    <span className="font-medium">장소:</span>{" "}
-                    {formatValue(event.location)}
-                  </p>
-                  <p>
-                    <span className="font-medium">대상:</span>{" "}
-                    {formatValue(event.targetAudience)}
-                  </p>
-                  <p>
-                    <span className="font-medium">문의:</span>{" "}
-                    {formatValue(event.contact)}
-                  </p>
+              <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className=" p-3 rounded">
+                    <p className="SubFont text-lg">
+                      <span className="font-medium mr-2">행사 내용:</span>
+                      {formatValue(event.programContent)}
+                    </p>
+                  </div>
+                  <div className=" p-3 rounded">
+                    <p className="SubFont text-lg">
+                      <span className="font-medium mr-2">기간:</span>
+                      {formatValue(event.startDate)} ~{" "}
+                      {formatValue(event.endDate)}
+                    </p>
+                  </div>
+                  <div className=" p-3 rounded">
+                    <p className="SubFont text-lg">
+                      <span className="font-medium mr-2">장소:</span>
+                      {formatValue(event.location)}
+                    </p>
+                  </div>
+                  <div className=" p-3 rounded">
+                    <p className="SubFont text-lg">
+                      <span className="font-medium mr-2">대상:</span>
+                      {formatValue(event.targetAudience)}
+                    </p>
+                  </div>
+                  <div className=" p-3 rounded md:col-span-2">
+                    <p className="SubFont text-lg">
+                      <span className="font-medium mr-2">문의:</span>
+                      {formatValue(event.contact)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
