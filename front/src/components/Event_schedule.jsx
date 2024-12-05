@@ -354,6 +354,22 @@ const EventSchedule = () => {
 
   const handleEventClick = useCallback((event) => {
     setSelectedEvent(event);
+
+    // 최근 본 목록에 추가
+    const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
+    const newItem = {
+      id: event.id || `event-${event.programName}`,
+      type: "event",
+      title: event.programName,
+      imageUrl: event.image,
+      begin_de: event.startDate,
+      location: event.location,
+      content: event.programContent,
+    };
+
+    const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
+    const updated = [newItem, ...filtered].slice(0, 5);
+    localStorage.setItem("recentItems", JSON.stringify(updated));
   }, []);
 
   const handleCloseModal = useCallback(() => {
