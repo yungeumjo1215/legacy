@@ -24,9 +24,12 @@ const REGIONS = [
   { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] },
   { id: "jeju", name: "제주도", sido: "제주특별자치도" },
 ];
-
 const formatValue = (value) => {
-  return value === "N/A" ? "모두" : value;
+  if (value === "N/A") return "모두";
+  if (typeof value === "string" && value.length > 20) {
+    return value.substring(0, 20) + "...";
+  }
+  return value;
 };
 
 const formatDateString = (dateArr) => {
@@ -118,9 +121,7 @@ const EventItem = memo(
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
-            <h3 className="MainFont text-xl sm:text-2xl mb-2">
-              {formatValue(event.programName)}
-            </h3>
+            <h3 className="MainFont text-2xl mb-2">{event.programName}</h3>
             <div className="flex flex-col lg:flex-row gap-4 mb-4">
               <div className="lg:max-w-56 w-full">
                 <img
@@ -146,7 +147,7 @@ const EventItem = memo(
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">기간:</span>
-                      {formatValue(event.startDate)}
+                      {event.startDate}
                       {formatValue(event.endDate)}
                     </p>
                   </div>
