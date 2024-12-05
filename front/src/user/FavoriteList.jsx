@@ -203,7 +203,7 @@ const FavoriteList = () => {
                     <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                       <img
                         className="w-full h-[160px] object-cover"
-                        src={festival.imageUrl}
+                        src={festival.imageUrl || default_Img}
                         alt={festival.programName}
                         onError={onErrorImg}
                       />
