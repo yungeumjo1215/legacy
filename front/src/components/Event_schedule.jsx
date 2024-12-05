@@ -27,8 +27,8 @@ const REGIONS = [
 
 const formatValue = (value) => {
   if (value === "N/A") return "모두";
-  if (typeof value === "string" && value.length > 30) {
-    return value.substring(0, 30) + "...";
+  if (typeof value === "string" && value.length > 20) {
+    return value.substring(0, 20) + "...";
   }
   return value;
 };
@@ -122,9 +122,7 @@ const EventItem = memo(
             <TiStarFullOutline className="text-3xl" />
           </button>
           <div className="flex-1">
-            <h3 className="MainFont text-2xl mb-2">
-              {formatValue(event.programName)}
-            </h3>
+            <h3 className="MainFont text-2xl mb-2">{event.programName}</h3>
             <div className="flex gap-4 mb-4">
               <div className="max-w-56 h-auto">
                 <img
@@ -157,19 +155,19 @@ const EventItem = memo(
                   <div className=" p-3 rounded">
                     <p className="SubFont text-lg">
                       <span className="font-medium mr-2">장소:</span>
-                      {formatValue(event.location)}
+                      {event.location}
                     </p>
                   </div>
                   <div className=" p-3 rounded">
                     <p className="SubFont text-lg">
                       <span className="font-medium mr-2">대상:</span>
-                      {formatValue(event.targetAudience)}
+                      {event.targetAudience}
                     </p>
                   </div>
                   <div className=" p-3 rounded md:col-span-2">
                     <p className="SubFont text-lg">
                       <span className="font-medium mr-2">문의:</span>
-                      {formatValue(event.contact)}
+                      {event.contact}
                     </p>
                   </div>
                 </div>
