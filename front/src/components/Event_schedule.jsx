@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import default_Img from "../assets/festival.png";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null },
@@ -333,6 +334,7 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
+              imageUrl: festival.imageUrl || default_Img,
             })
           );
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
