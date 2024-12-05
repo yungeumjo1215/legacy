@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEvent } from "../redux/slices/eventSlice";
 import { Link } from "react-router-dom";
-import a0 from "../assets/a0.mp4"; // 배경 영상
-import b1 from "../assets/b1.mp4"; // 배경 영상
+import a0 from "../assets/a0.mp4";
+import b1 from "../assets/b1.mp4";
 import "./ImageSlider.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -16,7 +16,6 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { useAuth } from "../hooks/useAuth";
 import { BsChatDotsFill } from "react-icons/bs";
 
 const Home = () => {
@@ -33,18 +32,8 @@ const Home = () => {
   const [recentItems, setRecentItems] = useState([]);
   const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
 
-  // 로그인 상태 감시
-  const { isLoggedIn } = useAuth();
-
   useEffect(() => {
-    dispatch(fetchEvent())
-      .unwrap()
-      .then((result) => {
-        // console.log("Fetch success:", result);
-      })
-      .catch((error) => {
-        // console.error("Fetch error:", error);
-      });
+    dispatch(fetchEvent());
   }, [dispatch]);
 
   useEffect(() => {
