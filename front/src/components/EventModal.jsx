@@ -49,6 +49,7 @@ const EventModal = ({ event, onClose }) => {
             endDate: event.endDate,
             targetAudience: event.targetAudience,
             contact: event.contact,
+            imageUrl: event.image,
           })
         );
         setAlertMessage("즐겨찾기에 추가되었습니다.");
