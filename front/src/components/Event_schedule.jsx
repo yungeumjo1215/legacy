@@ -304,6 +304,7 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
+      console.log(festival);
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
