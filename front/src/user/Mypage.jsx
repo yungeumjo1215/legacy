@@ -71,7 +71,7 @@ const Mypage = () => {
   }
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-tr from-blue-100 via-white to-white mt-16">
+    <div className="h-[calc(100vh-64px)] w-screen bg-gradient-to-tr from-blue-100 via-white to-white mt-16">
       <div className="flex h-full w-full p-4 gap-4">
         {/* 사이드바 */}
         <div
