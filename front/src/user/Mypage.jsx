@@ -80,11 +80,7 @@ const Mypage = () => {
           }`}
         >
           <div className="text-center mb-8">
-<<<<<<< HEAD
-            <div className="w-24 h-24 bg-gradient-to-r from-blue-200 via-blue-100 to-white rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105">
-=======
             <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105 ">
->>>>>>> d561702292829e76a87339426879182571103869
               <FaUser className="text-blue-500 text-3xl" />
             </div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-400 to-white bg-clip-text text-transparent">
