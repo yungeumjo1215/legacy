@@ -50,6 +50,10 @@ const formatDateString = (dateArr) => {
   }
 };
 
+const onErrorImg = (e) => {
+  e.target.src = default_Img;
+};
+
 const parseYYYYMMDD = (dateArr) => {
   if (!dateArr || !dateArr[0] || dateArr[0].length !== 8) return null;
 
@@ -117,39 +121,46 @@ const EventItem = memo(
             <h3 className="MainFont text-2xl mb-2">
               {formatValue(event.programName)}
             </h3>
-            <p className="SubFont text-lg mb-2">
-              {formatValue(event.programContent)}
-            </p>
-            <div className="grid xl:grid-cols-2 grid-cols-1 gap-4 text-lg">
-              <div>
-                <p>
-                  <span className="font-medium">기간:</span>{" "}
-                  {formatValue(event.startDate)} ~ {formatValue(event.endDate)}
-                </p>
-                <p>
-                  <span className="font-medium">장소:</span>{" "}
-                  {formatValue(event.location)}
-                </p>
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                {event.image && event.image !== "N/A" && (
+                  <img
+                    src={event.image || default_Img}
+                    alt={event.programName}
+                    className="rounded-md w-full h-auto object-cover"
+                    loading="lazy"
+                    onError={onErrorImg}
+                  />
+                )}
               </div>
-              <div>
-                <p>
-                  <span className="font-medium">대상:</span>{" "}
-                  {formatValue(event.targetAudience)}
-                </p>
-                <p>
-                  <span className="font-medium">문의:</span>{" "}
-                  {formatValue(event.contact)}
-                </p>
+              <div className="flex flex-col gap-4">
+                <div className="w-1/2 flex items-center">
+                  <p className="SubFont text-lg">
+                    {formatValue(event.programContent)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-lg w-1/2">
+                  <p>
+                    <span className="font-medium">기간:</span>{" "}
+                    {formatValue(event.startDate)} ~{" "}
+                    {formatValue(event.endDate)}
+                  </p>
+                  <p>
+                    <span className="font-medium">장소:</span>{" "}
+                    {formatValue(event.location)}
+                  </p>
+                  <p>
+                    <span className="font-medium">대상:</span>{" "}
+                    {formatValue(event.targetAudience)}
+                  </p>
+                  <p>
+                    <span className="font-medium">문의:</span>{" "}
+                    {formatValue(event.contact)}
+                  </p>
+                </div>
               </div>
             </div>
-            {event.image && event.image !== "N/A" && (
-              <img
-                src={event.image}
-                alt={event.programName}
-                className="mt-3 rounded-md w-full max-w-md h-auto"
-                loading="lazy"
-              />
-            )}
           </div>
         </div>
       </div>
@@ -304,10 +315,11 @@ const EventSchedule = () => {
 
   const handleStarClick = useCallback(
     (festival) => {
-      console.log(festival);
+      console.log("Adding festival with image:", festival.image);
+
       if (!isLoggedIn) {
         setError(
-          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시��습니까?"
         );
         return;
       }
@@ -315,15 +327,7 @@ const EventSchedule = () => {
       try {
         const isAlreadySelected = isEventStarred(festival.programName);
 
-        if (isAlreadySelected) {
-          dispatch(
-            removeFavorite({
-              type: "event",
-              id: festival.programName,
-            })
-          );
-          setSuccessMessage("즐겨찾기가 해제되었습니다.");
-        } else {
+        if (!isAlreadySelected) {
           dispatch(
             addFavorite({
               type: "event",
@@ -335,9 +339,10 @@ const EventSchedule = () => {
               endDate: festival.endDate,
               targetAudience: festival.targetAudience,
               contact: festival.contact,
-              imageUrl: festival.imageUrl || default_Img,
+              imageUrl: festival.image,
             })
           );
+          console.log("Dispatched festival with imageUrl:", festival.image);
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         }
 
@@ -354,6 +359,22 @@ const EventSchedule = () => {
 
   const handleEventClick = useCallback((event) => {
     setSelectedEvent(event);
+
+    // 최근 본 목록에 추가
+    const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
+    const newItem = {
+      id: event.id || `event-${event.programName}`,
+      type: "event",
+      title: event.programName,
+      imageUrl: event.image,
+      begin_de: event.startDate,
+      location: event.location,
+      content: event.programContent,
+    };
+
+    const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
+    const updated = [newItem, ...filtered].slice(0, 5);
+    localStorage.setItem("recentItems", JSON.stringify(updated));
   }, []);
 
   const handleCloseModal = useCallback(() => {
@@ -406,7 +427,7 @@ const EventSchedule = () => {
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
           >
             이전
           </button>
@@ -419,8 +440,8 @@ const EventSchedule = () => {
             className={`px-3 py-1 rounded ${
               currentPage === number
                 ? "bg-blue-800 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 hover:text-white"
-            } transition-all duration-300`}
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
           >
             {number}
           </button>
@@ -429,7 +450,7 @@ const EventSchedule = () => {
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 rounded bg-blue-800 text-white hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-600 transition-all duration-300"
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
           >
             다음
           </button>

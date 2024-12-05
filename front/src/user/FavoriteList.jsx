@@ -135,6 +135,7 @@ const FavoriteList = () => {
                         className="w-full h-[160px] object-cover"
                         onError={onErrorImg}
                       />
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -201,9 +202,9 @@ const FavoriteList = () => {
                   <div className="flex flex-col h-full">
                     <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                       <img
-                        src={festival.imageUrl || default_Img}
-                        alt={festival.programName}
                         className="w-full h-[160px] object-cover"
+                        src={festival.imageUrl}
+                        alt={festival.programName}
                         onError={onErrorImg}
                       />
                       <button

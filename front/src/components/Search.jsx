@@ -100,6 +100,20 @@ const SearchPage = () => {
     setModalOpen(true);
     setIsSidebarOpen(false);
 
+    const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
+    const newItem = {
+      id: item.ccbaKdcd,
+      type: "heritage",
+      title: item.ccbaMnm1,
+      imageUrl: item.imageUrl || item.ccbaAsno,
+      location: item.ccbaLcad,
+      content: item.content || item.ccbaCtcdNm,
+    };
+
+    const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
+    const updated = [newItem, ...filtered].slice(0, 5);
+    localStorage.setItem("recentItems", JSON.stringify(updated));
+
     try {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json`,
