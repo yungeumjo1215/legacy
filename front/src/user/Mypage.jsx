@@ -71,8 +71,8 @@ const Mypage = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-tr from-blue-100 via-white to-white mt-16">
-      <div className="flex h-full p-4 gap-4">
+    <div className="h-screen w-screen bg-gradient-to-tr from-blue-100 via-white to-white mt-16">
+      <div className="flex h-full w-full p-4 gap-4">
         {/* 사이드바 */}
         <div
           className={`w-80 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-8 transition-all duration-300 hover:shadow-xl ${
@@ -130,7 +130,7 @@ const Mypage = () => {
         </div>
 
         {/* 메인 컨텐츠 */}
-        <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg  transition-all duration-300 hover:shadow-xl">
+        <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
           <FavoriteList />
         </div>
       </div>
