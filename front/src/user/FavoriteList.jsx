@@ -120,7 +120,7 @@ const FavoriteList = () => {
           )}
 
           <div className="flex justify-center gap-6 overflow-hidden w-full">
-            <div className="flex gap-6 transition-transform duration-300 ease-in-out w-full">
+            <div className="flex gap-6 transition-transform duration-300 justify-center ease-in-out w-full">
               {getCurrentItems(heritages, heritagePage).map((heritage, idx) => (
                 <div
                   key={idx}
@@ -192,7 +192,7 @@ const FavoriteList = () => {
           )}
 
           <div className="flex justify-center gap-6 overflow-hidden w-full">
-            <div className="flex gap-6 transition-transform duration-300 ease-in-out w-full">
+            <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center  w-full">
               {getCurrentItems(festivals, festivalPage).map((festival) => (
                 <div
                   key={festival.programName}
