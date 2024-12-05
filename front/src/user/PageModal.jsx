@@ -90,6 +90,10 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
                   {item.startDate} ~ {item.endDate}
                 </p>
               </div>
+              <div>
+                <span className="font-semibold text-gray-700">문의</span>
+                <p className="mt-1 text-gray-600">{item.contact}</p>
+              </div>
             </>
           )}
         </div>
