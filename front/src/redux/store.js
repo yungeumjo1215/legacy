@@ -7,6 +7,7 @@ import festivalReducer from "./slices/festivalDetailSlice";
 import accountReducer from "./slices/accountSlice";
 import eventReducer from "./slices/eventSlice";
 import favoriteReducer from "./slices/favoriteSlice";
+import syncLocalStorageMiddleware from "./sendLocalStorage";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,8 @@ export const store = configureStore({
     event: eventReducer,
     favorites: favoriteReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(syncLocalStorageMiddleware),
 });
 
 export default store;
