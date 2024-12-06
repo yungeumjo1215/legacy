@@ -1,19 +1,14 @@
-const express = require("express");
-const {
-  addFavorite,
-  removeFavorite,
-  getUserFavorites,
-  storeFavorites,
-  showFavorites,
-} = require("../controller/favoriteController");
-const { authenticate } = require("../utils/authenticate");
+// const express = require("express");
+// const {
+//   storePGDB,
+//   storeFavorites,
+//   showFavorites,
+// } = require("../controller/favoriteController");
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post("/", authenticate, addFavorite);
-router.delete("/:userId/:eventName", authenticate, removeFavorite);
-router.get("/:userId", authenticate, getUserFavorites);
-router.post("/store-favorites", storeFavorites);
-router.get("/show-favorites", showFavorites);
+// // router.post("/store-favorites", storeFavorites);
+// router.get("/storePGDB", storePGDB);
+// // router.get("/show-favorites", showFavorites);
 
-module.exports = router;
+// module.exports = router;
