@@ -30,6 +30,7 @@ let storedFavorites = {
   favoriteHeritages: [],
   token: null,
 };
+module.exports = storedFavorites;
 
 app.use(
   cors({

@@ -1,5 +1,4 @@
 
-
 CREATE TABLE heritage (
   sn SERIAL PRIMARY KEY,
   no INTEGER,
@@ -13,6 +12,7 @@ CREATE TABLE heritage (
   image_url TEXT,
   content TEXT
 );
+
 INSERT INTO heritage (
   sn, 
   no, 
@@ -124,3 +124,279 @@ CREATE TABLE heritage_details (
     content TEXT,
     image_url TEXT
 );
+
+
+
+-------------------------------------12_06------------------------------------
+
+CREATE TABLE "account" (
+	"id"	SERIAL		NOT NULL,
+	"is_admin"	BOOLEAN		NULL,
+	"last_login"	TIMESTAMP		NULL,
+	"email"	VARCHAR(50)		NULL,
+	"uuid"	VARCHAR(255)		NULL,
+	"username"	VARCHAR(50)		NULL,
+	"created_at"	TIMESTAMP		NULL,
+	"password"	VARCHAR(255)		NOT NULL
+);
+
+CREATE TABLE "login_log" (
+	"id"	SERIAL		NOT NULL,
+	"acid"	VARCHAR(255)		NOT NULL,
+	"uuid"	VARCHAR(255)		NULL,
+	"action"	VARCHAR(10)		NULL,
+	"timestamp"	TIMESTAMP		NULL
+);
+
+CREATE TABLE "festivalsearch" (
+	"축제id"	SERIAL		NOT NULL,
+	"acid"	VARCHAR(255)		NOT NULL,
+	"검색연도"	VARCHAR(255)		NULL,
+	"검색월"	VARCHAR(255)		NULL,
+	"행사제목"	VARCHAR(100)	DEFAULT 'N/A'	NULL,
+	"행사내용"	VARCHAR(255)	DEFAULT 'N/A'	NULL,
+	"시작일"	DATE		NULL,
+	"종료일"	DATE		NULL,
+	"장소"	VARCHAR(255)	DEFAULT 'N/A'	NULL,
+	"문의처"	VARCHAR(50)	DEFAULT 'N/A'	NULL,
+	"이미지"	VARCHAR(500)	DEFAULT 'N/A'	NULL,
+	"방문객"	VARCHAR(100)	DEFAULT 'N/A'	NULL,
+	"추가정보"	VARCHAR(255)	DEFAULT 'N/A'	NULL
+);
+
+CREATE TABLE "heritagesearch" (
+	"문화재id"	SERIAL		NOT NULL,
+	"acid"	VARCHAR(255)		NOT NULL,
+	"장소"	VARCHAR(50)	DEFAULT '-'	NULL,
+	"제목"	VARCHAR(50)	DEFAULT '-'	NULL,
+	"내용"	VARCHAR(255)	DEFAULT '-'	NULL,
+	"이미지"	VARCHAR(500)	DEFAULT '-'	NULL
+);
+
+CREATE TABLE "favoriteList" (
+	"id"	SERIAL		NOT NULL,
+	"acid"	VARCHAR(255)		NOT NULL,
+	"축제acid"	VARCHAR(255)		NOT NULL,
+	"문화재acid"	VARCHAR(255)		NOT NULL,
+	"축제id"	VARCHAR(255)		NOT NULL,
+	"문화재id"	VARCHAR(255)		NOT NULL
+);
+
+ALTER TABLE "account" ADD CONSTRAINT "PK_ACCOUNT" PRIMARY KEY (
+	"id"
+);
+
+ALTER TABLE "login_log" ADD CONSTRAINT "PK_LOGIN_LOG" PRIMARY KEY (
+	"id",
+	"acid"
+);
+
+ALTER TABLE "festivalsearch" ADD CONSTRAINT "PK_FESTIVALSEARCH" PRIMARY KEY (
+	"축제id",
+	"acid"
+);
+
+ALTER TABLE "heritagesearch" ADD CONSTRAINT "PK_HERITAGESEARCH" PRIMARY KEY (
+	"문화재id",
+	"acid"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "PK_FAVORITELIST" PRIMARY KEY (
+	"id",
+	"acid",
+	"축제acid",
+	"문화재acid",
+	"축제id",
+	"문화재id"
+);
+
+ALTER TABLE "login_log" ADD CONSTRAINT "FK_account_TO_login_log_1" FOREIGN KEY (
+	"acid"
+)
+REFERENCES "account" (
+	"id"
+);
+
+ALTER TABLE "festivalsearch" ADD CONSTRAINT "FK_account_TO_festivalsearch_1" FOREIGN KEY (
+	"acid"
+)
+REFERENCES "account" (
+	"id"
+);
+
+ALTER TABLE "heritagesearch" ADD CONSTRAINT "FK_account_TO_heritagesearch_1" FOREIGN KEY (
+	"acid"
+)
+REFERENCES "account" (
+	"id"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "FK_account_TO_favoriteList_1" FOREIGN KEY (
+	"acid"
+)
+REFERENCES "account" (
+	"id"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "FK_festivalsearch_TO_favoriteList_1" FOREIGN KEY (
+	"축제acid"
+)
+REFERENCES "festivalsearch" (
+	"acid"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "FK_festivalsearch_TO_favoriteList_2" FOREIGN KEY (
+	"축제id"
+)
+REFERENCES "festivalsearch" (
+	"축제id"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "FK_heritagesearch_TO_favoriteList_1" FOREIGN KEY (
+	"문화재acid"
+)
+REFERENCES "heritagesearch" (
+	"acid"
+);
+
+ALTER TABLE "favoriteList" ADD CONSTRAINT "FK_heritagesearch_TO_favoriteList_2" FOREIGN KEY (
+	"문화재id"
+)
+REFERENCES "heritagesearch" (
+	"문화재id"
+);
+
+
+
+-------------------------------- 왜래키 삭제 join 버전 ----------------------------------------------
+
+CREATE TABLE "account" (
+	"id" SERIAL NOT NULL,
+	"is_admin" BOOLEAN NULL,
+	"last_login" TIMESTAMP NULL,
+	"email" VARCHAR(50) NULL,
+	"uuid" VARCHAR(255) NULL,
+	"username" VARCHAR(50) NULL,
+	"created_at" TIMESTAMP NULL,
+	"password" VARCHAR(255) NOT NULL,
+	PRIMARY KEY ("id")
+);
+
+CREATE TABLE "login_log" (
+	"id" SERIAL NOT NULL,
+	"acid" VARCHAR(255) NOT NULL,
+	"uuid" VARCHAR(255) NULL,
+	"action" VARCHAR(10) NULL,
+	"timestamp" TIMESTAMP NULL,
+	PRIMARY KEY ("id", "acid")
+);
+
+CREATE TABLE "festivalsearch" (
+	"축제id" SERIAL NOT NULL,
+	"acid" VARCHAR(255) NOT NULL,
+	"검색연도" VARCHAR(255) NULL,
+	"검색월" VARCHAR(255) NULL,
+	"행사제목" VARCHAR(100) DEFAULT 'N/A' NULL,
+	"행사내용" VARCHAR(255) DEFAULT 'N/A' NULL,
+	"시작일" DATE NULL,
+	"종료일" DATE NULL,
+	"장소" VARCHAR(255) DEFAULT 'N/A' NULL,
+	"문의처" VARCHAR(50) DEFAULT 'N/A' NULL,
+	"이미지" VARCHAR(500) DEFAULT 'N/A' NULL,
+	"방문객" VARCHAR(100) DEFAULT 'N/A' NULL,
+	"추가정보" VARCHAR(255) DEFAULT 'N/A' NULL,
+	PRIMARY KEY ("축제id", "acid")
+);
+
+CREATE TABLE "heritagesearch" (
+	"문화재id" SERIAL NOT NULL,
+	"acid" VARCHAR(255) NOT NULL,
+	"장소" VARCHAR(50) DEFAULT '-' NULL,
+	"제목" VARCHAR(50) DEFAULT '-' NULL,
+	"내용" VARCHAR(255) DEFAULT '-' NULL,
+	"이미지" VARCHAR(500) DEFAULT '-' NULL,
+	PRIMARY KEY ("문화재id", "acid")
+);
+
+CREATE TABLE "favoriteList" (
+	"id" SERIAL NOT NULL,
+	"acid" VARCHAR(255) NOT NULL,
+	"축제acid" VARCHAR(255) NOT NULL,
+	"문화재acid" VARCHAR(255) NOT NULL,
+	"축제id" VARCHAR(255) NOT NULL,
+	"문화재id" VARCHAR(255) NOT NULL,
+	PRIMARY KEY ("id", "acid", "축제acid", "문화재acid", "축제id", "문화재id")
+);
+-- 1. Join account with login_log
+SELECT 
+    a.id AS account_id, 
+    a.username, 
+    ll.action, 
+    ll.timestamp
+FROM 
+    account a
+JOIN 
+    login_log ll 
+ON 
+    CAST(a.id AS VARCHAR) = ll.acid;
+
+-- 2. Join heritagesearch and account
+
+SELECT 
+    hs.문화재id AS heritage_id,
+    hs.제목 AS heritage_title,
+    hs.장소 AS location,
+    hs.내용 AS description,
+    hs.이미지 AS image_url,
+    a.username AS account_username,
+    a.email AS account_email
+FROM 
+    heritagesearch hs
+JOIN 
+    account a
+ON 
+    CAST(a.id AS VARCHAR) = hs.acid;
+
+-- 3. Join festivalsearch and account
+    SELECT 
+    fs.축제id AS festival_id, 
+    fs.행사제목 AS festival_title, 
+    a.username AS created_by
+FROM 
+    festivalsearch fs
+JOIN 
+    account a 
+ON 
+    CAST(a.id AS VARCHAR) = fs.acid;
+
+-- 4 Join favoriteList with heritagesearch and festivalsearch
+SELECT 
+    fl.id AS favorite_id, 
+    hs.제목 AS heritage_title, 
+    fs.행사제목 AS festival_title
+FROM 
+    favoriteList fl
+JOIN 
+    heritagesearch hs 
+ON 
+    hs.문화재id = fl.문화재id AND hs.acid = fl.문화재acid
+JOIN 
+    festivalsearch fs 
+ON 
+    fs.축제id = fl.축제id AND fs.acid = fl.축제acid;
+
+--5 Join favoriteList and account
+SELECT 
+    fl.id AS favorite_id,
+    fl.축제acid AS festival_acid,
+    fl.문화재acid AS heritage_acid,
+    fl.축제id AS festival_id,
+    fl.문화재id AS heritage_id,
+    a.username AS account_username,
+    a.email AS account_email
+FROM 
+    favoriteList fl
+JOIN 
+    account a
+ON 
+    CAST(a.id AS VARCHAR) = fl.acid;
