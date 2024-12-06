@@ -149,8 +149,7 @@ const EventItem = memo(
                   <div className=" p-2 sm:p-3 rounded-lg">
                     <p className="SubFont text-base sm:text-lg">
                       <span className="font-medium mr-2">기간:</span>
-                      {event.startDate}
-                      {formatValue(event.endDate)}
+                      {event.startDate} ~ {formatValue(event.endDate)}
                     </p>
                   </div>
                   <div className=" p-2 sm:p-3 rounded-lg">
