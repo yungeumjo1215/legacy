@@ -124,7 +124,14 @@ const EventItem = memo(
                 {event.programName}
               </h3>
               <button
-                className="border-2 border-gray-700 rounded-md hover:bg-gray-100 text-xl px-2 py-1"
+                className="border-2 border-blue-800 rounded-md
+                           hover:bg-blue-800 hover:text-white
+                          text-sm sm:text-base lg:text-lg
+                          px-2 sm:px-3 lg:px-4
+                          py-1 sm:py-1.5 lg:py-2
+                          transition-all duration-300 ease-in-out
+                          shadow-sm hover:shadow-md
+                          text-center text-nowrap"
                 onClick={() => onEventClick(event)}
               >
                 자세히
