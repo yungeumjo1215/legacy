@@ -269,8 +269,7 @@ REFERENCES "heritagesearch" (
 
 
 -------------------------------- 왜래키 삭제 join 버전 ----------------------------------------------
-
-CREATE TABLE "account" (
+CREATE TABLE "accounts" (
 	"id" SERIAL NOT NULL,
 	"is_admin" BOOLEAN NULL,
 	"last_login" TIMESTAMP NULL,
@@ -317,8 +316,8 @@ CREATE TABLE "heritagesearch" (
 	"이미지" VARCHAR(500) DEFAULT '-' NULL,
 	PRIMARY KEY ("문화재id", "acid")
 );
-
-CREATE TABLE "favoriteList" (
+SELECT * FROM favoritelist
+CREATE TABLE "favoritelist" (
 	"id" SERIAL NOT NULL,
 	"acid" VARCHAR(255) NOT NULL,
 	"축제acid" VARCHAR(255) NOT NULL,
@@ -327,20 +326,20 @@ CREATE TABLE "favoriteList" (
 	"문화재id" VARCHAR(255) NOT NULL,
 	PRIMARY KEY ("id", "acid", "축제acid", "문화재acid", "축제id", "문화재id")
 );
--- 1. Join account with login_log
+-- 1. Join accounts with login_log
 SELECT 
-    a.id AS account_id, 
+    a.id AS accounts_id, 
     a.username, 
     ll.action, 
     ll.timestamp
 FROM 
-    account a
+    accounts a
 JOIN 
     login_log ll 
 ON 
     CAST(a.id AS VARCHAR) = ll.acid;
 
--- 2. Join heritagesearch and account
+-- 2. Join heritagesearch and accounts
 
 SELECT 
     hs.문화재id AS heritage_id,
@@ -348,44 +347,45 @@ SELECT
     hs.장소 AS location,
     hs.내용 AS description,
     hs.이미지 AS image_url,
-    a.username AS account_username,
-    a.email AS account_email
+    a.username AS accounts_username,
+    a.email AS accounts_email
 FROM 
-    heritagesearch hs
+    accounts a
 JOIN 
-    account a
+    heritagesearch hs
 ON 
     CAST(a.id AS VARCHAR) = hs.acid;
 
--- 3. Join festivalsearch and account
+-- 3. Join festivalsearch and accounts
     SELECT 
     fs.축제id AS festival_id, 
     fs.행사제목 AS festival_title, 
     a.username AS created_by
 FROM 
-    festivalsearch fs
+    accounts a 
 JOIN 
-    account a 
+    festivalsearch fs
 ON 
     CAST(a.id AS VARCHAR) = fs.acid;
 
--- 4 Join favoriteList with heritagesearch and festivalsearch
+-- 4 Join favoritelist with heritagesearch and festivalsearch
 SELECT 
     fl.id AS favorite_id, 
     hs.제목 AS heritage_title, 
     fs.행사제목 AS festival_title
 FROM 
-    favoriteList fl
+    favoritelist fl
 JOIN 
     heritagesearch hs 
 ON 
-    hs.문화재id = fl.문화재id AND hs.acid = fl.문화재acid
+    CAST(hs.문화재id AS VARCHAR) = fl.문화재id AND hs.acid = fl.문화재acid
 JOIN 
     festivalsearch fs 
 ON 
-    fs.축제id = fl.축제id AND fs.acid = fl.축제acid;
+    CAST(fs.축제id AS VARCHAR) = fl.축제id AND fs.acid = fl.축제acid;
 
---5 Join favoriteList and account
+
+--5 Join favoritelist and accounts
 SELECT 
     fl.id AS favorite_id,
     fl.축제acid AS festival_acid,
@@ -395,8 +395,14 @@ SELECT
     a.username AS account_username,
     a.email AS account_email
 FROM 
-    favoriteList fl
+    accounts a
 JOIN 
-    account a
+    favoritelist fl
 ON 
     CAST(a.id AS VARCHAR) = fl.acid;
+
+SELECT * FROM accounts
+SELECT * FROM favoritelist
+SELECT * FROM festivalsearch
+SELECT * FROM heritagesearch
+SELECT * FROM login_log
