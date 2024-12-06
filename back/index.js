@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
@@ -27,6 +27,7 @@ app.use(express.json());
 let storedFavorites = {
   favoriteFestivals: [],
   favoriteHeritages: [],
+  token: null,
 };
 
 app.use(
@@ -50,6 +51,7 @@ app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
 app.post("/api/store-favorites", (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
+  const token = req.headers.token;
 
   if (!favoriteFestivals && !favoriteHeritages) {
     return res
@@ -60,9 +62,11 @@ app.post("/api/store-favorites", (req, res) => {
   // Store the received data
   storedFavorites.favoriteFestivals = favoriteFestivals;
   storedFavorites.favoriteHeritages = favoriteHeritages;
+  storedFavorites.token = token;
 
   console.log("Received favorite festivals:", favoriteFestivals);
   console.log("Received favorite heritages:", favoriteHeritages);
+  console.log("Received favorite heritages:", token);
 
   res.status(200).json({ message: "Data received successfully." });
 });
@@ -70,6 +74,7 @@ app.post("/api/store-favorites", (req, res) => {
 // GET endpoint to fetch the stored data
 app.get("/api/show-favorites", (req, res) => {
   res.status(200).json(storedFavorites);
+  console.log("Received favorite festivals:", storedFavorites);
 });
 
 app.use((err, req, res, next) => {

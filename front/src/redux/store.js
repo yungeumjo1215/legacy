@@ -22,6 +22,6 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(syncLocalStorageMiddleware),
-});
+}); //  문자열 합치면서 localstorage 보내는 redux 추가
 
 export default store;

@@ -14,6 +14,14 @@ const syncLocalStorageMiddleware = (store) => (next) => (action) => {
     );
   }
 
+  // Sync token to localStorage (if it exists in the state)
+  if (state.auth && state.auth.token) {
+    console.log("Syncing token to localStorage:", state.auth.token);
+    localStorage.setItem("token", state.auth.token);
+  } else {
+    console.log("No token to sync.");
+  }
+
   return result;
 };
 
@@ -23,6 +31,7 @@ export default syncLocalStorageMiddleware;
 const sendLocalStorageDataToBackend = async () => {
   try {
     // Fetch data from localStorage
+    const token = localStorage.getItem("token");
     const favoriteFestivals =
       JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
     const favoriteHeritages =
@@ -42,6 +51,7 @@ const sendLocalStorageDataToBackend = async () => {
     const payload = {
       favoriteFestivals,
       favoriteHeritages,
+      token,
     };
 
     console.log("Payload to send:", payload);
@@ -51,6 +61,7 @@ const sendLocalStorageDataToBackend = async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        token,
       },
       body: JSON.stringify(payload), // Convert payload to JSON
     });
@@ -68,41 +79,41 @@ const sendLocalStorageDataToBackend = async () => {
   }
 };
 
-const fetchAndReinsertFavorites = async () => {
-  try {
-    // Fetch data from the backend
-    const response = await fetch("http://localhost:8000/api/show-favorites");
-    if (!response.ok) {
-      throw new Error(`Failed to fetch favorites. Status: ${response.status}`);
-    }
+// const fetchAndReinsertFavorites = async () => {
+//   try {
+//     // Fetch data from the backend
+//     const response = await fetch("http://localhost:8000/api/show-favorites");
+//     if (!response.ok) {
+//       throw new Error(`Failed to fetch favorites. Status: ${response.status}`);
+//     }
 
-    const { favorites } = await response.json();
-    console.log("Fetched favorites:", favorites);
+//     const { favorites } = await response.json();
+//     console.log("Fetched favorites:", favorites);
 
-    // Reinsert fetched data
-    const reinsertResponse = await fetch(
-      "http://localhost:8000/api/reinsert-favorites",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(favorites),
-      }
-    );
+//     // Reinsert fetched data
+//     const reinsertResponse = await fetch(
+//       "http://localhost:8000/api/reinsert-favorites",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(favorites),
+//       }
+//     );
 
-    if (!reinsertResponse.ok) {
-      throw new Error(
-        `Failed to reinsert favorites. Status: ${reinsertResponse.status}`
-      );
-    }
+//     if (!reinsertResponse.ok) {
+//       throw new Error(
+//         `Failed to reinsert favorites. Status: ${reinsertResponse.status}`
+//       );
+//     }
 
-    const result = await reinsertResponse.json();
-    console.log("Reinsertion result:", result);
-  } catch (error) {
-    console.error("Error in fetch and reinsert process:", error);
-  }
-};
+//     const result = await reinsertResponse.json();
+//     console.log("Reinsertion result:", result);
+//   } catch (error) {
+//     console.error("Error in fetch and reinsert process:", error);
+//   }
+// };
 syncLocalStorageMiddleware();
 sendLocalStorageDataToBackend();
-fetchAndReinsertFavorites();
+// fetchAndReinsertFavorites();

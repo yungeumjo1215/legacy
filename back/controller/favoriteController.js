@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const pool = require("../database/database");
 
 // exports.addFavorite = async (req, res) => {
@@ -47,11 +48,25 @@ const pool = require("../database/database");
 //     res.status(500).json({ message: "Error fetching favorites" });
 //   }
 // };
-
 exports.storeFavorites = async (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
+  const token = req.headers.token; // Extract token from headers
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required." });
+  }
 
   try {
+    // Decode token to extract user info
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace with your JWT secret
+    const email = decoded.email;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Invalid token: Email is missing." });
+    }
+
     // Start a transaction
     await pool.query("BEGIN");
 
@@ -64,9 +79,10 @@ exports.storeFavorites = async (req, res) => {
           throw new Error("Festival entry missing required 'programName'");
         }
 
+        // Insert into the favorites table
         await pool.query(
-          "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
-          [programName, "festival"]
+          "INSERT INTO favorites (email, eventtype, eventname) VALUES ($1, $2, $3)",
+          [email, "festival", programName]
         );
       }
     }
@@ -80,9 +96,10 @@ exports.storeFavorites = async (req, res) => {
           throw new Error("Heritage entry missing required 'ccbaMnm1'");
         }
 
+        // Insert into the favorites table
         await pool.query(
-          "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
-          [ccbaMnm1, "heritage"]
+          "INSERT INTO favorites (email, eventtype, eventname) VALUES ($1, $2, $3)",
+          [email, "heritage", ccbaMnm1]
         );
       }
     }
@@ -101,13 +118,28 @@ exports.storeFavorites = async (req, res) => {
       .json({ message: "Error storing favorites", error: error.message });
   }
 };
-
-// Retrieve favorites from the database
 exports.showFavorites = async (req, res) => {
+  const token = req.headers.token; // Extract token from headers
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required." });
+  }
+
   try {
-    // Fetch all favorites from the database
+    // Decode the token to extract user information
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace with your JWT secret key
+    const email = decoded.email;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Invalid token: Email is missing." });
+    }
+
+    // Fetch user-specific favorites from the database
     const result = await pool.query(
-      "SELECT eventname, eventtype FROM favorites"
+      "SELECT eventname, eventtype FROM favorites WHERE email = $1",
+      [email]
     );
 
     // Check if data exists
@@ -141,45 +173,3 @@ exports.showFavorites = async (req, res) => {
       .json({ message: "Error retrieving favorites", error: error.message });
   }
 };
-
-// exports.showFavorites = async (req, res) => {
-//   try {
-//     // Query the favorites table to retrieve festivals and heritages
-//     const favoritesResult = await pool.query(
-//       ` SELECT f.email, f.eventtype, e.eventname
-//          FROM favorites f
-//          INNER JOIN events e ON f.eventname = e.eventname`
-//     );
-
-//     const festivals = [];
-//     const heritages = [];
-
-//     // Categorize festivals and heritages
-//     for (const favorite of favoritesResult.rows) {
-//       if (favorite.eventtype === "festival") {
-//         const details = await pool.query(
-//           ` SELECT * FROM festival_details WHERE eventname = $1,
-//             [favorite.eventname]`
-//         );
-//         festivals.push(details.rows[0]);
-//       } else if (favorite.eventtype === "heritage") {
-//         const details = await pool.query(
-//           ` SELECT * FROM heritage_details WHERE eventname = $1,
-//             [favorite.eventname]`
-//         );
-//         heritages.push(details.rows[0]);
-//       }
-//     }
-
-//     res.status(200).json({
-//       message: "Favorites retrieved successfully",
-//       favorites: {
-//         favoriteFestivals: festivals,
-//         favoriteHeritages: heritages,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error retrieving favorites:", error.message);
-//     res.status(500).json({ message: "Error retrieving favorites", error });
-//   }
-// };
