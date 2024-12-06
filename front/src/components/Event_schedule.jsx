@@ -124,7 +124,7 @@ const EventItem = memo(
                 {event.programName}
               </h3>
               <button
-                className="border-2 rounded-md hover:bg-gray-100 text-xl px-1"
+                className="border-2 border-gray-700 rounded-md hover:bg-gray-100 text-xl px-2 py-1"
                 onClick={() => onEventClick(event)}
               >
                 자세히

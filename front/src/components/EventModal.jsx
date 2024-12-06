@@ -125,7 +125,7 @@ const EventModal = ({ event, onClose }) => {
                     : default_Img
                 }
                 alt={event.programName}
-                className="rounded-md w-0 h-auto object-cover opacity-0"
+                className="w-0 h-auto opacity-0"
                 loading="lazy"
                 onError={onErrorImg}
               />
