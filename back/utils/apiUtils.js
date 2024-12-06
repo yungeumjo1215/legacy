@@ -3,6 +3,8 @@ const CURRENT_HERITAGE_INFO_DETAIL_URL =
 const FESTIVAL_API_URL =
   "http://www.cha.go.kr/cha/openapi/selectEventListOpenapi.do";
 
+const Updated_API_URL = "http://localhost:8000/api/show-favorites";
+
 /**
  * Builds a heritage detail URL based on the given parameters.
  * @param {string} ccbaKdcd - The type code of the cultural heritage.
@@ -21,6 +23,7 @@ const heritageInfo_Url = (ccbaKdcd, ccbaAsno, ccbaCtcd) =>
  */
 const festivalInfo_Url = (searchYear, searchMonth) =>
   `${FESTIVAL_API_URL}?searchYear=${searchYear}&searchMonth=${searchMonth}`;
+
 // const festivalInfo_Url = (searchYear, searchMonth, limit = 3) =>
 //   `${FESTIVAL_API_URL}?searchYear=${searchYear}&searchMonth=${searchMonth}&limit=${limit}`;
 
