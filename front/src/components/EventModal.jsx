@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import default_Img from "../assets/festival.png";
+import { useNavigate } from "react-router-dom";
 
 const EventModal = ({ event, onClose }) => {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ const EventModal = ({ event, onClose }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [alertMessage, setAlertMessage] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
 
   const onErrorImg = (e) => {
     e.target.src = default_Img;
@@ -24,7 +26,9 @@ const EventModal = ({ event, onClose }) => {
 
   const handleFavoriteClick = () => {
     if (!isLoggedIn) {
-      setAlertMessage("로그인이 필요한 서비스입니다.");
+      setAlertMessage(
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
+      );
       return;
     }
 
@@ -62,6 +66,13 @@ const EventModal = ({ event, onClose }) => {
 
   const closeAlert = () => {
     setAlertMessage("");
+  };
+
+  const handleLoginClick = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+    closeAlert();
   };
 
   if (!event) return null;
@@ -136,15 +147,34 @@ const EventModal = ({ event, onClose }) => {
 
       {alertMessage && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-            <p className="text-center text-lg mb-4">{alertMessage}</p>
-            <div className="flex justify-center">
-              <button
-                onClick={closeAlert}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                확인
-              </button>
+          <div className="bg-[#e2e2e2] rounded-lg p-6 max-w-sm w-full mx-4 h-[180px] md:h-[200px] flex flex-col justify-center items-center">
+            <p className="text-center text-lg mb-4 whitespace-pre-wrap">
+              {alertMessage}
+            </p>
+            <div className="flex gap-2 mt-4">
+              {!isLoggedIn ? (
+                <>
+                  <button
+                    onClick={handleLoginClick}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  >
+                    로그인하기
+                  </button>
+                  <button
+                    onClick={closeAlert}
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    닫기
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={closeAlert}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  확인
+                </button>
+              )}
             </div>
           </div>
         </div>
