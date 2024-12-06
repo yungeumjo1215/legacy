@@ -1,4 +1,4 @@
-// const pool = require("../database/database");
+const pool = require("../database/database");
 
 // exports.addFavorite = async (req, res) => {
 //   const { email, eventName, eventType } = req.body;
@@ -48,96 +48,138 @@
 //   }
 // };
 
-// exports.storeFavorites = async (req, res) => {
-//   const { favoriteFestivals, favoriteHeritages } = req.body;
+exports.storeFavorites = async (req, res) => {
+  const { favoriteFestivals, favoriteHeritages } = req.body;
 
-//   try {
-//     // Start a transaction
-//     await pool.query("BEGIN");
+  try {
+    // Start a transaction
+    await pool.query("BEGIN");
 
-//     // Insert favorite festivals
-//     if (favoriteFestivals && favoriteFestivals.length) {
-//       for (const festival of favoriteFestivals) {
-//         const { programName } = festival;
+    // Insert favorite festivals
+    if (favoriteFestivals && favoriteFestivals.length) {
+      for (const festival of favoriteFestivals) {
+        const { programName } = festival;
 
-//         if (!programName) {
-//           throw new Error("Festival entry missing required 'programName'");
-//         }
+        if (!programName) {
+          throw new Error("Festival entry missing required 'programName'");
+        }
 
-//         await pool.query(
-//           "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
-//           [programName, "festival"]
-//         );
-//       }
-//     }
+        await pool.query(
+          "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
+          [programName, "festival"]
+        );
+      }
+    }
 
-//     // Insert favorite heritages
-//     if (favoriteHeritages && favoriteHeritages.length) {
-//       for (const heritage of favoriteHeritages) {
-//         const { ccbaMnm1 } = heritage;
+    // Insert favorite heritages
+    if (favoriteHeritages && favoriteHeritages.length) {
+      for (const heritage of favoriteHeritages) {
+        const { ccbaMnm1 } = heritage;
 
-//         if (!ccbaMnm1) {
-//           throw new Error("Heritage entry missing required 'ccbaMnm1'");
-//         }
+        if (!ccbaMnm1) {
+          throw new Error("Heritage entry missing required 'ccbaMnm1'");
+        }
 
-//         await pool.query(
-//           "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
-//           [ccbaMnm1, "heritage"]
-//         );
-//       }
-//     }
+        await pool.query(
+          "INSERT INTO favorites (eventname, eventtype) VALUES ($1, $2)",
+          [ccbaMnm1, "heritage"]
+        );
+      }
+    }
 
-//     // Commit the transaction
-//     await pool.query("COMMIT");
+    // Commit the transaction
+    await pool.query("COMMIT");
 
-//     res.status(200).json({ message: "Favorites stored successfully" });
-//   } catch (error) {
-//     // Rollback transaction on error
-//     await pool.query("ROLLBACK");
+    res.status(200).json({ message: "Favorites stored successfully" });
+  } catch (error) {
+    // Rollback transaction on error
+    await pool.query("ROLLBACK");
 
-//     console.error("Error storing favorites:", error.message);
-//     res
-//       .status(500)
-//       .json({ message: "Error storing favorites", error: error.message });
-//   }
-// };
+    console.error("Error storing favorites:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error storing favorites", error: error.message });
+  }
+};
 
 // Retrieve favorites from the database
+exports.showFavorites = async (req, res) => {
+  try {
+    // Fetch all favorites from the database
+    const result = await pool.query(
+      "SELECT eventname, eventtype FROM favorites"
+    );
+
+    // Check if data exists
+    if (!result.rows.length) {
+      return res
+        .status(200)
+        .json({ message: "No favorites found.", favorites: [] });
+    }
+
+    // Organize results into categories
+    const favorites = result.rows.reduce(
+      (acc, item) => {
+        if (item.eventtype === "festival") {
+          acc.favoriteFestivals.push(item.eventname);
+        } else if (item.eventtype === "heritage") {
+          acc.favoriteHeritages.push(item.eventname);
+        }
+        return acc;
+      },
+      { favoriteFestivals: [], favoriteHeritages: [] }
+    );
+
+    // Return organized favorites
+    res
+      .status(200)
+      .json({ message: "Favorites retrieved successfully", favorites });
+  } catch (error) {
+    console.error("Error retrieving favorites:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error retrieving favorites", error: error.message });
+  }
+};
+
 // exports.showFavorites = async (req, res) => {
 //   try {
-//     // Fetch all favorites from the database
-//     const result = await pool.query(
-//       "SELECT eventname, eventtype FROM favorites"
+//     // Query the favorites table to retrieve festivals and heritages
+//     const favoritesResult = await pool.query(
+//       ` SELECT f.email, f.eventtype, e.eventname
+//          FROM favorites f
+//          INNER JOIN events e ON f.eventname = e.eventname`
 //     );
 
-//     // Check if data exists
-//     if (!result.rows.length) {
-//       return res
-//         .status(200)
-//         .json({ message: "No favorites found.", favorites: [] });
+//     const festivals = [];
+//     const heritages = [];
+
+//     // Categorize festivals and heritages
+//     for (const favorite of favoritesResult.rows) {
+//       if (favorite.eventtype === "festival") {
+//         const details = await pool.query(
+//           ` SELECT * FROM festival_details WHERE eventname = $1,
+//             [favorite.eventname]`
+//         );
+//         festivals.push(details.rows[0]);
+//       } else if (favorite.eventtype === "heritage") {
+//         const details = await pool.query(
+//           ` SELECT * FROM heritage_details WHERE eventname = $1,
+//             [favorite.eventname]`
+//         );
+//         heritages.push(details.rows[0]);
+//       }
 //     }
 
-//     // Organize results into categories
-//     const favorites = result.rows.reduce(
-//       (acc, item) => {
-//         if (item.eventtype === "festival") {
-//           acc.favoriteFestivals.push(item.eventname);
-//         } else if (item.eventtype === "heritage") {
-//           acc.favoriteHeritages.push(item.eventname);
-//         }
-//         return acc;
+//     res.status(200).json({
+//       message: "Favorites retrieved successfully",
+//       favorites: {
+//         favoriteFestivals: festivals,
+//         favoriteHeritages: heritages,
 //       },
-//       { favoriteFestivals: [], favoriteHeritages: [] }
-//     );
-
-//     // Return organized favorites
-//     res
-//       .status(200)
-//       .json({ message: "Favorites retrieved successfully", favorites });
+//     });
 //   } catch (error) {
 //     console.error("Error retrieving favorites:", error.message);
-//     res
-//       .status(500)
-//       .json({ message: "Error retrieving favorites", error: error.message });
+//     res.status(500).json({ message: "Error retrieving favorites", error });
 //   }
 // };
