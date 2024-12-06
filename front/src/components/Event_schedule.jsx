@@ -100,10 +100,7 @@ const SearchBar = memo(({ value, onChange }) => (
 const EventItem = memo(
   ({ event, isStarred, handleStarClick, onEventClick }) => (
     <li className="pb-2">
-      <div
-        className="border p-4 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-        onClick={() => onEventClick(event)}
-      >
+      <div className="border p-4 rounded-lg  transition-colors">
         <div className="flex items-start">
           <button
             onClick={(e) => {
@@ -120,10 +117,20 @@ const EventItem = memo(
           >
             <TiStarFullOutline className="text-2xl sm:text-3xl" />
           </button>
+
           <div className="flex-1">
-            <h3 className="MainFont text-xl sm:text-2xl mb-2 ml-4 sm:ml-56">
-              {event.programName}
-            </h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="MainFont text-xl sm:text-2xl ml-4">
+                {event.programName}
+              </h3>
+              <button
+                className="border-2 rounded-md hover:bg-gray-100 text-xl px-1"
+                onClick={() => onEventClick(event)}
+              >
+                자세히
+              </button>
+            </div>
+
             <div className="flex flex-col lg:flex-row gap-4 mb-4">
               <div className="lg:max-w-56 w-full">
                 <img
