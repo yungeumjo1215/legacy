@@ -1,175 +1,133 @@
-const jwt = require("jsonwebtoken");
 const pool = require("../database/database");
 
-// exports.addFavorite = async (req, res) => {
-//   const { email, eventName, eventType } = req.body;
-
-//   try {
-//     const result = await pool.query(
-//       "INSERT INTO favorites (user_id, event_name, event_type) VALUES ($1, $2, $3) RETURNING *",
-//       [email, eventName, eventType]
-//     );
-
-//     res.status(201).json(result.rows[0]);
-//   } catch (error) {
-//     console.error("Error adding favorite:", error);
-//     res.status(500).json({ message: "Error adding favorite" });
-//   }
-// };
-
-// exports.removeFavorite = async (req, res) => {
-//   const { email, eventName } = req.params;
-
-//   try {
-//     await pool.query(
-//       "DELETE FROM favorites WHERE user_id = $1 AND event_name = $2",
-//       [email, eventName]
-//     );
-
-//     res.status(200).json({ message: "Favorite removed successfully" });
-//   } catch (error) {
-//     console.error("Error removing favorite:", error);
-//     res.status(500).json({ message: "Error removing favorite" });
-//   }
-// };
-
-// exports.getUserFavorites = async (req, res) => {
-//   const { email } = req.params;
-
-//   try {
-//     const result = await pool.query(
-//       "SELECT * FROM favorites WHERE user_id = $1 ORDER BY created_at DESC",
-//       [email]
-//     );
-
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error("Error fetching favorites:", error);
-//     res.status(500).json({ message: "Error fetching favorites" });
-//   }
-// };
+// Store favorites in PostgreSQL
 exports.storeFavorites = async (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
-  const token = req.headers.token; // Extract token from headers
+  const token = req.headers.token;
 
   if (!token) {
     return res.status(400).json({ message: "Token is required." });
   }
 
+  if (!favoriteFestivals.length && !favoriteHeritages.length) {
+    return res
+      .status(400)
+      .json({ message: "No data received from the client." });
+  }
+
   try {
-    // Decode token to extract user info
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace with your JWT secret
-    const email = decoded.email;
+    await pool.query("BEGIN"); // Start transaction
 
-    if (!email) {
-      return res
-        .status(400)
-        .json({ message: "Invalid token: Email is missing." });
+    // Insert festivals
+    for (const festival of favoriteFestivals) {
+      const {
+        programName,
+        programContent,
+        location,
+        startDate,
+        endDate,
+        contact,
+        targetAudience,
+      } = festival;
+
+      await pool.query(
+        `INSERT INTO favorites 
+        (token, eventtype, eventname, program_content, location, start_date, end_date, contact, target_audience)
+        VALUES ($1, 'festival', $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          token,
+          programName,
+          programContent,
+          location,
+          startDate,
+          endDate,
+          contact,
+          targetAudience,
+        ]
+      );
     }
 
-    // Start a transaction
-    await pool.query("BEGIN");
+    // Insert heritages
+    for (const heritage of favoriteHeritages) {
+      const { ccbaMnm1, ccbaLcad, ccceName } = heritage;
 
-    // Insert favorite festivals
-    if (favoriteFestivals && favoriteFestivals.length) {
-      for (const festival of favoriteFestivals) {
-        const { programName } = festival;
-
-        if (!programName) {
-          throw new Error("Festival entry missing required 'programName'");
-        }
-
-        // Insert into the favorites table
-        await pool.query(
-          "INSERT INTO favorites (email, eventtype, eventname) VALUES ($1, $2, $3)",
-          [email, "festival", programName]
-        );
-      }
+      await pool.query(
+        `INSERT INTO favorites 
+        (token, eventtype, eventname, location, ccce_name)
+        VALUES ($1, 'heritage', $2, $3, $4)`,
+        [token, ccbaMnm1, ccbaLcad, ccceName]
+      );
     }
 
-    // Insert favorite heritages
-    if (favoriteHeritages && favoriteHeritages.length) {
-      for (const heritage of favoriteHeritages) {
-        const { ccbaMnm1 } = heritage;
-
-        if (!ccbaMnm1) {
-          throw new Error("Heritage entry missing required 'ccbaMnm1'");
-        }
-
-        // Insert into the favorites table
-        await pool.query(
-          "INSERT INTO favorites (email, eventtype, eventname) VALUES ($1, $2, $3)",
-          [email, "heritage", ccbaMnm1]
-        );
-      }
-    }
-
-    // Commit the transaction
-    await pool.query("COMMIT");
-
-    res.status(200).json({ message: "Favorites stored successfully" });
-  } catch (error) {
-    // Rollback transaction on error
-    await pool.query("ROLLBACK");
-
-    console.error("Error storing favorites:", error.message);
+    await pool.query("COMMIT"); // Commit transaction
     res
-      .status(500)
-      .json({ message: "Error storing favorites", error: error.message });
+      .status(200)
+      .json({ message: "Data stored successfully in PostgreSQL." });
+  } catch (error) {
+    await pool.query("ROLLBACK"); // Rollback transaction on error
+    console.error("Error storing data:", error.message);
+    res.status(500).json({
+      message: "Error storing data in PostgreSQL.",
+      error: error.message,
+    });
   }
 };
+
+// Retrieve favorites from PostgreSQL
 exports.showFavorites = async (req, res) => {
-  const token = req.headers.token; // Extract token from headers
-
-  if (!token) {
-    return res.status(400).json({ message: "Token is required." });
-  }
-
   try {
-    // Decode the token to extract user information
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace with your JWT secret key
-    const email = decoded.email;
-
-    if (!email) {
-      return res
-        .status(400)
-        .json({ message: "Invalid token: Email is missing." });
-    }
-
-    // Fetch user-specific favorites from the database
     const result = await pool.query(
-      "SELECT eventname, eventtype FROM favorites WHERE email = $1",
-      [email]
+      `SELECT 
+         eventtype, 
+         eventname, 
+         program_content, 
+         location, 
+         start_date, 
+         end_date, 
+         contact, 
+         target_audience, 
+         ccce_name, 
+         token 
+       FROM favorites`
     );
 
-    // Check if data exists
     if (!result.rows.length) {
       return res
         .status(200)
         .json({ message: "No favorites found.", favorites: [] });
     }
 
-    // Organize results into categories
     const favorites = result.rows.reduce(
       (acc, item) => {
         if (item.eventtype === "festival") {
-          acc.favoriteFestivals.push(item.eventname);
+          acc.favoriteFestivals.push({
+            programName: item.eventname,
+            programContent: item.program_content,
+            location: item.location,
+            startDate: item.start_date,
+            endDate: item.end_date,
+            contact: item.contact,
+            targetAudience: item.target_audience,
+          });
         } else if (item.eventtype === "heritage") {
-          acc.favoriteHeritages.push(item.eventname);
+          acc.favoriteHeritages.push({
+            ccbaMnm1: item.eventname,
+            location: item.location,
+            ccceName: item.ccce_name,
+          });
         }
         return acc;
       },
       { favoriteFestivals: [], favoriteHeritages: [] }
     );
 
-    // Return organized favorites
     res
       .status(200)
-      .json({ message: "Favorites retrieved successfully", favorites });
+      .json({ message: "Favorites retrieved successfully.", favorites });
   } catch (error) {
-    console.error("Error retrieving favorites:", error.message);
+    console.error("Error retrieving data:", error.message);
     res
       .status(500)
-      .json({ message: "Error retrieving favorites", error: error.message });
+      .json({ message: "Error retrieving data.", error: error.message });
   }
 };

@@ -3,13 +3,14 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+
 const accountRoutes = require("./routes/accountRoutes");
 const heritageRoutes = require("./routes/heritageRoutes");
 // const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-
 const festivalRoutes = require("./routes/kgfestivalRoutes");
+
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
@@ -40,13 +41,12 @@ app.use(
 app.get("/", (req, res) => {
   res.send("node depoly Test");
 });
-
+// app.use("/kgfestival", kgfestivalRoutes);
 // Heritage and Festival Routes
 app.use("/heritage", heritageRoutes);
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
-// app.use("/kgfestival", kgfestivalRoutes);
 
 app.use("/account", accountRoutes);
 app.post("/api/store-favorites", (req, res) => {
