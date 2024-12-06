@@ -10,6 +10,7 @@ import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
+import { IoIosArrowUp } from "react-icons/io";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null },
@@ -195,6 +196,7 @@ const EventItem = memo(
 );
 
 const EventSchedule = () => {
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -213,6 +215,23 @@ const EventSchedule = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300); //300px 이상 스크롤 시 맨 위로 가기 버튼 표시
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  //맨 위로 스크롤하는 함수
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const isEventStarred = useCallback(
     (programName) => {
@@ -643,6 +662,15 @@ const EventSchedule = () => {
               </ul>
               {formattedFestivals.length > itemsPerPage && <Pagination />}
             </>
+          )}
+          {showScrollTop && (
+            <button
+              onClick={scrollToTop}
+              className="fixed bottom-8 right-8 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all duration-300 ease-in-out"
+              aria-label="맨 위로 가기"
+            >
+              <IoIosArrowUp size={24} />
+            </button>
           )}
         </div>
       </div>
