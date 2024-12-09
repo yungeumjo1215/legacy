@@ -132,10 +132,11 @@ const EventItem = memo(
                           py-1 sm:py-1.5 lg:py-2
                           transition-all duration-300 ease-in-out
                           shadow-sm hover:shadow-md
-                          text-center text-nowrap"
+                          text-center text-nowrap
+                          font-bold"
                 onClick={() => onEventClick(event)}
               >
-                자세히
+                더보기
               </button>
             </div>
 
