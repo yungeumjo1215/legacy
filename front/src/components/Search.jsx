@@ -26,7 +26,7 @@ const SearchPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
 
   useEffect(() => {
     const timer = setTimeout(() => {
