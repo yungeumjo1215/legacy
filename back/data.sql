@@ -128,12 +128,20 @@ CREATE TABLE heritage_details (
 
 
 -------------------------------------12_06------------------------------------
-https://earthteacher.tistory.com/36#google_vignette 
+-- 참조노트 
+
+-- https://earthteacher.tistory.com/36#google_vignette 
 
 --  serial 이냐 uuid 이냐 참조한 링크: 
 
 --  serial = 자동생성 넣으면 자동관리 
 -- uuid = uuid 생성된 128비트의 고유 식별자로, 36자리의 숫자 문자열 형태를 표현 
+
+
+--  xml2js 를사용한 파싱 : xm12js 는 문서를 모두 normalize 해서 모두 소문자로 바뀜 (주의) --
+
+
+
 -------------------------------- 왜래키 삭제 join 버전 ----------------------------------------------
 	CREATE TABLE accounts (
     uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Unique identifier for the user
@@ -190,6 +198,7 @@ CREATE TABLE "favoritelist" (
 	"문화재id" SERIAL NOT NULL,
 	PRIMARY KEY ("id")
 );
+
 
 
 -------------------------------------------------------------------------
