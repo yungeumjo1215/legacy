@@ -6,15 +6,14 @@ export const fetchFestivalData = createAsyncThunk(
   "festival/fetchFestivalData",
   async ({ year, month }, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:8000/festival", {
+      const response = await axios.get("http://localhost:8000/pgdb/festivals", {
         params: { year, month },
       });
 
       // 응답 데이터 구조 확인 및 변환
-
-      if (response.data && response.data.data) {
+      if (response.data && response.data.transformedResults) {
         // 데이터 구조 정규화
-        return response.data.data.map((item) => ({
+        return response.data.transformedResults.map((item) => ({
           programName: item.programName || item.subTitle,
           programContent: item.programContent || item.subContent,
           startDate: item.startDate || item.sDate,
