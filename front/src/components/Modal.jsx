@@ -14,10 +14,10 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
 
   useEffect(() => {
     const favoriteStatus = heritages.some(
-      (heritage) => heritage.ccbaMnm1 === item.ccbaMnm1
+      (heritage) => heritage.ccbamnm1 === item.ccbamnm1
     );
     setIsFavorite(favoriteStatus);
-  }, [heritages, item.ccbaMnm1]);
+  }, [heritages, item.ccbamnm1]);
 
   const handleFavoriteClick = async () => {
     if (!isLoggedIn) {
@@ -32,20 +32,20 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
         dispatch(
           removeFavorite({
             type: "heritage",
-            id: item.ccbaMnm1,
+            id: item.ccbamnm1,
           })
         );
       } else {
         dispatch(
           addFavorite({
             type: "heritage",
-            id: item.ccbaMnm1,
-            ccbaMnm1: item.ccbaMnm1,
-            ccbaLcad: item.ccbaLcad,
+            id: item.ccbamnm1,
+            ccbamnm1: item.ccbamnm1,
+            ccbalcad: item.ccbalcad,
             content: item.content,
-            imageUrl: item.imageUrl,
-            ccbaKdcd: item.ccbaKdcd,
-            ccceName: item.ccceName,
+            imageurl: item.imageurl,
+            ccbakdcd: item.ccbakdcd,
+            cccename: item.cccename,
           })
         );
       }
@@ -55,7 +55,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
       );
 
       if (onFavoriteChange) {
-        onFavoriteChange(item.ccbaKdcd, !isFavorite);
+        onFavoriteChange(item.ccbakdcd, !isFavorite);
       }
     } catch (error) {
       console.error("즐겨찾기 처리 중 오류 발생:", error);
@@ -92,7 +92,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
       >
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-[28px] m-0 MainFont break-words flex-1 pr-5">
-            {item.ccbaMnm1}
+            {item.ccbamnm1}
           </h2>
           <div className="flex items-center gap-4">
             <button
@@ -103,17 +103,17 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
             </button>
             <button
               onClick={onClose}
-              className="bg-[#121a35] text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
+              className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
             >
               X
             </button>
           </div>
         </div>
 
-        {item.imageUrl && (
+        {item.imageurl && (
           <img
-            src={item.imageUrl}
-            alt={item.ccbaMnm1}
+            src={item.imageurl}
+            alt={item.ccbamnm1}
             onError={handleImageError}
             className="w-full rounded-lg mb-5 max-h-[350px] object-cover"
           />
@@ -125,10 +125,10 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
 
         <div className="SubFont text-base mb-2.5 flex flex-col gap-2.5">
           <p>
-            <strong className="MainFont">위치:</strong> {item.ccbaLcad}
+            <strong className="MainFont">위치:</strong> {item.ccbalcad}
           </p>
           <p>
-            <strong className="MainFont">시대:</strong> {item.ccceName}
+            <strong className="MainFont">시대:</strong> {item.cccename}
           </p>
         </div>
 

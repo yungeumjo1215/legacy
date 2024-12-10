@@ -99,7 +99,7 @@ const EventModal = ({ event, onClose }) => {
               </button>
               <button
                 onClick={onClose}
-                className="bg-[#121a35] text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
+                className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
               >
                 X
               </button>
