@@ -84,8 +84,8 @@ const SearchPage = () => {
     if (!searchTerm) return heritageData;
 
     return heritageData.filter((item) => {
-      if (!item || !item.ccbaMnm1) return false;
-      return item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!item || !item.ccbamnm1) return false;
+      return item.ccbamnm1.toLowerCase().includes(searchTerm.toLowerCase());
     });
   }, [heritageData, searchTerm]);
 
