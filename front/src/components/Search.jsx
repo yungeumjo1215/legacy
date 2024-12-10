@@ -27,7 +27,7 @@ const SearchPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 14;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -301,18 +301,18 @@ const SearchPage = () => {
         bg-white text-black p-3 md:p-5 
         box-border 
         fixed 
-        top-16 
+        top-16
         ${isSidebarOpen ? "left-0" : "-left-full"} md:left-0
         border-r border-[#e2e2e2] 
         shadow-md 
         overflow-y-auto 
         flex flex-col 
-        gap-3 md:gap-5
+        gap-1 md:gap-1
         z-40
         transition-all duration-300 ease-in-out
       `}
       >
-        <div className="mb-3 md:mb-5 flex">
+        <div className="mb-1 md:mb-2 flex">
           <input
             type="text"
             placeholder="문화재를 입력해주세요."
@@ -384,7 +384,7 @@ const SearchPage = () => {
                 이전
               </button>
 
-              <div className="flex gap-1">
+              <div className="flex gap-2 p-2">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
