@@ -315,6 +315,7 @@ const Home = () => {
                             ? `/search`
                             : `/event_schedule`
                         }
+                        state={{ selectedEvent: item }}
                         className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded"
                       >
                         <div className="w-16 h-16 flex-shrink-0">

@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
@@ -200,6 +200,7 @@ const EventSchedule = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     festivalList,
     loading,
@@ -503,6 +504,19 @@ const EventSchedule = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [search, selectedRegion]);
+
+  useEffect(() => {
+    if (location.state?.selectedEvent) {
+      const event = {
+        programName: location.state.selectedEvent.title,
+        programContent: location.state.selectedEvent.content,
+        startDate: location.state.selectedEvent.begin_de,
+        location: location.state.selectedEvent.location,
+        image: location.state.selectedEvent.imageUrl,
+      };
+      setSelectedEvent(event);
+    }
+  }, [location.state]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">

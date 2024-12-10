@@ -5,12 +5,13 @@ import axios from "axios";
 import Map from "./map/Map";
 import Modal from "./Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const SearchPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { heritages } = useSelector((state) => state.favorites);
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,7 +68,7 @@ const SearchPage = () => {
           return;
         }
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("데이���를 불러오는데 실패했습니다. 다시 시도해주세요.");
+        setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
       }
@@ -77,6 +78,44 @@ const SearchPage = () => {
 
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.selectedEvent) {
+      const heritage = {
+        ccbamnm1: location.state.selectedEvent.title,
+        ccbalcad: location.state.selectedEvent.location,
+        content: location.state.selectedEvent.content,
+        imageurl: location.state.selectedEvent.imageUrl,
+        ccbakdcd: location.state.selectedEvent.id,
+      };
+
+      setSelectedHeritage(heritage);
+      setModalOpen(true);
+
+      const fetchLocation = async () => {
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json`,
+            {
+              params: {
+                address: heritage.ccbalcad,
+                key: process.env.REACT_APP_GOOGLE_MAPS_API,
+              },
+            }
+          );
+
+          if (response.data.status === "OK") {
+            const { lat, lng } = response.data.results[0].geometry.location;
+            setSelectedLocation({ lat, lng });
+          }
+        } catch (error) {
+          console.error("위치 정보 변환 중 오류 발생:", error);
+        }
+      };
+
+      fetchLocation();
+    }
+  }, [location.state]);
 
   const filteredResults = useMemo(() => {
     if (!searchTerm) return heritageData;
@@ -270,7 +309,7 @@ const SearchPage = () => {
           <button
             className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:bg-blue-700 hover:text-white"
             onClick={handleSearch}
-            aria-label="���색하기"
+            aria-label="검색하기"
           >
             <FaSearch className="text-xl md:text-2xl" />
           </button>
