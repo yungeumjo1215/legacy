@@ -150,7 +150,7 @@ CREATE TABLE "login_log" (
 	"uuid" VARCHAR(255) NULL,
 	"action" VARCHAR(10) NULL,
 	"timestamp" TIMESTAMP NULL,
-	PRIMARY KEY ("id", "acid")
+	PRIMARY KEY ("id")
 );
 
 CREATE TABLE "festivalsearch" (
@@ -167,7 +167,7 @@ CREATE TABLE "festivalsearch" (
 	"이미지" VARCHAR(500) DEFAULT 'N/A' NULL,
 	"방문객" VARCHAR(100) DEFAULT 'N/A' NULL,
 	"추가정보" VARCHAR(255) DEFAULT 'N/A' NULL,
-	PRIMARY KEY ("축제id", "acid")
+	PRIMARY KEY ("축제id")
 );
 
 CREATE TABLE "heritagesearch" (
@@ -177,7 +177,7 @@ CREATE TABLE "heritagesearch" (
 	"제목" VARCHAR(50) DEFAULT '-' NULL,
 	"내용" VARCHAR(255) DEFAULT '-' NULL,
 	"이미지" VARCHAR(500) DEFAULT '-' NULL,
-	PRIMARY KEY ("문화재id", "acid")
+	PRIMARY KEY ("문화재id")
 );
 SELECT * FROM favoritelist
 CREATE TABLE "favoritelist" (
@@ -187,8 +187,12 @@ CREATE TABLE "favoritelist" (
 	"문화재acid" SERIAL NOT NULL,
 	"축제id" SERIAL NOT NULL,
 	"문화재id" SERIAL NOT NULL,
-	PRIMARY KEY ("id", "acid", "축제acid", "문화재acid", "축제id", "문화재id")
+	PRIMARY KEY ("id")
 );
+
+
+-------------------------------------------------------------------------
+--------------------------- join 설정 연결 -------------------------------
 -- 1. Join accounts with login_log
 SELECT 
     a.id AS accounts_id, 
@@ -199,8 +203,7 @@ FROM
     accounts a
 JOIN 
     login_log ll 
-ON 
-    CAST(a.id AS VARCHAR) = ll.acid;
+
 
 -- 2. Join heritagesearch and accounts
 
@@ -216,8 +219,7 @@ FROM
     accounts a
 JOIN 
     heritagesearch hs
-ON 
-    CAST(a.id AS VARCHAR) = hs.acid;
+
 
 -- 3. Join festivalsearch and accounts
     SELECT 
@@ -228,8 +230,7 @@ FROM
     accounts a 
 JOIN 
     festivalsearch fs
-ON 
-    CAST(a.id AS VARCHAR) = fs.acid;
+
 
 -- 4 Join favoritelist with heritagesearch and festivalsearch
 SELECT 
@@ -244,8 +245,6 @@ ON
     CAST(hs.문화재id AS VARCHAR) = fl.문화재id AND hs.acid = fl.문화재acid
 JOIN 
     festivalsearch fs 
-ON 
-    CAST(fs.축제id AS VARCHAR) = fl.축제id AND fs.acid = fl.축제acid;
 
 
 --5 Join favoritelist and accounts
@@ -261,8 +260,19 @@ FROM
     accounts a
 JOIN 
     favoritelist fl
-ON 
-    CAST(a.id AS VARCHAR) = fl.acid;
+-------------------------------------------------------------------------------------------
+-------------- PK 초기화 및 재설정 
+	ALTER TABLE login_log DROP CONSTRAINT login_log_pkey;
+	ALTER TABLE login_log ADD CONSTRAINT login_log_pkey PRIMARY KEY (id);
+	
+	ALTER TABLE heritagesearch DROP CONSTRAINT heritagesearch_pkey;
+	ALTER TABLE heritagesearch ADD CONSTRAINT heritagesearch_pkey PRIMARY KEY (문화재id);
+
+	ALTER TABLE festivalsearch ADD CONSTRAINT festivalsearch_pkey PRIMARY KEY (일련번호);
+
+	ALTER TABLE favoritelist DROP CONSTRAINT favoritelist_pkey;
+	ALTER TABLE favoritelist ADD CONSTRAINT favoritelist_pkey PRIMARY KEY (id);
+--------------------------------------------------------------------------------------
 
 SELECT * FROM accounts
 SELECT * FROM favoritelist
