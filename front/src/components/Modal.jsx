@@ -103,7 +103,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
             </button>
             <button
               onClick={onClose}
-              className="bg-[#121a35] text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
+              className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
             >
               X
             </button>
