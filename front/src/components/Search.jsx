@@ -48,9 +48,12 @@ const SearchPage = () => {
     const fetchGetHeritageData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:8000/heritage", {
-          signal: controller.signal,
-        });
+        const response = await axios.get(
+          "http://localhost:8000/pgdb/heritage",
+          {
+            signal: controller.signal,
+          }
+        );
 
         if (!response.data) {
           throw new Error("데이터를 불러오는데 실패했습니다");
@@ -64,7 +67,7 @@ const SearchPage = () => {
           return;
         }
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("데이터를 불러오는데 패했습니다. 다시 시도해주세요.");
+        setError("데이���를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
       }
@@ -76,9 +79,12 @@ const SearchPage = () => {
   }, []);
 
   const filteredResults = useMemo(() => {
-    return heritageData.filter((item) =>
-      item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    if (!searchTerm) return heritageData;
+
+    return heritageData.filter((item) => {
+      if (!item || !item.ccbaMnm1) return false;
+      return item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase());
+    });
   }, [heritageData, searchTerm]);
 
   const handleSearch = () => {
@@ -102,12 +108,12 @@ const SearchPage = () => {
 
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
     const newItem = {
-      id: item.ccbaKdcd,
+      id: item.ccbakdcd,
       type: "heritage",
-      title: item.ccbaMnm1,
-      imageUrl: item.imageUrl || item.ccbaAsno,
-      location: item.ccbaLcad,
-      content: item.content || item.ccbaCtcdNm,
+      title: item.ccbamnm1,
+      imageUrl: item.imageurl || item.ccbaasno,
+      location: item.ccbalcad,
+      content: item.content || item.ccbactcd,
     };
 
     const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
@@ -119,7 +125,7 @@ const SearchPage = () => {
         `https://maps.googleapis.com/maps/api/geocode/json`,
         {
           params: {
-            address: item.ccbaLcad,
+            address: item.ccbalcad,
             key: process.env.REACT_APP_GOOGLE_MAPS_API,
           },
         }
@@ -135,7 +141,7 @@ const SearchPage = () => {
   };
 
   const isFavorite = (item) => {
-    return heritages.some((heritage) => heritage.ccbaMnm1 === item.ccbaMnm1);
+    return heritages.some((heritage) => heritage.ccbamnm1 === item.ccbamnm1);
   };
 
   const handleStarClick = async (heritage) => {
@@ -153,18 +159,18 @@ const SearchPage = () => {
         dispatch(
           removeFavorite({
             type: "heritage",
-            id: heritage.ccbaMnm1,
+            id: heritage.ccbamnm1,
           })
         );
       } else {
         const heritageData = {
           type: "heritage",
-          id: heritage.ccbaMnm1,
-          ccbaMnm1: heritage.ccbaMnm1,
-          ccbaLcad: heritage.ccbaLcad,
-          content: heritage.content || heritage.ccbaCtcdNm,
-          imageUrl: heritage.imageUrl || heritage.ccbaAsno,
-          ccbaKdcd: heritage.ccbaKdcd,
+          id: heritage.ccbamnm1,
+          ccbamnm1: heritage.ccbamnm1,
+          ccbalcad: heritage.ccbalcad,
+          content: heritage.content || heritage.ccbactcd,
+          imageurl: heritage.imageurl || heritage.ccbaasno,
+          ccbakdcd: heritage.ccbakdcd,
           ccceName: heritage.ccceName,
         };
 
@@ -264,7 +270,7 @@ const SearchPage = () => {
           <button
             className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:bg-blue-700 hover:text-white"
             onClick={handleSearch}
-            aria-label="검색하기"
+            aria-label="���색하기"
           >
             <FaSearch className="text-xl md:text-2xl" />
           </button>
@@ -279,7 +285,7 @@ const SearchPage = () => {
             <ul>
               {filteredData.map((item, index) => (
                 <li
-                  key={item.ccbaKdcd || index}
+                  key={item.ccbakdcd || index}
                   className="my-3 md:my-5 flex items-center"
                 >
                   <div
@@ -289,7 +295,7 @@ const SearchPage = () => {
                     }`}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${item.ccbaMnm1} 즐겨찾기 ${
+                    aria-label={`${item.ccbamnm1} 즐겨찾기 ${
                       isFavorite(item) ? "해제" : "추가"
                     }`}
                   >
@@ -297,10 +303,10 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    aria-label={`${item.ccbaMnm1} 상세정보 보기`}
+                    aria-label={`${item.ccbamnm1} 상세정보 보기`}
                     className="text-sm md:text-base hover:text-blue-600 transition-colors"
                   >
-                    {item.ccbaMnm1}
+                    {item.ccbamnm1}
                   </button>
                 </li>
               ))}
