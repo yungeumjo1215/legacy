@@ -403,7 +403,7 @@ const SearchPage = () => {
                       onClick={() => handlePageChange(pageNum)}
                       className={`w-7 h-7 text-sm rounded-md ${
                         currentPage === pageNum
-                          ? "bg-blue-600 text-white"
+                          ? "bg-blue-700 text-white"
                           : "bg-white border border-gray-300 hover:bg-gray-100"
                       }`}
                     >
@@ -419,7 +419,7 @@ const SearchPage = () => {
                 className={`min-w-[40px] px-2 py-1 text-sm rounded-md ${
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 hover:bg-gray-100"
+                    : "bg-white border border-gray-300 hover:bg-gray-200"
                 }`}
               >
                 다음
@@ -496,7 +496,7 @@ const SearchPage = () => {
             </p>
             <button
               onClick={closeSuccessMessage}
-              className="mt-4 md:mt-6 bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+              className="mt-4 md:mt-6 bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
                        cursor-pointer hover:bg-blue-700 transition-colors"
             >
               확인
