@@ -56,7 +56,7 @@ const SearchPage = () => {
           throw new Error("데이터를 불러오는데 실패했습니다");
         }
 
-        const slicedData = response.data.slice(0, 10);
+        const slicedData = response.data.slice(0, 100);
         setHeritageData(slicedData);
         setFilteredData(slicedData);
       } catch (error) {
