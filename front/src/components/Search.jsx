@@ -69,11 +69,9 @@ const SearchPage = () => {
         if (error.name === "AbortError") {
           return;
         }
-<<<<<<< HEAD
+
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-=======
-        console.error("유적지 ���이터를 가져오는 중 오류 발생:", error);
->>>>>>> dba66c8b83b7012645371100af96877eaabe0135
+
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
