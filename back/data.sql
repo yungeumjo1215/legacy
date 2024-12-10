@@ -59,14 +59,14 @@ ALTER TABLE accounts ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE;
 SELECT * FROM accounts
 
 
--- obsolete
--- CREATE TABLE login_log (
---     log_id SERIAL PRIMARY KEY,
---     admin_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid admin
---     client_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
---     action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
---     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
--- );
+obsolete
+CREATE TABLE login_log (
+    log_id SERIAL PRIMARY KEY,
+    admin_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid admin
+    client_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
+    action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 SELECT * FROM login_log
 -- Indexes for performance
@@ -128,7 +128,12 @@ CREATE TABLE heritage_details (
 
 
 -------------------------------------12_06------------------------------------
+https://earthteacher.tistory.com/36#google_vignette 
 
+--  serial 이냐 uuid 이냐 참조한 링크: 
+
+--  serial = 자동생성 넣으면 자동관리 
+-- uuid = uuid 생성된 128비트의 고유 식별자로, 36자리의 숫자 문자열 형태를 표현 
 -------------------------------- 왜래키 삭제 join 버전 ----------------------------------------------
 	CREATE TABLE accounts (
     uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Unique identifier for the user
@@ -140,17 +145,14 @@ CREATE TABLE heritage_details (
 );
 
 
-
-
-
-CREATE TABLE "login_log" (
-	"id" SERIAL NOT NULL,
-	"acid" SERIAL NOT NULL,
-	"uuid" VARCHAR(255) NULL,
-	"action" VARCHAR(10) NULL,
-	"timestamp" TIMESTAMP NULL,
-	PRIMARY KEY ("id")
+CREATE TABLE login_log (
+    log_id SERIAL PRIMARY KEY,
+    admin_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid admin
+    client_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
+    action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE "festivalsearch" (
 	"축제id" SERIAL NOT NULL,

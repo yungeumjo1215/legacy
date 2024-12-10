@@ -121,7 +121,7 @@ const EventItem = memo(
 
           <div className="flex-1">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="MainFont text-xl sm:text-2xl ml-[225px]">
+              <h3 className="MainFont text-xl sm:text-2xl">
                 {event.programName}
               </h3>
               <button

@@ -26,6 +26,8 @@ const SearchPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -67,7 +69,11 @@ const SearchPage = () => {
         if (error.name === "AbortError") {
           return;
         }
+<<<<<<< HEAD
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
+=======
+        console.error("유적지 ���이터를 가져오는 중 오류 발생:", error);
+>>>>>>> dba66c8b83b7012645371100af96877eaabe0135
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
@@ -121,8 +127,8 @@ const SearchPage = () => {
     if (!searchTerm) return heritageData;
 
     return heritageData.filter((item) => {
-      if (!item || !item.ccbaMnm1) return false;
-      return item.ccbaMnm1.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!item || !item.ccbamnm1) return false;
+      return item.ccbamnm1.toLowerCase().includes(searchTerm.toLowerCase());
     });
   }, [heritageData, searchTerm]);
 
@@ -261,6 +267,18 @@ const SearchPage = () => {
     setFilteredData(updatedData);
   };
 
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  };
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
       <button
@@ -315,14 +333,14 @@ const SearchPage = () => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pb-16">
           {isLoading ? (
             <div className="text-center text-sm md:text-base SubFont">
               데이터를 불러오는 중...
             </div>
           ) : (
             <ul>
-              {filteredData.map((item, index) => (
+              {getCurrentPageData().map((item, index) => (
                 <li
                   key={item.ccbakdcd || index}
                   className="my-3 md:my-5 flex items-center"
@@ -352,6 +370,65 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
+
+        {filteredData.length > 0 && (
+          <div className="fixed bottom-0 left-0 md:left-0 w-[280px] md:w-[320px] lg:w-[380px] bg-white border-t border-[#e2e2e2] py-4">
+            <div className="flex justify-center items-center gap-1 px-3">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`min-w-[40px] px-2 py-1 text-sm rounded-md${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-white border border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                이전
+              </button>
+
+              <div className="flex gap-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`w-7 h-7 text-sm rounded-md ${
+                        currentPage === pageNum
+                          ? "bg-blue-600 text-white"
+                          : "bg-white border border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`min-w-[40px] px-2 py-1 text-sm rounded-md ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-white border border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                다음
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div
