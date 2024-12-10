@@ -13,6 +13,15 @@ router.get("/accounts", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+router.get("/heritage", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM heritagelist;");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 router.get("/festivals", async (req, res) => {
   try {
     // Fetch data from the database
