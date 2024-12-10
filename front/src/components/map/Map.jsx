@@ -117,7 +117,7 @@ const Map = ({ selectedLocation }) => {
                 font-family: 'Noto Sans KR', sans-serif;
               ">
                 ${
-                  heritage.imageUrl
+                  heritage.imageurl
                     ? `
                   <div style="
                     width: 100%;
@@ -127,7 +127,7 @@ const Map = ({ selectedLocation }) => {
                     border-radius: 8px;
                   ">
                     <img 
-                      src="${heritage.imageUrl}" 
+                      src="${heritage.imageurl}" 
                       alt="${heritage.name}" 
                       style="
                         width: 100%;
@@ -224,7 +224,7 @@ const Map = ({ selectedLocation }) => {
 
     const fetchGetHeritageData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/heritage");
+        const response = await axios.get("http://localhost:8000/pgdb/heritage");
         if (!response.data) throw new Error("데이터를 불러오는데 실패했습니다");
         return response.data;
       } catch (error) {
@@ -239,7 +239,7 @@ const Map = ({ selectedLocation }) => {
 
       const geocodedData = await Promise.all(
         heritageData.map(async (heritage) => {
-          const cacheKey = heritage.ccbaLcad;
+          const cacheKey = heritage.ccbalcad;
 
           // 캐시된 결과가 있으면 사용
           if (geocodeCache.current.has(cacheKey)) {
@@ -251,7 +251,7 @@ const Map = ({ selectedLocation }) => {
               `https://maps.googleapis.com/maps/api/geocode/json`,
               {
                 params: {
-                  address: heritage.ccbaLcad,
+                  address: heritage.ccbalcad,
                   key: apiKey,
                 },
               }
@@ -260,11 +260,11 @@ const Map = ({ selectedLocation }) => {
             if (response.data.status === "OK") {
               const location = response.data.results[0].geometry.location;
               const result = {
-                name: heritage.ccbaMnm1,
-                description: heritage.ccbaLcad,
+                name: heritage.ccbamnm1,
+                description: heritage.ccbalcad,
                 latitude: location.lat,
                 longitude: location.lng,
-                imageUrl: heritage.imageUrl,
+                imageUrl: heritage.imageurl,
               };
 
               // 결과 캐싱
@@ -272,13 +272,13 @@ const Map = ({ selectedLocation }) => {
               return result;
             } else {
               console.error(
-                `Geocoding 실패: ${heritage.ccbaLcad} - ${response.data.status}`
+                `Geocoding 실패: ${heritage.ccbalcad} - ${response.data.status}`
               );
               return null;
             }
           } catch (error) {
             console.error(
-              `Geocoding 요청 중 오류 발생: ${heritage.ccbaLcad}`,
+              `Geocoding 요청 중 오류 발생: ${heritage.ccbalcad}`,
               error
             );
             return null;
