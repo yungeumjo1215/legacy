@@ -59,14 +59,14 @@ ALTER TABLE accounts ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE;
 SELECT * FROM accounts
 
 
-
-CREATE TABLE login_log (
-    log_id SERIAL PRIMARY KEY,
-    admin_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid admin
-    client_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
-    action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+-- obsolete
+-- CREATE TABLE login_log (
+--     log_id SERIAL PRIMARY KEY,
+--     admin_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid admin
+--     client_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
+--     action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
+--     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- );
 
 SELECT * FROM login_log
 -- Indexes for performance
@@ -130,17 +130,16 @@ CREATE TABLE heritage_details (
 -------------------------------------12_06------------------------------------
 
 -------------------------------- 왜래키 삭제 join 버전 ----------------------------------------------
-CREATE TABLE "accounts" (
-	"id" SERIAL NOT NULL,
-	"is_admin" BOOLEAN NULL,
-	"last_login" TIMESTAMP NULL,
-	"email" VARCHAR(50) NULL,
-	"uuid" VARCHAR(255) NULL,
-	"username" VARCHAR(50) NULL,
-	"created_at" TIMESTAMP NULL,
-	"password" VARCHAR(255) NOT NULL,
-	PRIMARY KEY ("id")
+	CREATE TABLE accounts (
+    uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Unique identifier for the user
+    email VARCHAR(100) UNIQUE NOT NULL CHECK (email ~* '^[^@]+@[^@]+\.[^@]+$'), -- Ensures a basic email format
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE -- Default is not an admin
 );
+
+
 
 
 
