@@ -25,7 +25,7 @@ router.get("/heritage", async (req, res) => {
 router.get("/festivals", async (req, res) => {
   try {
     // Fetch data from the database
-    const result = await pool.query("SELECT * FROM festivalsearch;");
+    const result = await pool.query("SELECT * FROM festivallist;");
 
     // Transform database rows if needed (optional based on your use case)
     const transformedResults = result.rows.map((row) => ({
