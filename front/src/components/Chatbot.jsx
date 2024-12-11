@@ -99,7 +99,7 @@ const Chatbot = () => {
             <div
               className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-3 ${
                 message.type === "user"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-700 text-white"
                   : "bg-white text-gray-800"
               }`}
             >
@@ -140,12 +140,12 @@ const Chatbot = () => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="메시지를 입력하세요..."
-              className="flex-1 p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-sm sm:text-base"
+              className="flex-1 p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-700 text-sm sm:text-base"
             />
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-blue-500 text-white p-2 sm:p-3 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 flex items-center justify-center min-w-[44px] sm:min-w-[50px]"
+              className="bg-blue-900 text-white p-2 sm:p-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 flex items-center justify-center min-w-[44px] sm:min-w-[50px]"
             >
               <IoSend className="text-xl sm:text-2xl" />
             </button>
