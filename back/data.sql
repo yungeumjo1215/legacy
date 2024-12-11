@@ -152,6 +152,14 @@ CREATE TABLE heritage_details (
     is_admin BOOLEAN NOT NULL DEFAULT FALSE -- Default is not an admin
 );
 
+CREATE TABLE login_log (
+    log_id SERIAL PRIMARY KEY,
+    account_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
+    action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 CREATE TABLE login_log (
     log_id SERIAL PRIMARY KEY,
@@ -162,8 +170,10 @@ CREATE TABLE login_log (
 );
 
 
+
+
 CREATE TABLE "festivalsearch" (
-	"축제id" SERIAL NOT NULL,
+	"id" SERIAL NOT NULL,
 	"acid" SERIAL NOT NULL,
 	"검색연도" VARCHAR(255) NULL,
 	"검색월" VARCHAR(255) NULL,
@@ -179,8 +189,8 @@ CREATE TABLE "festivalsearch" (
 	PRIMARY KEY ("축제id")
 );
 
-CREATE TABLE "heritagesearch" (
-	"문화재id" SERIAL NOT NULL,
+CREATE TABLE "heritagelist" (
+	"id" SERIAL NOT NULL,
 	"acid" SERIAL NOT NULL,
 	"장소" VARCHAR(50) DEFAULT '-' NULL,
 	"제목" VARCHAR(50) DEFAULT '-' NULL,
@@ -286,7 +296,9 @@ JOIN
 
 SELECT * FROM accounts
 SELECT * FROM favoritelist
-SELECT * FROM festivalsearch
-SELECT * FROM heritagesearch
+SELECT * FROM festivallist
+SELECT * FROM heritagelist
 SELECT * FROM login_log
+
+-----------------------------------------------------12월 11일 ------------------------
 

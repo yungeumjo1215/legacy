@@ -31,17 +31,17 @@ const fetchHeritageList = async (limit = 10) => {
 
       for (const item of items) {
         const heritage = {
-          ccbakdcd: item.ccbakdcd?.[0],
-          ccbaasno: item.ccbaasno?.[0],
-          ccbactcd: item.ccbactcd?.[0],
-          ccbamnm1: item.ccbamnm1?.[0],
+          ccbaKdcd: item.ccbaKdcd?.[0],
+          ccbaAsno: item.ccbaAsno?.[0],
+          ccbaCtcd: item.ccbaCtcd?.[0],
+          ccbaMnm1: item.ccbaMnm1?.[0],
         };
 
         const detailResponse = await axios.get(
           heritageInfo_Url(
-            heritage.ccbakdcd,
-            heritage.ccbaasno,
-            heritage.ccbactcd
+            heritage.ccbaKdcd,
+            heritage.ccbaAsno,
+            heritage.ccbaCtcd
           ),
           { headers: { Accept: "application/xml" } }
         );
@@ -50,10 +50,10 @@ const fetchHeritageList = async (limit = 10) => {
         const detailJsonData = await parseStringPromise(detailXmlText);
         const detailItem = detailJsonData.result?.item?.[0] || {};
 
-        heritage.ccbalcad = cleanText(detailItem.ccbalcad?.[0] || "-");
-        heritage.cccename = cleanText(detailItem.cccename?.[0] || "-");
+        heritage.ccbaLcad = cleanText(detailItem.ccbaLcad?.[0] || "-");
+        heritage.ccceName = cleanText(detailItem.ccceName?.[0] || "-");
         heritage.content = detailItem.content?.[0] || "-";
-        heritage.imageurl = detailItem.imageurl?.[0] || "-";
+        heritage.imageUrl = detailItem.imageUrl?.[0] || "-";
 
         heritageList.push(heritage);
         totalFetched++;
@@ -74,7 +74,7 @@ const fetchHeritageList = async (limit = 10) => {
 const getHeritageList = async (req, res) => {
   try {
     const { limit } = req.query;
-    const data = await fetchHeritageList(limit ? parseInt(limit) : 100); // 문화재 갯수 조절
+    const data = await fetchHeritageList(limit ? parseInt(limit) : 10); // 문화재 갯수 조절
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
