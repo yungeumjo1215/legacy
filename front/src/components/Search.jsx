@@ -212,8 +212,8 @@ const SearchPage = () => {
           id: heritage.ccbamnm1,
           ccbamnm1: heritage.ccbamnm1,
           ccbalcad: heritage.ccbalcad,
-          content: heritage.content || heritage.ccbactcd,
-          imageurl: heritage.imageurl || heritage.ccbaasno,
+          content: heritage.content,
+          imageurl: heritage.imageurl,
           ccbakdcd: heritage.ccbakdcd,
           ccceName: heritage.ccceName,
         };
