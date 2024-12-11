@@ -5,12 +5,13 @@ import axios from "axios";
 import Map from "./map/Map";
 import Modal from "./Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 
 const SearchPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { heritages } = useSelector((state) => state.favorites);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +27,7 @@ const SearchPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 14;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,7 +69,9 @@ const SearchPage = () => {
         if (error.name === "AbortError") {
           return;
         }
-        console.error("유적지 ���이터를 가져오는 중 오류 발생:", error);
+
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
+
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
         setIsLoading(false);
@@ -79,6 +82,44 @@ const SearchPage = () => {
 
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.selectedEvent) {
+      const heritage = {
+        ccbamnm1: location.state.selectedEvent.title,
+        ccbalcad: location.state.selectedEvent.location,
+        content: location.state.selectedEvent.content,
+        imageurl: location.state.selectedEvent.imageUrl,
+        ccbakdcd: location.state.selectedEvent.id,
+      };
+
+      setSelectedHeritage(heritage);
+      setModalOpen(true);
+
+      const fetchLocation = async () => {
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json`,
+            {
+              params: {
+                address: heritage.ccbalcad,
+                key: process.env.REACT_APP_GOOGLE_MAPS_API,
+              },
+            }
+          );
+
+          if (response.data.status === "OK") {
+            const { lat, lng } = response.data.results[0].geometry.location;
+            setSelectedLocation({ lat, lng });
+          }
+        } catch (error) {
+          console.error("위치 정보 변환 중 오류 발생:", error);
+        }
+      };
+
+      fetchLocation();
+    }
+  }, [location.state]);
 
   const filteredResults = useMemo(() => {
     if (!searchTerm) return heritageData;
@@ -260,18 +301,18 @@ const SearchPage = () => {
         bg-white text-black p-3 md:p-5 
         box-border 
         fixed 
-        top-16 
+        top-16
         ${isSidebarOpen ? "left-0" : "-left-full"} md:left-0
         border-r border-[#e2e2e2] 
         shadow-md 
         overflow-y-auto 
         flex flex-col 
-        gap-3 md:gap-5
+        gap-1 md:gap-1
         z-40
         transition-all duration-300 ease-in-out
       `}
       >
-        <div className="mb-3 md:mb-5 flex">
+        <div className="mb-1 md:mb-2 flex">
           <input
             type="text"
             placeholder="문화재를 입력해주세요."
@@ -343,7 +384,7 @@ const SearchPage = () => {
                 이전
               </button>
 
-              <div className="flex gap-1">
+              <div className="flex gap-2 p-2">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -362,7 +403,7 @@ const SearchPage = () => {
                       onClick={() => handlePageChange(pageNum)}
                       className={`w-7 h-7 text-sm rounded-md ${
                         currentPage === pageNum
-                          ? "bg-blue-600 text-white"
+                          ? "bg-blue-700 text-white"
                           : "bg-white border border-gray-300 hover:bg-gray-100"
                       }`}
                     >
@@ -378,7 +419,7 @@ const SearchPage = () => {
                 className={`min-w-[40px] px-2 py-1 text-sm rounded-md ${
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 hover:bg-gray-100"
+                    : "bg-white border border-gray-300 hover:bg-gray-200"
                 }`}
               >
                 다음
@@ -455,7 +496,7 @@ const SearchPage = () => {
             </p>
             <button
               onClick={closeSuccessMessage}
-              className="mt-4 md:mt-6 bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+              className="mt-4 md:mt-6 bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
                        cursor-pointer hover:bg-blue-700 transition-colors"
             >
               확인
