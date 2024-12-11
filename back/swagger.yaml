@@ -9,11 +9,11 @@ servers:
     description: 개발 서버
 
 paths:
-  /auth/register:
+  /create:
     post:
       tags:
-        - Authentication
-      summary: 새 계정 생성
+        - Account
+      summary: 계정 생성
       description: 새로운 사용자 계정을 생성합니다
       requestBody:
         required: true
@@ -28,61 +28,44 @@ paths:
               properties:
                 username:
                   type: string
-                  description: 사용자 이름
-                  example: "testuser"
                 email:
                   type: string
                   format: email
-                  description: 사용자 이메일
-                  example: "test@example.com"
                 password:
                   type: string
                   format: password
-                  description: 비밀번호 (최소 8자, 특수문자 포함)
-                  example: "Test123!@#"
       responses:
         "201":
           description: 계정 생성 성공
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Account created successfully."
-                  account:
-                    type: object
-                    properties:
-                      email:
-                        type: string
-                      username:
-                        type: string
         "400":
           description: 잘못된 요청
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "All fields are required."
         "500":
           description: 서버 오류
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "An error occurred while creating the account."
 
-  /auth/login:
+  /delete/{uuid}:
+    delete:
+      tags:
+        - Account
+      summary: 계정 삭제
+      description: UUID를 사용하여 계정을 삭제합니다
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 계정 삭제 성공
+        "404":
+          description: 계정을 찾을 수 없음
+        "500":
+          description: 서버 오류
+
+  /login:
     post:
       tags:
-        - Authentication
+        - Account
       summary: 로그인
       description: 사용자 로그인을 처리합니다
       requestBody:
@@ -98,67 +81,119 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: 사용자 이메일
-                  example: "test@example.com"
                 password:
                   type: string
                   format: password
-                  description: 비밀번호
-                  example: "Test123!@#"
       responses:
         "200":
           description: 로그인 성공
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Login successful."
-                  token:
-                    type: string
-                    description: JWT 토큰
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  account:
-                    type: object
-                    properties:
-                      email:
-                        type: string
-                      username:
-                        type: string
-                      is_admin:
-                        type: boolean
         "400":
           description: 잘못된 요청
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Email and password are required."
         "404":
           description: 계정을 찾을 수 없음
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Account not found."
         "500":
           description: 서버 오류
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Internal server error."
+
+  /logout:
+    post:
+      tags:
+        - Account
+      summary: 로그아웃
+      description: 사용자 로그아웃을 처리합니다
+      responses:
+        "200":
+          description: 로그아웃 성공
+        "500":
+          description: 서버 오류
+
+  /permissions/{uuid}:
+    put:
+      tags:
+        - Account
+      summary: 계정 권한 업데이트
+      description: UUID를 사용하여 계정 권한을 업데이트합니다
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+      responses:
+        "200":
+          description: 권한 업데이트 성공
+        "404":
+          description: 계정을 찾을 수 없음
+        "500":
+          description: 서버 오류
+
+  /info:
+    get:
+      tags:
+        - Account
+      summary: 사용자 정보 조회
+      description: 사용자 정보를 조회합니다
+      responses:
+        "200":
+          description: 정보 조회 성공
+        "500":
+          description: 서버 오류
+
+  /events:
+    get:
+      tags:
+        - Events
+      summary: 이벤트 목록 조회
+      description: 이벤트 목록을 조회합니다
+      responses:
+        "200":
+          description: 이벤트 목록 조회 성공
+        "500":
+          description: 서버 오류
+
+  /accounts:
+    get:
+      tags:
+        - PostgreSQL
+      summary: 계정 목록 조회
+      description: PostgreSQL에서 계정 목록을 조회합니다
+      responses:
+        "200":
+          description: 계정 목록 조회 성공
+        "500":
+          description: 서버 오류
+
+  /heritage:
+    get:
+      tags:
+        - PostgreSQL
+      summary: 문화재 목록 조회
+      description: PostgreSQL에서 문화재 목록을 조회합니다
+      responses:
+        "200":
+          description: 문화재 목록 조회 성공
+        "500":
+          description: 서버 오류
+
+  /festivals:
+    get:
+      tags:
+        - PostgreSQL
+      summary: 축제 목록 조회
+      description: PostgreSQL에서 축제 목록을 조회합니다
+      responses:
+        "200":
+          description: 축제 목록 조회 성공
+        "500":
+          description: 서버 오류
 
 components:
   securitySchemes:

@@ -21,7 +21,17 @@ app.use(bodyParser.json());
 
 dotenv.config();
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "문화재/축제 API 문서",
+  })
+);
 
 app.use(express.json());
 
@@ -44,12 +54,10 @@ app.get("/", (req, res) => {
 });
 // app.use("/kgfestival", kgfestivalRoutes);
 // Heritage and Festival Routes
-app.use("/heritage", heritageRoutes);
-app.use("/festival", festivalRoutes);
-app.use("/pgdb", pgdbRoutes);
-app.use("/event", eventRoutes);
 
-app.use("/account", accountRoutes);
+app.use("/events", eventRoutes);
+app.use("/pgdb", pgdbRoutes);
+
 app.post("/api/store-favorites", (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
   const token = req.headers.token;
