@@ -69,7 +69,7 @@ const SearchPage = () => {
           return;
         }
 
-        console.error("유적지 ��이터를 가져오는 중 오류 발생:", error);
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
 
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
@@ -112,7 +112,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위치 정보 변��� 중 오류 발생:", error);
+          console.error("위치 정보 변경 중 오류 발생:", error);
         }
       };
 
@@ -211,8 +211,8 @@ const SearchPage = () => {
           id: heritage.ccbamnm1,
           ccbamnm1: heritage.ccbamnm1,
           ccbalcad: heritage.ccbalcad,
-          content: heritage.content || heritage.ccbactcd,
-          imageurl: heritage.imageurl || heritage.ccbaasno,
+          content: heritage.content,
+          imageurl: heritage.imageurl,
           ccbakdcd: heritage.ccbakdcd,
           ccceName: heritage.ccceName,
         };
@@ -355,7 +355,7 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors"
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left "
                   >
                     {item.ccbamnm1}
                   </button>

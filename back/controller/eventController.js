@@ -16,7 +16,6 @@ exports.getEvents = (req, res) => {
       URL: event.URL,
       begin_de: event.BEGIN_DE,
       end_de: event.END_DE,
-
       event_tm_info: event.EVENT_TM_INFO,
       host_inst_nm: event.HOST_INST_NM,
       event_sido: event.EVENT_SIDO,

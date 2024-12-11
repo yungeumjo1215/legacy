@@ -1,9 +1,9 @@
-const express = require("express");
-const { getFestivalList } = require("../controller/festivalController");
+// const express = require("express");
+// const { getFestivalList } = require("../controller/festivalController");
 
-const router = express.Router();
+// const router = express.Router();
 
-// Route to fetch festival list
-router.get("/", getFestivalList);
+// // Route to fetch festival list
+// router.get("/", getFestivalList);
 
-module.exports = router;
+// module.exports = router;
