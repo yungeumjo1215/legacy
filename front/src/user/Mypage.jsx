@@ -132,9 +132,7 @@ const Mypage = () => {
         {/* 메인 컨텐츠 */}
 
         <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
-          <div>
-            <FavoriteList />
-          </div>
+          <FavoriteList />
         </div>
       </div>
     </div>
