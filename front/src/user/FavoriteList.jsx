@@ -48,7 +48,7 @@ const FavoriteList = () => {
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "event", // "festival"을 "event"로 변경
-          id: type === "heritage" ? item.ccbaMnm1 : item.programName,
+          id: type === "heritage" ? item.ccbamnm1 : item.programname,
         })
       );
     } catch (error) {
