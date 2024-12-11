@@ -356,7 +356,7 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[200px] text-left overflow-hidden whitespace-nowrap"
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left "
                   >
                     {item.ccbamnm1}
                   </button>
