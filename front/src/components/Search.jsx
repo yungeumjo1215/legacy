@@ -154,7 +154,7 @@ const SearchPage = () => {
       id: item.ccbakdcd,
       type: "heritage",
       title: item.ccbamnm1,
-      imageUrl: item.imageurl || item.ccbaasno,
+      imageurl: item.imageurl || item.ccbaasno,
       location: item.ccbalcad,
       content: item.content || item.ccbactcd,
     };

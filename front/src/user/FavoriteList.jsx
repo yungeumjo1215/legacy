@@ -48,7 +48,7 @@ const FavoriteList = () => {
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "event", // "festival"을 "event"로 변경
-          id: type === "heritage" ? item.ccbaMnm1 : item.id,
+          id: type === "heritage" ? item.ccbaMnm1 : item.programName,
         })
       );
     } catch (error) {
@@ -138,7 +138,7 @@ const FavoriteList = () => {
                           <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                             <img
                               src={heritage.imageUrl}
-                              alt={heritage.ccbaMnm1}
+                              alt={heritage.ccbamnm1}
                               className="w-full h-[160px] object-cover"
                               onError={onErrorImg}
                             />
@@ -219,7 +219,7 @@ const FavoriteList = () => {
                       <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                         <img
                           className="w-full h-[160px] object-cover"
-                          src={festival.imageUrl || default_Img}
+                          src={festival.imageurl || default_Img}
                           alt={festival.programName}
                           onError={onErrorImg}
                         />
