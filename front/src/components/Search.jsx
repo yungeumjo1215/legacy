@@ -62,15 +62,14 @@ const SearchPage = () => {
           throw new Error("데이터를 불러오는데 실패했습니다");
         }
 
-        const slicedData = response.data.slice(0, 100);
-        setHeritageData(slicedData);
-        setFilteredData(slicedData);
+        setHeritageData(response.data);
+        setFilteredData(response.data);
       } catch (error) {
         if (error.name === "AbortError") {
           return;
         }
 
-        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
+        console.error("유적지 ��이터를 가져오는 중 오류 발생:", error);
 
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
@@ -113,7 +112,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위치 정보 변환 중 오류 발생:", error);
+          console.error("위치 정보 변��� 중 오류 발생:", error);
         }
       };
 
@@ -269,7 +268,8 @@ const SearchPage = () => {
   const getCurrentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return filteredData.slice(startIndex, endIndex);
+    const pageData = filteredData.slice(startIndex, endIndex);
+    return pageData;
   };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -338,7 +338,7 @@ const SearchPage = () => {
               데이터를 불러오는 중...
             </div>
           ) : (
-            <ul>
+            <ul className="h-auto" key={currentPage}>
               {getCurrentPageData().map((item, index) => (
                 <li
                   key={item.ccbakdcd || index}
@@ -351,15 +351,11 @@ const SearchPage = () => {
                     }`}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${item.ccbamnm1} 즐겨찾기 ${
-                      isFavorite(item) ? "해제" : "추가"
-                    }`}
                   >
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    aria-label={`${item.ccbamnm1} 상세정보 보기`}
                     className="text-sm md:text-base hover:text-blue-600 transition-colors"
                   >
                     {item.ccbamnm1}
