@@ -69,7 +69,7 @@ const SearchPage = () => {
           return;
         }
 
-        console.error("유적지 ��이터를 가져오는 중 오류 발생:", error);
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
 
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
@@ -112,7 +112,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위치 정보 변��� 중 오류 발생:", error);
+          console.error("위치 정보 변경 중 오류 발생:", error);
         }
       };
 
