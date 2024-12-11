@@ -65,9 +65,9 @@ app.post("/api/store-favorites", (req, res) => {
   storedFavorites.favoriteHeritages = favoriteHeritages;
   storedFavorites.token = token;
 
-  console.log("Received favorite festivals:", favoriteFestivals);
-  console.log("Received favorite heritages:", favoriteHeritages);
-  console.log("Received favorite heritages:", token);
+  // console.log("Received favorite festivals:", favoriteFestivals);
+  // console.log("Received favorite heritages:", favoriteHeritages);
+  // console.log("Received favorite heritages:", token);
 
   res.status(200).json({ message: "Data received successfully." });
 });
@@ -75,7 +75,7 @@ app.post("/api/store-favorites", (req, res) => {
 // GET endpoint to fetch the stored data
 app.get("/api/show-favorites", (req, res) => {
   res.status(200).json(storedFavorites);
-  console.log("Received favorite festivals:", storedFavorites);
+  // console.log("Received favorite festivals:", storedFavorites);
 });
 
 app.use((err, req, res, next) => {
