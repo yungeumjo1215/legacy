@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
 const accountRoutes = require("./routes/accountRoutes");
-const heritageRoutes = require("./routes/heritageRoutes");
+// const heritageRoutes = require("./routes/heritageRoutes");
 // const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
@@ -54,11 +54,11 @@ app.get("/", (req, res) => {
 });
 // app.use("/kgfestival", kgfestivalRoutes);
 // Heritage and Festival Routes
-app.use("/heritage", heritageRoutes);
+// app.use("/heritage", heritageRoutes);
+
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
-
 app.use("/account", accountRoutes);
 
 app.post("/api/store-favorites", (req, res) => {
