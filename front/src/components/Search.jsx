@@ -188,6 +188,7 @@ const SearchPage = () => {
   };
 
   const handleStarClick = async (heritage) => {
+    console.log("Star Click Heritage Data:", heritage);
     if (!isLoggedIn) {
       setError(
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -220,7 +221,7 @@ const SearchPage = () => {
         dispatch(addFavorite(heritageData));
       }
 
-      handleFavoriteChange(heritage.ccbaKdcd, !isAlreadySelected);
+      handleFavoriteChange(heritage.ccbakdcd, !isAlreadySelected);
 
       setSuccessMessage(
         isAlreadySelected
@@ -257,7 +258,7 @@ const SearchPage = () => {
 
   const handleFavoriteChange = (id, isFavorite) => {
     const updatedData = filteredData.map((item) => {
-      if (item.ccbaKdcd === id) {
+      if (item.ccbakdcd === id) {
         return { ...item, isFavorite };
       }
       return item;
@@ -375,7 +376,7 @@ const SearchPage = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`min-w-[40px] px-2 py-1 text-sm rounded-md${
+                className={`min-w-[40px] px-2 py-1 text-sm rounded-md ${
                   currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 hover:bg-gray-100"
