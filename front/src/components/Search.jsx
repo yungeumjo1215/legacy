@@ -150,12 +150,12 @@ const SearchPage = () => {
 
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
     const newItem = {
-      id: item.ccbakdcd,
+      id: item.문화재id,
       type: "heritage",
       title: item.ccbamnm1,
-      imageurl: item.imageurl || item.ccbaasno,
+      imageurl: item.imageurl,
       location: item.ccbalcad,
-      content: item.content || item.ccbactcd,
+      content: item.content,
     };
 
     const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
@@ -305,8 +305,7 @@ const SearchPage = () => {
         top-16
         ${isSidebarOpen ? "left-0" : "-left-full"} md:left-0
         border-r border-[#e2e2e2] 
-        shadow-md 
-        overflow-y-auto 
+        shadow-md         
         flex flex-col 
         gap-1 md:gap-1
         z-40
@@ -332,7 +331,7 @@ const SearchPage = () => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pb-16">
+        <div className="flex-1  pb-16">
           {isLoading ? (
             <div className="text-center text-sm md:text-base SubFont">
               데이터를 불러오는 중...
