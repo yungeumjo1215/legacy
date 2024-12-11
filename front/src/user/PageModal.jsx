@@ -15,7 +15,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "event",
-          id: type === "heritage" ? item.ccbaMnm1 : item.id,
+          id: type === "heritage" ? item.ccbamnm1 : item.id,
         })
       );
       onClose();
@@ -34,7 +34,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         {/* 헤더 */}
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-xl font-bold">
-            {type === "heritage" ? item.ccbaMnm1 : item.programName}
+            {type === "heritage" ? item.ccbamnm1 : item.programName}
           </h2>
           <div className="flex gap-2">
             <button
@@ -57,9 +57,9 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         <div className="p-4 border-b">
           <img
             src={
-              type === "heritage" ? item.imageUrl : item.imageUrl || default_Img
+              type === "heritage" ? item.imageurl : item.imageurl || default_Img
             }
-            alt={type === "heritage" ? item.ccbaMnm1 : item.programName}
+            alt={type === "heritage" ? item.ccbamnm1 : item.programName}
             className="w-full h-[300px] object-contain bg-gray-100 rounded-lg"
             onError={onErrorImg}
           />
@@ -71,11 +71,11 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
             <>
               <div>
                 <span className="font-semibold text-gray-700">시대</span>
-                <p className="mt-1 text-gray-600">{item.ccceName}</p>
+                <p className="mt-1 text-gray-600">{item.cccename}</p>
               </div>
               <div>
                 <span className="font-semibold text-gray-700">위치</span>
-                <p className="mt-1 text-gray-600">{item.ccbaLcad}</p>
+                <p className="mt-1 text-gray-600">{item.ccbalcad}</p>
               </div>
             </>
           ) : (

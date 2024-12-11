@@ -137,7 +137,7 @@ const FavoriteList = () => {
                         <div className="flex flex-col h-full">
                           <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                             <img
-                              src={heritage.imageUrl}
+                              src={heritage.imageurl}
                               alt={heritage.ccbamnm1}
                               className="w-full h-[160px] object-cover"
                               onError={onErrorImg}
@@ -156,10 +156,10 @@ const FavoriteList = () => {
                           </div>
                           <div className="flex flex-col flex-1">
                             <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
-                              {heritage.ccbaMnm1}
+                              {heritage.ccbamnm1}
                             </h3>
                             <p className="mt-auto text-gray-600 text-xs truncate">
-                              {heritage.ccbaLcad}
+                              {heritage.ccbalcad}
                             </p>
                           </div>
                         </div>
