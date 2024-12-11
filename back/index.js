@@ -54,9 +54,12 @@ app.get("/", (req, res) => {
 });
 // app.use("/kgfestival", kgfestivalRoutes);
 // Heritage and Festival Routes
-
-app.use("/events", eventRoutes);
+app.use("/heritage", heritageRoutes);
+app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
+app.use("/event", eventRoutes);
+
+app.use("/account", accountRoutes);
 
 app.post("/api/store-favorites", (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
