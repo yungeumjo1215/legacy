@@ -147,7 +147,7 @@ const Home = () => {
       </div>
       <div className="flex flex-col items-center bg-white w-full">
         <h1 className="main-text">문화 행사 안내</h1>
-        <div className="w-full max-w-[1600px] mx-auto px-4 mb-8 flex justify-end">
+        <div className="w-full max-w-[1600px] mx-auto px-4 mb-8 flex justify-start">
           <Link
             to="/event_schedule"
             className="bg-blue-900 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out block"
