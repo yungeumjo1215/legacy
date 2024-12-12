@@ -90,7 +90,7 @@ const SearchPage = () => {
         ccbalcad: location.state.selectedEvent.location,
         content: location.state.selectedEvent.content,
         imageurl: location.state.selectedEvent.imageUrl,
-        ccbakdcd: location.state.selectedEvent.id,
+        id: location.state.selectedEvent.id,
       };
 
       setSelectedHeritage(heritage);
