@@ -61,12 +61,30 @@ app.get("/", (req, res) => {
 app.post("/chat", (request, response) => {
   try {
     const { message } = request.body;
+
+    if (!message) {
+      return response.status(400).json({
+        message: "메시지가 없습니다.",
+      });
+    }
+
     const scriptPath = path.join(__dirname, "chatbot.py");
     const pythonPath = "python";
 
     const result = spawn(pythonPath, [scriptPath, message]);
     let answer = "";
     let hasResponded = false;
+
+    // 타임아웃 설정
+    const timeout = setTimeout(() => {
+      if (!hasResponded) {
+        hasResponded = true;
+        result.kill(); // 프로세스 종료
+        response.status(504).json({
+          message: "응답 시간이 초과되었습니다.",
+        });
+      }
+    }, 30000); // 30초 타임아웃
 
     result.stdout.on("data", (data) => {
       answer += data.toString();
@@ -76,34 +94,48 @@ app.post("/chat", (request, response) => {
       const errorMsg = data.toString();
       if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
         hasResponded = true;
-        console.error(errorMsg);
+        clearTimeout(timeout);
+        console.error("Python Error:", errorMsg);
         response.status(500).json({
           message: "챗봇 처리 중 오류가 발생했습니다.",
-          error: errorMsg,
         });
       }
     });
 
     result.on("close", (code) => {
+      clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;
-        if (code === 0) {
+        if (code === 0 && answer.trim()) {
           response.status(200).json({
             message: answer.trim(),
           });
         } else {
           response.status(500).json({
-            message: "챗봇 처리 중 오류가 발생했습니다.",
-            error: `Process exited with code ${code}`,
+            message: "응답을 생성하는 중 오류가 발생했습니다.",
           });
         }
       }
     });
-  } catch (error) {
-    response.status(500).json({
-      message: "서버 오류가 발생했습니다.",
-      error: error.message,
+
+    // 에러 이벤트 처리
+    result.on("error", (error) => {
+      clearTimeout(timeout);
+      if (!hasResponded) {
+        hasResponded = true;
+        console.error("Process Error:", error);
+        response.status(500).json({
+          message: "서버 처리 중 오류가 발생했습니다.",
+        });
+      }
     });
+  } catch (error) {
+    console.error("Server Error:", error);
+    if (!response.headersSent) {
+      response.status(500).json({
+        message: "서버 오류가 발생했습니다.",
+      });
+    }
   }
 });
 

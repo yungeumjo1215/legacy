@@ -24,7 +24,7 @@ const Chatbot = () => {
     const userMessage = {
       type: "user",
       content: inputMessage,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -32,53 +32,38 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      // Python 백엔드로 요청 전송
-      const response = await axios.post(
-        "http://localhost:8000/chat",
-        {
-          message: inputMessage,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:8000/chat", {
+        message: inputMessage,
+      });
 
-      // 응답 처리
-      if (response.data && response.data.message) {
-        const botMessage = {
-          type: "bot",
-          content: response.data.message,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
-      }
+      const botMessage = {
+        type: "bot",
+        content: response.data.message,
+        timestamp: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("챗봇 응답 오류:", error);
+
       const errorMessage = {
         type: "bot",
         content: "죄송합니다. 응답을 처리하는 중에 오류가 발생했습니다.",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
       };
+
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* 헤더 */}
-      <div className="bg-blue-600 text-white py-4 px-6 shadow-md">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-bold">문화재 도우미</h1>
-          <p className="text-sm opacity-80">
-            문화재에 대해 궁금한 점을 물어보세요
-          </p>
-        </div>
-      </div>
+  const clearChat = () => {
+    setMessages([]);
+  };
 
+  return (
+    <div className="flex flex-col h-[calc(100vh-64px)] bg-gray-50">
       {/* 메인 채팅 영역 */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <div className="max-w-5xl mx-auto">
@@ -124,7 +109,7 @@ const Chatbot = () => {
                     {message.content}
                   </p>
                   <span className="text-xs opacity-70 mt-2 block">
-                    {message.timestamp.toLocaleTimeString()}
+                    {new Date(message.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
               </div>
