@@ -13,6 +13,24 @@ router.get("/accounts", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+router.get("/heritageSample", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM heritagelist limit 50;");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+router.get("/festivalsSample", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM festivallist limit 50;");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 router.get("/heritage", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM heritagelist;");
