@@ -63,7 +63,7 @@ app.get("/", (req, res) => {
 });
 
 // 챗봇 라우트
-app.post("/chat", (request, response) => {
+app.post("/chat", async (request, response) => {
   try {
     const { message } = request.body;
 
@@ -73,10 +73,19 @@ app.post("/chat", (request, response) => {
       });
     }
 
-    const scriptPath = path.join(__dirname, "chatbot.py");
-    const pythonPath = "python";
+    const pythonProcess = spawn(
+      "python",
+      [path.join(__dirname, "chatbot", "chatbot.py"), message],
+      {
+        env: {
+          ...process.env,
+          PYTHONIOENCODING: "utf-8",
+          PYTHONUNBUFFERED: "1",
+          USER_AGENT: "Mozilla/5.0",
+        },
+      }
+    );
 
-    const result = spawn(pythonPath, [scriptPath, message]);
     let answer = "";
     let hasResponded = false;
 
@@ -84,18 +93,18 @@ app.post("/chat", (request, response) => {
     const timeout = setTimeout(() => {
       if (!hasResponded) {
         hasResponded = true;
-        result.kill(); // 프로세스 종료
+        pythonProcess.kill(); // 프로세스 종료
         response.status(504).json({
           message: "응답 시간이 초과되었습니다.",
         });
       }
     }, 30000); // 30초 타임아웃
 
-    result.stdout.on("data", (data) => {
+    pythonProcess.stdout.on("data", (data) => {
       answer += data.toString();
     });
 
-    result.stderr.on("data", (data) => {
+    pythonProcess.stderr.on("data", (data) => {
       const errorMsg = data.toString();
       if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
         hasResponded = true;
@@ -107,7 +116,7 @@ app.post("/chat", (request, response) => {
       }
     });
 
-    result.on("close", (code) => {
+    pythonProcess.on("close", (code) => {
       clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;
@@ -124,7 +133,7 @@ app.post("/chat", (request, response) => {
     });
 
     // 에러 이벤트 처리
-    result.on("error", (error) => {
+    pythonProcess.on("error", (error) => {
       clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;

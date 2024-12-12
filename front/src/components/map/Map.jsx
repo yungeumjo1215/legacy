@@ -100,7 +100,7 @@ const Map = ({ selectedLocation }) => {
         if (isMounted) {
           setGeocodedHeritageData(geocodedData);
 
-          geocodedData.forEach((heritage) => {
+          geocodedData.forEach((heritage, i) => {
             if (!heritage) return;
 
             const marker = new window.google.maps.Marker({
@@ -110,7 +110,7 @@ const Map = ({ selectedLocation }) => {
               animation: window.google.maps.Animation.DROP,
             });
 
-            const infoWindowContent = (heritage) => `
+            const infoWindowContent = (heritage, i) => `
               <div style="
                 padding: 0;
                 margin: 0;
@@ -232,7 +232,7 @@ const Map = ({ selectedLocation }) => {
         return response.data;
       } catch (error) {
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("유적지 데이터를 불러오는데 실패했습니다");
+        setError("유적지 데이터를 불러오는데 실패했��니다");
         return [];
       }
     };
@@ -289,7 +289,7 @@ const Map = ({ selectedLocation }) => {
         })
       );
 
-      return geocodedData.filter((data) => data !== null);
+      return geocodedData.filter((data, i) => data !== null);
     };
 
     loadGoogleMapsScript();
