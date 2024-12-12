@@ -16,24 +16,25 @@ from concurrent.futures import ThreadPoolExecutor
 
 def initialize_rag_system():
     load_dotenv()
-    os.getenv('OPENAI_API_KEY') 
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
     os.environ["LANGCHAIN_USER_AGENT"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
-web_pages=["",]
+web_pages = ["http://localhost:3000/sample"]
 
 loaders = [
     WebBaseLoader(
         web_paths=(url,),
         bs_kwargs=dict(
             parse_only=bs4.SoupStrainer(
-                "sample",
-                attrs={"class": ["ccbamnm1","ccbaLcad","ccceName","content","ccbamnm1","ccbaLcad","ccceName","content"]} 
+                ["div", "p", "article"],
+                attrs={"class": None}
             )
-                
         )
     )
     for url in web_pages
@@ -43,8 +44,11 @@ loaders = [
 def load_document(loader):
     try:
         loaded_docs = loader.load()
-        if loaded_docs:  # 문서가 비어있지 않은 경우에만 추가
+        print(f"로드된 문서 내용: {[doc.page_content for doc in loaded_docs]}")
+        print(f"HTML 내용: {loader.scrape()}")
+        if loaded_docs and any(doc.page_content.strip() for doc in loaded_docs):
             return loaded_docs
+        print("문서가 비어있습니다")
     except Exception as e:
         print(f"문서 로딩 중 오류 발생: {str(e)}")
     return []
@@ -67,7 +71,7 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100
 
 
 splits = text_splitter.split_documents(documents)
-# print(f"문서의 수 {len(splits)}")
+# print(f"문서의  {len(splits)}")
 # len(splits)
 
 if not splits:
@@ -99,8 +103,8 @@ rag_chain = (
 )
 
 
-# recieved_question = "역사 내용"
-recieved_question = sys.argv[1]
+recieved_question = "숭례문에 대해 알려주세요."
+# recieved_question = sys.argv[1]
 
 
 answer = rag_chain.invoke(recieved_question)
