@@ -16,7 +16,7 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { BsChatDotsFill } from "react-icons/bs";
+import { BsChatDotsFill, BsTrash } from "react-icons/bs";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -31,6 +31,7 @@ const Home = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [recentItems, setRecentItems] = useState([]);
   const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEvent());
@@ -85,6 +86,35 @@ const Home = () => {
       localStorage.setItem("recentItems", JSON.stringify(updated));
       return updated;
     });
+  };
+
+  // 새로고침 함수 추가
+  const handleRefresh = () => {
+    if (window.confirm("최근 본 목록을 모두 삭제하시겠습니까?")) {
+      setIsRefreshing(true);
+
+      // localStorage에서 데이터 삭제
+      localStorage.removeItem("recentItems");
+      // 상태 초기화
+      setRecentItems([]);
+
+      // 1초 후에 애니메이션 종료
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 1000);
+    }
+  };
+
+  // 개별 항목 삭제 함수 추가
+  const handleDeleteItem = (itemId) => {
+    if (window.confirm("이 항목을 삭제하시겠습니까?")) {
+      // 현재 항목 필터링하여 제거
+      const updatedItems = recentItems.filter((item) => item.id !== itemId);
+      // localStorage 업데이트
+      localStorage.setItem("recentItems", JSON.stringify(updatedItems));
+      // 상태 업데이트
+      setRecentItems(updatedItems);
+    }
   };
 
   if (loading)
@@ -296,7 +326,19 @@ const Home = () => {
 
           <div className="bg-white shadow-lg rounded-l-lg w-52">
             <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
-              <h3 className="text-lg font-bold text-center">최근 본 목록</h3>
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-bold">최근 본 목록</h3>
+                <button
+                  onClick={handleRefresh}
+                  className={`hover:bg-blue-800 p-1 rounded-full transition-all duration-300 ${
+                    isRefreshing ? "animate-spin" : ""
+                  }`}
+                  title="목록 삭제"
+                  disabled={isRefreshing}
+                >
+                  <BsTrash size={20} />
+                </button>
+              </div>
             </div>
 
             <div className="p-3 max-h-[600px] overflow-y-auto">
@@ -307,7 +349,10 @@ const Home = () => {
               ) : (
                 <ul className="space-y-3">
                   {recentItems.map((item, index) => (
-                    <li key={index} className="border-b pb-2 last:border-b-0">
+                    <li
+                      key={index}
+                      className="border-b pb-2 last:border-b-0 relative"
+                    >
                       <Link
                         to={
                           item.type === "heritage"
@@ -315,7 +360,7 @@ const Home = () => {
                             : `/event_schedule`
                         }
                         state={{ selectedEvent: item }}
-                        className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded pr-10"
                       >
                         <div className="w-16 h-16 flex-shrink-0">
                           {item.imageUrl ? (
@@ -342,6 +387,16 @@ const Home = () => {
                           </p>
                         </div>
                       </Link>
+                      <button
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        title="항목 삭제"
+                      >
+                        <BsTrash
+                          size={16}
+                          className="text-gray-500 hover:text-red-500"
+                        />
+                      </button>
                     </li>
                   ))}
                 </ul>
