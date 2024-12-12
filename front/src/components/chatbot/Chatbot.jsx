@@ -72,7 +72,7 @@ const Chatbot = () => {
             <div className="flex flex-col items-center justify-center h-full space-y-4">
               <div className="text-center space-y-2">
                 <h2 className="text-2xl font-semibold text-gray-800">
-                  안녕하세요! 문화재 도우미입니다
+                  안녕하세요! 국가유산 도우미입니다
                 </h2>
                 <p className="text-gray-600">
                   문화재에 대해 궁금하신 점을 자유롭게 물어보세요
