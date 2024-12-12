@@ -90,7 +90,7 @@ const SearchBar = memo(({ value, onChange }) => (
       />
       <button
         type="submit"
-        className="border bg-blue-800 text-white rounded-e-[5px] px-4 whitespace-nowrap"
+        className="border MainColor hover:bg-blue-700 text-white rounded-e-[5px] px-4 whitespace-nowrap "
       >
         검색
       </button>
