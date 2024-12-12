@@ -96,7 +96,7 @@ app.post("/chat", async (request, response) => {
 
       if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
         hasResponded = true;
-        clearTimeout(timeout);
+        // clearTimeout(timeout);
         response.status(500).json({
           message: "챗봇 처리 중 오류가 발생했습니다.",
           error: errorOutput,
@@ -128,7 +128,7 @@ app.post("/chat", async (request, response) => {
 
     // 에러 이벤트 처리
     pythonProcess.on("error", (error) => {
-      clearTimeout(timeout);
+      // clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;
         console.error("Process Error:", error);
