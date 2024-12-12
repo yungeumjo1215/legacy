@@ -30,9 +30,10 @@ loaders = [
         web_paths=(url,),
         bs_kwargs=dict(
             parse_only=bs4.SoupStrainer(
-                "div",
-                attrs={"class": ["sample_heritage","sample_festival"]} # 태그 이름,class 이름 별도로 맞춤
+                "sample",
+                attrs={"class": ["ccbamnm1","ccbaLcad","ccceName","content","ccbamnm1","ccbaLcad","ccceName","content"]} 
             )
+                
         )
     )
     for url in web_pages

@@ -32,7 +32,7 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/chat", {
+      const response = await axios.post("http://localhost:3000/sample", {
         message: inputMessage,
       });
 
