@@ -218,7 +218,7 @@ CREATE TABLE "favoritelist" (
 	"ccce_name" VARCHAR(255) NULL,
 	PRIMARY KEY ("id")
 );
-ALTER TABLE favoritelist ALTER COLUMN "imageUrl" DROP NOT NULL;
+
 -------------------------------------------------------------------------
 --------------------------- join 설정 연결 -------------------------------
 -- 1. Join accounts with login_log
