@@ -7,12 +7,18 @@ const Sample = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/pgdb/heritageSample",
-          "http://localhost:8000/pgdb/festivalsSample"
-        );
-        console.log(response.data);
-        setData(response.data);
+        const [heritageResponse, festivalsResponse] = await Promise.all([
+          axios.get("http://localhost:8000/pgdb/heritageSample"),
+          axios.get("http://localhost:8000/pgdb/festivalsSample"),
+        ]);
+
+        const combinedData = {
+          heritage: heritageResponse.data,
+          festivals: festivalsResponse.data,
+        };
+
+        console.log(combinedData);
+        setData(combinedData);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       }
@@ -24,7 +30,14 @@ const Sample = () => {
   return (
     <div className="sample">
       {data ? (
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <div>
+          <div className="heritage">
+            {JSON.stringify(data.heritage, null, 2)}
+          </div>
+          <div className="festivals">
+            {JSON.stringify(data.festivals, null, 2)}
+          </div>
+        </div>
       ) : (
         <p>데이터 로딩 중...</p>
       )}
