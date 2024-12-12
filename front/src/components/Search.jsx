@@ -28,6 +28,8 @@ const SearchPage = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14;
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -120,6 +122,11 @@ const SearchPage = () => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    const history = JSON.parse(localStorage.getItem("searchHistory") || "[]");
+    setSearchHistory(history);
+  }, []);
+
   const filteredResults = useMemo(() => {
     if (!searchTerm) return heritageData;
 
@@ -130,11 +137,23 @@ const SearchPage = () => {
   }, [heritageData, searchTerm]);
 
   const handleSearch = () => {
-    if (!searchTerm.trim()) {
+    const trimmedSearchTerm = searchTerm.trim();
+
+    if (!trimmedSearchTerm) {
       setFilteredData(heritageData);
-    } else {
-      setFilteredData(filteredResults);
+      return;
     }
+
+    const currentTime = new Date().toISOString();
+    const newHistory = [
+      { term: trimmedSearchTerm, timestamp: currentTime },
+      ...searchHistory.filter((item) => item.term !== trimmedSearchTerm),
+    ].slice(0, 10);
+
+    setSearchHistory(newHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+    setFilteredData(filteredResults);
+    setShowSearchHistory(false);
   };
 
   const handleKeyPress = (e) => {
@@ -278,6 +297,19 @@ const SearchPage = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handleHistoryItemClick = (term) => {
+    setSearchTerm(term);
+    handleSearch();
+  };
+
+  const handleDeleteHistory = (termToDelete) => {
+    const newHistory = searchHistory.filter(
+      (item) => item.term !== termToDelete
+    );
+    setSearchHistory(newHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(newHistory));
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
       <button
@@ -312,23 +344,55 @@ const SearchPage = () => {
         transition-all duration-300 ease-in-out
       `}
       >
-        <div className="mb-1 md:mb-2 flex">
-          <input
-            type="text"
-            placeholder="문화재를 입력해주세요."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={handleKeyPress}
-            aria-label="문화재 검색"
-            className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
-          />
-          <button
-            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:bg-blue-700 hover:text-white"
-            onClick={handleSearch}
-            aria-label="검색하기"
-          >
-            <FaSearch className="text-xl md:text-2xl" />
-          </button>
+        <div className="mb-1 md:mb-2 flex flex-col relative">
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="문화재를 입력해주세요."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowSearchHistory(true);
+              }}
+              onFocus={() => setShowSearchHistory(true)}
+              onKeyPress={handleKeyPress}
+              aria-label="문화재 검색"
+              className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
+            />
+            <button
+              className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:bg-blue-700 hover:text-white"
+              onClick={handleSearch}
+              aria-label="검색하기"
+            >
+              <FaSearch className="text-xl md:text-2xl" />
+            </button>
+          </div>
+
+          {showSearchHistory && searchHistory.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+              <ul className="py-1">
+                {searchHistory.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-100 flex justify-between items-center"
+                  >
+                    <button
+                      onClick={() => handleHistoryItemClick(item.term)}
+                      className="flex-grow text-left text-sm"
+                    >
+                      {item.term}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteHistory(item.term)}
+                      className="text-gray-400 hover:text-gray-600 px-2"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="flex-1  pb-16">
