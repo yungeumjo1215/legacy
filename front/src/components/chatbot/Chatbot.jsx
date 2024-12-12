@@ -63,7 +63,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-gray-50">
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 pt-16">
       {/* 메인 채팅 영역 */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <div className="max-w-5xl mx-auto">
