@@ -9,8 +9,24 @@ import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
 import Event from "./components/Event";
 import LocalStorageViewer from "./components/Localstorageviewer";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loginUser } from "./redux/slices/authSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // 페이지 로드 시 로컬 스토리지에서 토큰 확인
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (token && user) {
+      // 토큰이 있으면 자동으로 로그인 상태 복원
+      dispatch(loginUser({ token, user }));
+    }
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <div className="App">

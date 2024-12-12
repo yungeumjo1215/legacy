@@ -32,6 +32,7 @@ const SearchPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
+      setFilteredData([]);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -120,21 +121,23 @@ const SearchPage = () => {
     }
   }, [location.state]);
 
-  const filteredResults = useMemo(() => {
-    if (!searchTerm) return heritageData;
-
-    return heritageData.filter((item) => {
-      if (!item || !item.ccbamnm1) return false;
-      return item.ccbamnm1.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-  }, [heritageData, searchTerm]);
-
   const handleSearch = () => {
     if (!searchTerm.trim()) {
-      setFilteredData(heritageData);
+      setFilteredData([...heritageData]);
     } else {
-      setFilteredData(filteredResults);
+      setFilteredData([]);
+
+      const searchTermLower = searchTerm.trim().toLowerCase();
+      const newFilteredData = heritageData.filter((item) => {
+        if (!item || !item.ccbamnm1) return false;
+        return item.ccbamnm1.toLowerCase().includes(searchTermLower);
+      });
+
+      setTimeout(() => {
+        setFilteredData([...newFilteredData]);
+      }, 100);
     }
+    setCurrentPage(1);
   };
 
   const handleKeyPress = (e) => {
