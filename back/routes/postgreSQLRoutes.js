@@ -29,15 +29,15 @@ router.get("/festivals", async (req, res) => {
 
     // Transform database rows if needed (optional based on your use case)
     const transformedResults = result.rows.map((row) => ({
-      programName: [row.제목] || "N/A",
-      programContent: [row.내용] || "N/A",
-      startDate: [row.시작일] || "N/A",
-      endDate: [row.종료일] || "N/A",
-      location: [row.장소] || "N/A",
-      contact: [row.연락처] || "N/A",
-      sido: [row.시도] || "N/A",
-      targetAudience: [row.대상] || "N/A",
-      imageUrl: [row.이미지] || "N/A",
+      programName: [row.subTitle] || "N/A",
+      programContent: [row.subContent] || "N/A",
+      startDate: [row.sDate] || "N/A",
+      endDate: [row.eDate] || "N/A",
+      location: [row.subDesc] || "N/A",
+      contact: [row.contact] || "N/A",
+      sido: [row.sido] || "N/A",
+      targetAudience: [row.subDesc2] || "N/A",
+      imageUrl: [row.imageUrl] || "N/A",
     }));
 
     const year = parseInt(req.query.year, 10) || new Date().getFullYear();
