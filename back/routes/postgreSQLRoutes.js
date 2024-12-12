@@ -50,7 +50,18 @@ router.get("/festivals", async (req, res) => {
   }
 });
 
-// 즐겨찾기 추가
+//즐겨찾기 테스트 get
+router.get("/favoritestest", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM favoritelist;");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// 즐겨찾기 추가   :이미 로컬이랑 연동되어있음 ( 위 예시)
 router.post("/favorites", async (req, res) => {
   try {
     const token = req.headers.authorization;
