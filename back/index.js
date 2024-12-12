@@ -1,8 +1,14 @@
 const express = require("express");
+
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const {
+  executeTransaction,
+  insertFavoriteFestivals,
+  insertFavoriteHeritages,
+} = require("./controller/favoriteController");
 const path = require("path");
 const spawn = require("child_process").spawn;
 
@@ -50,7 +56,6 @@ let storedFavorites = {
   favoriteHeritages: [],
   token: null,
 };
-module.exports = storedFavorites;
 
 // 기본 라우트
 app.get("/", (req, res) => {
@@ -61,12 +66,30 @@ app.get("/", (req, res) => {
 app.post("/chat", (request, response) => {
   try {
     const { message } = request.body;
+
+    if (!message) {
+      return response.status(400).json({
+        message: "메시지가 없습니다.",
+      });
+    }
+
     const scriptPath = path.join(__dirname, "chatbot.py");
     const pythonPath = "python";
 
     const result = spawn(pythonPath, [scriptPath, message]);
     let answer = "";
     let hasResponded = false;
+
+    // 타임아웃 설정
+    const timeout = setTimeout(() => {
+      if (!hasResponded) {
+        hasResponded = true;
+        result.kill(); // 프로세스 종료
+        response.status(504).json({
+          message: "응답 시간이 초과되었습니다.",
+        });
+      }
+    }, 30000); // 30초 타임아웃
 
     result.stdout.on("data", (data) => {
       answer += data.toString();
@@ -76,34 +99,48 @@ app.post("/chat", (request, response) => {
       const errorMsg = data.toString();
       if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
         hasResponded = true;
-        console.error(errorMsg);
+        clearTimeout(timeout);
+        console.error("Python Error:", errorMsg);
         response.status(500).json({
           message: "챗봇 처리 중 오류가 발생했습니다.",
-          error: errorMsg,
         });
       }
     });
 
     result.on("close", (code) => {
+      clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;
-        if (code === 0) {
+        if (code === 0 && answer.trim()) {
           response.status(200).json({
             message: answer.trim(),
           });
         } else {
           response.status(500).json({
-            message: "챗봇 처리 중 오류가 발생했습니다.",
-            error: `Process exited with code ${code}`,
+            message: "응답을 생성하는 중 오류가 발생했습니다.",
           });
         }
       }
     });
-  } catch (error) {
-    response.status(500).json({
-      message: "서버 오류가 발생했습니다.",
-      error: error.message,
+
+    // 에러 이벤트 처리
+    result.on("error", (error) => {
+      clearTimeout(timeout);
+      if (!hasResponded) {
+        hasResponded = true;
+        console.error("Process Error:", error);
+        response.status(500).json({
+          message: "서버 처리 중 오류가 발생했습니다.",
+        });
+      }
     });
+  } catch (error) {
+    console.error("Server Error:", error);
+    if (!response.headersSent) {
+      response.status(500).json({
+        message: "서버 오류가 발생했습니다.",
+      });
+    }
   }
 });
 
@@ -112,6 +149,11 @@ app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
+
+app.get("/api/show-favorites", (req, res) => {
+  res.status(200).json(storedFavorites);
+  // console.log("Received favorite festivals:", storedFavorites);
+});
 
 // 즐겨찾기 API
 app.post("/api/store-favorites", (req, res) => {
@@ -129,8 +171,43 @@ app.post("/api/store-favorites", (req, res) => {
   res.status(200).json({ message: "즐겨찾기가 저장되었습니다." });
 });
 
-app.get("/api/show-favorites", (req, res) => {
-  res.status(200).json(storedFavorites);
+app.post("/api/store-favoritesPGDB", (req, res) => {
+  const { favoriteFestivals, favoriteHeritages } = req.body;
+  const token = req.headers.token;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required." });
+  }
+
+  if (!favoriteFestivals.length && !favoriteHeritages.length) {
+    return res.status(400).json({ message: "No data to process." });
+  }
+
+  executeTransaction((pool) => {
+    const promises = [];
+
+    if (favoriteFestivals.length > 0) {
+      promises.push(insertFavoriteFestivals(pool, token, favoriteFestivals));
+    }
+
+    if (favoriteHeritages.length > 0) {
+      promises.push(insertFavoriteHeritages(pool, token, favoriteHeritages));
+    }
+
+    return Promise.all(promises);
+  })
+    .then(() =>
+      res
+        .status(200)
+        .json({ message: "Data successfully stored in PostgreSQL." })
+    )
+    .catch((error) => {
+      console.error("Error processing data:", error.message);
+      res.status(500).json({
+        message: "Error storing data in PostgreSQL.",
+        error: error.message,
+      });
+    });
 });
 
 // 에러 핸들링 미들웨어

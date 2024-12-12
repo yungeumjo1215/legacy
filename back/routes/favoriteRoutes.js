@@ -7,8 +7,18 @@
 
 // const router = express.Router();
 
-// // router.post("/store-favorites", storeFavorites);
+// router.post("/store-favorites", storeFavorites);
+// router.get("/show-favorites", showFavorites);
 // router.get("/storePGDB", storePGDB);
-// // router.get("/show-favorites", showFavorites);
 
 // module.exports = router;
+
+// const express = require("express");
+
+// let storedFavorites = {
+//   favoriteFestivals: [],
+//   favoriteHeritages: [],
+//   token: null,
+// };
+
+// module.exports = app;

@@ -152,12 +152,12 @@ CREATE TABLE heritage_details (
     is_admin BOOLEAN NOT NULL DEFAULT FALSE -- Default is not an admin
 );
 
-CREATE TABLE login_log (
-    log_id SERIAL PRIMARY KEY,
-    account_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
-    action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE login_log (
+--     log_id SERIAL PRIMARY KEY,
+--     account_uuid UUID NOT NULL REFERENCES accounts(uuid) ON DELETE CASCADE, -- Foreign key ensures valid client
+--     action VARCHAR(20) NOT NULL CHECK (action IN ('LOGIN', 'LOGOUT', 'UPDATE', 'DELETE')), -- Restrict to valid actions
+--     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- );
 
 
 
@@ -199,18 +199,26 @@ CREATE TABLE "heritagelist" (
 	PRIMARY KEY ("문화재id")
 );
 SELECT * FROM favoritelist
+
 CREATE TABLE "favoritelist" (
 	"id" SERIAL NOT NULL,
-	"acid" SERIAL NOT NULL,
-	"축제acid" SERIAL NOT NULL,
-	"문화재acid" SERIAL NOT NULL,
-	"축제id" SERIAL NOT NULL,
-	"문화재id" SERIAL NOT NULL,
+	"token" VARCHAR(255) NOT NULL,
+	"programName" VARCHAR(200) NULL,
+	"programContent" TEXT NULL,
+	"location" VARCHAR(200) NULL,
+	"startDate" VARCHAR(50) NULL,
+	"endDate" VARCHAR(50) NULL,
+	"targetAudience" VARCHAR(200) NULL,
+	"contact" VARCHAR(50) NULL,
+	"imageUrl" VARCHAR(500) NULL,
+	"ccbamnm1" VARCHAR(255) NULL,
+	"ccbalcad" VARCHAR(255) NULL,
+	"content" TEXT NULL,
+	"imageurl" VARCHAR(255) NULL,
+	"ccce_name" VARCHAR(255) NULL,
 	PRIMARY KEY ("id")
 );
-
-
-
+ALTER TABLE favoritelist ALTER COLUMN "imageUrl" DROP NOT NULL;
 -------------------------------------------------------------------------
 --------------------------- join 설정 연결 -------------------------------
 -- 1. Join accounts with login_log
@@ -307,6 +315,7 @@ Name(물리명)
 CREATE TABLE에 지정하는 테이블 이름이나 열 이름.
 길이 제한이 있거나 공백문자를 사용할 수 없는 등의 제약이 따름.
 알파벳을 사용해 이름을 지정.
+
 Logical Name(논리명)
 
 설계상의 이름 (한글도 ok)
@@ -314,3 +323,33 @@ Logical Name(논리명)
 실제로 부를 때 사용하는 이름
 
 ----------------------------------------------------------------------------------
+
+-----------------------------------------------------12월 11일 ------------------------
+-- 4. 외래키 옵션
+-- 1) On Delete
+
+--  Cascade : 부모 데이터 삭제 시 자식 데이터도 삭제 
+
+--  Set null : 부모 데이터 삭제 시 자식 테이블의 참조 컬럼을 Null로 업데이트
+
+--  Set default : 부모 데이터 삭제 시 자식 테이블의 참조 컬럼을 Default 값으로 업데이트
+
+--  Restrict : 자식 테이블이 참조하고 있을 경우, 데이터 삭제 불가
+
+--  No Action : Restrict와 동일, 옵션을 지정하지 않았을 경우 자동으로 선택된다.
+
+ 
+-- 2) On Update
+
+--  Cascade : 부모 데이터 업데이트 시 자식 데이터도 업데이트 
+
+--  Set null : 부모 데이터 업데이트 시 자식 테이블의 참조 컬럼을 Null로 업데이트
+
+--  Set default : 부모 데이터 업데이트 시 자식 테이블의 참조 컬럼을 Default 값으로 업데이트
+
+--  Restrict : 자식 테이블이 참조하고 있을 경우, 업데이트 불가
+
+--  No Action : Restrict와 동일, 옵션을 지정하지 않았을 경우 자동으로 선택된다.
+-------------------------------------------------------------------------------------------
+-- drop constraint 로 외래키 제거 
+---------------------------------------------------------------------------------------------
