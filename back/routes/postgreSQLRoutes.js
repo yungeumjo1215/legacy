@@ -61,7 +61,7 @@ router.get("/favoritestest", async (req, res) => {
   }
 });
 
-// 즐겨찾기 추가   :이미 로컬이랑 연동되어있음 ( 위 예시)
+// 즐겨찾기 추가
 router.post("/favorites", async (req, res) => {
   try {
     const token = req.headers.authorization;
