@@ -4,6 +4,7 @@ import "react-chatbot-kit/build/main.css";
 import config from "../chatbot/config";
 import MessageParser from "../chatbot/MessageParser";
 import ActionProvider from "../chatbot/ActionProvider";
+import "./Chat.css";
 
 const Chat = () => {
   return (
