@@ -12,6 +12,7 @@ import LocalStorageViewer from "./components/Localstorageviewer";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "./redux/slices/authSlice";
+import Sample from "./components/chatbot/Sample";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/event" element={<Event />} />
           <Route path="/local" element={<LocalStorageViewer />} />
+          <Route path="/sample" element={<Sample />} />
         </Routes>
 
         {/* <Footer /> */}

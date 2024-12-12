@@ -23,18 +23,17 @@ def initialize_rag_system():
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
-web_pages=["https://www.khs.go.kr/cha/SearchKindOpenapiDt.do?ccbaKdcd=11&ccbaAsno=00030000&ccbaCtcd=11",
-           
-           ]
+web_pages=["",]
 
 loaders = [
     WebBaseLoader(
         web_paths=(url,),
         bs_kwargs=dict(
             parse_only=bs4.SoupStrainer(
-                "div",
-                attrs={"class": ["article_view"]} # 태그 이름,class 이름 별도로 맞춤
+                "sample",
+                attrs={"class": ["ccbamnm1","ccbaLcad","ccceName","content","ccbamnm1","ccbaLcad","ccceName","content"]} 
             )
+                
         )
     )
     for url in web_pages

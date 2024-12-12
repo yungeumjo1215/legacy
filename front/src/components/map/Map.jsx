@@ -112,29 +112,34 @@ const Map = ({ selectedLocation }) => {
 
             const infoWindowContent = (heritage) => `
               <div style="
-                padding: 15px;
+                padding: 0;
+                margin: 0;
                 max-width: 350px;
                 font-family: 'Noto Sans KR', sans-serif;
               ">
                 ${
-                  heritage.imageurl
+                  heritage.imageUrl
                     ? `
                   <div style="
                     width: 100%;
-                    height: 200px;
-                    margin-bottom: 15px;
+                    height: 250px;
+                    margin: 0;
+                    padding: 0;
                     overflow: hidden;
-                    border-radius: 8px;
+                    border-radius: 8px 8px 0 0;
                   ">
                     <img 
-                      src="${heritage.imageurl}" 
+                      src="${heritage.imageUrl}" 
                       alt="${heritage.name}" 
                       style="
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
+                        display: block;
+                        margin: 0;
+                        padding: 0;
                       "
-                    >
+                    />
                   </div>
                 `
                     : ""
@@ -143,7 +148,7 @@ const Map = ({ selectedLocation }) => {
                 <h3 style="
                   font-size: 18px;
                   font-weight: bold;
-                  margin-bottom: 10px;
+                  margin: 8px;
                   color: #121a35;
                 ">${heritage.name}</h3>
                 
@@ -151,12 +156,10 @@ const Map = ({ selectedLocation }) => {
                   font-size: 14px;
                   line-height: 1.5;
                   color: #666;
-                  margin-bottom: 10px;
+                  margin: 8px;
                   max-height: 100px;
                   overflow-y: auto;
                 ">${heritage.description}</p>
-                
-                </div>
               </div>
             `;
 
