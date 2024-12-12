@@ -125,10 +125,10 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
 
         <div className="SubFont text-base mb-2.5 flex flex-col gap-2.5">
           <p>
-            <strong className="MainFont">위치:</strong> {item.ccbalcad}
+            <strong className="MainFont">시대:</strong> {item.cccename}
           </p>
           <p>
-            <strong className="MainFont">시대:</strong> {item.cccename}
+            <strong className="MainFont">위치:</strong> {item.ccbalcad}
           </p>
         </div>
 

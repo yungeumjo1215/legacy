@@ -1,19 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./components/chatbot/Chatbot";
 import EventSchedule from "./components/Event_schedule";
 import Header from "./components/Header";
 import Search from "./components/Search";
 import Login from "./user/Login";
 import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
-import { useAuth } from "./hooks/useAuth";
 import Event from "./components/Event";
 import LocalStorageViewer from "./components/Localstorageviewer";
 
 const App = () => {
-  useAuth();
-
   return (
     <BrowserRouter>
       <div className="App">
