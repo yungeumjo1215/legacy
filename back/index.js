@@ -9,24 +9,35 @@ const {
   insertFavoriteFestivals,
   insertFavoriteHeritages,
 } = require("./controller/favoriteController");
+const path = require("path");
+const spawn = require("child_process").spawn;
 
+// 라우트 임포트
 const accountRoutes = require("./routes/accountRoutes");
-// const heritageRoutes = require("./routes/heritageRoutes");
-// const festivalRoutes = require("./routes/festivalRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const festivalRoutes = require("./routes/kgfestivalRoutes");
 
+// Swagger 설정
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load("./swagger.yaml");
 
 const PORT = 8000;
 const app = express();
-app.use(bodyParser.json());
 
+// 미들웨어 설정
 dotenv.config();
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
+// Swagger 설정
 app.use(
   "/api-docs",
   swaggerUi.serve,
@@ -39,64 +50,93 @@ app.use(
   })
 );
 
-app.use(express.json());
-
+// 즐겨찾기 저장소
 let storedFavorites = {
   favoriteFestivals: [],
   favoriteHeritages: [],
   token: null,
 };
 
-app.use(
-  cors({
-    origin: "http://localhost:3000", // 프론트엔드 도메인
-    credentials: true,
-  })
-);
-
+// 기본 라우트
 app.get("/", (req, res) => {
-  res.send("node depoly Test");
+  res.send("Server is running");
 });
-// app.use("/kgfestival", kgfestivalRoutes);
-// Heritage and Festival Routes
-// app.use("/heritage", heritageRoutes);
 
+// 챗봇 라우트
+app.post("/chat", (request, response) => {
+  try {
+    const { message } = request.body;
+    const scriptPath = path.join(__dirname, "chatbot.py");
+    const pythonPath = "python";
+
+    const result = spawn(pythonPath, [scriptPath, message]);
+    let answer = "";
+    let hasResponded = false;
+
+    result.stdout.on("data", (data) => {
+      answer += data.toString();
+    });
+
+    result.stderr.on("data", (data) => {
+      const errorMsg = data.toString();
+      if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
+        hasResponded = true;
+        console.error(errorMsg);
+        response.status(500).json({
+          message: "챗봇 처리 중 오류가 발생했습니다.",
+          error: errorMsg,
+        });
+      }
+    });
+
+    result.on("close", (code) => {
+      if (!hasResponded) {
+        hasResponded = true;
+        if (code === 0) {
+          response.status(200).json({
+            message: answer.trim(),
+          });
+        } else {
+          response.status(500).json({
+            message: "챗봇 처리 중 오류가 발생했습니다.",
+            error: `Process exited with code ${code}`,
+          });
+        }
+      }
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "서버 오류가 발생했습니다.",
+      error: error.message,
+    });
+  }
+});
+
+// API 라우트
 app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
-
-// GET endpoint to fetch the stored data
-// app.get("/api/show-favorites", (req, res) => {
-//   res.status(200).json(storedFavorites);
-//   // console.log("Received favorite festivals:", storedFavorites);
-// });
 
 app.get("/api/show-favorites", (req, res) => {
   res.status(200).json(storedFavorites);
   // console.log("Received favorite festivals:", storedFavorites);
 });
 
+// 즐겨찾기 API
 app.post("/api/store-favorites", (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
   const token = req.headers.token;
 
   if (!favoriteFestivals && !favoriteHeritages) {
-    return res
-      .status(400)
-      .json({ message: "No data received from the client." });
+    return res.status(400).json({ message: "데이터가 없습니다." });
   }
 
-  // Store the received data
   storedFavorites.favoriteFestivals = favoriteFestivals;
   storedFavorites.favoriteHeritages = favoriteHeritages;
   storedFavorites.token = token;
 
-  // console.log("Received favorite festivals:", favoriteFestivals);
-  // console.log("Received favorite heritages:", favoriteHeritages);
-  // console.log("Received favorite heritages:", token);
-
-  res.status(200).json({ message: "Data received successfully." });
+  res.status(200).json({ message: "즐겨찾기가 저장되었습니다." });
 });
 
 app.post("/api/store-favoritesPGDB", (req, res) => {
@@ -131,17 +171,20 @@ app.post("/api/store-favoritesPGDB", (req, res) => {
     )
     .catch((error) => {
       console.error("Error processing data:", error.message);
-      res
-        .status(500)
-        .json({
-          message: "Error storing data in PostgreSQL.",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error storing data in PostgreSQL.",
+        error: error.message,
+      });
     });
 });
 
+// 에러 핸들링 미들웨어
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: "Internal Server Error" });
+  res.status(500).json({ message: "서버 오류가 발생했습니다." });
 });
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+
+// 서버 시작
+app.listen(PORT, () => {
+  console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
+});

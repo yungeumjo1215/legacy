@@ -190,7 +190,6 @@ const Home = () => {
                   <Link
                     to={`/event_schedule`}
                     className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                    onClick={() => addToRecentItems(event)}
                   >
                     <div className="relative h-[500px]">
                       {event.imageUrl ? (

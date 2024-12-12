@@ -57,7 +57,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         <div className="p-4 border-b">
           <img
             src={
-              type === "heritage" ? item.imageurl : item.imageurl || default_Img
+              type === "heritage" ? item.imageurl : item.imageUrl || default_Img
             }
             alt={type === "heritage" ? item.ccbamnm1 : item.programName}
             className="w-full h-[300px] object-contain bg-gray-100 rounded-lg"

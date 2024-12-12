@@ -69,7 +69,7 @@ const SearchPage = () => {
           return;
         }
 
-        console.error("유적지 ��이터를 가져오는 중 오류 발생:", error);
+        console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
 
         setError("데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
       } finally {
@@ -112,7 +112,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위치 정보 변��� 중 오류 발생:", error);
+          console.error("위치 정보 변경 중 오류 발생:", error);
         }
       };
 
@@ -150,12 +150,12 @@ const SearchPage = () => {
 
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
     const newItem = {
-      id: item.ccbakdcd,
+      id: item.문화재id,
       type: "heritage",
       title: item.ccbamnm1,
-      imageurl: item.imageurl || item.ccbaasno,
+      imageurl: item.imageurl,
       location: item.ccbalcad,
-      content: item.content || item.ccbactcd,
+      content: item.content,
     };
 
     const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
@@ -211,8 +211,8 @@ const SearchPage = () => {
           id: heritage.ccbamnm1,
           ccbamnm1: heritage.ccbamnm1,
           ccbalcad: heritage.ccbalcad,
-          content: heritage.content || heritage.ccbactcd,
-          imageurl: heritage.imageurl || heritage.ccbaasno,
+          content: heritage.content,
+          imageurl: heritage.imageurl,
           ccbakdcd: heritage.ccbakdcd,
           ccceName: heritage.ccceName,
         };
@@ -305,8 +305,7 @@ const SearchPage = () => {
         top-16
         ${isSidebarOpen ? "left-0" : "-left-full"} md:left-0
         border-r border-[#e2e2e2] 
-        shadow-md 
-        overflow-y-auto 
+        shadow-md         
         flex flex-col 
         gap-1 md:gap-1
         z-40
@@ -332,7 +331,7 @@ const SearchPage = () => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pb-16">
+        <div className="flex-1  pb-16">
           {isLoading ? (
             <div className="text-center text-sm md:text-base SubFont">
               데이터를 불러오는 중...
@@ -356,7 +355,7 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors"
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left "
                   >
                     {item.ccbamnm1}
                   </button>
