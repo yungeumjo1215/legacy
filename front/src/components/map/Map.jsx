@@ -117,7 +117,7 @@ const Map = ({ selectedLocation }) => {
                 font-family: 'Noto Sans KR', sans-serif;
               ">
                 ${
-                  heritage.imageurl
+                  heritage.imageUrl
                     ? `
                   <div style="
                     width: 100%;
@@ -127,14 +127,14 @@ const Map = ({ selectedLocation }) => {
                     border-radius: 8px;
                   ">
                     <img 
-                      src="${heritage.imageurl}" 
+                      src="${heritage.imageUrl}" 
                       alt="${heritage.name}" 
                       style="
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
                       "
-                    >
+                    />
                   </div>
                 `
                     : ""
