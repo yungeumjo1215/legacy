@@ -72,9 +72,9 @@ const Home = () => {
   const addToRecentItems = (event) => {
     const newItem = {
       id: event.id || event.ccbaKdcd, // 문화재나 행사의 고유 ID
-      type: event.ccbaKdcd ? "heritage" : "event", // 타입 구분
+      type: event.ccbaKdcd ? "heritage" : "event", //타입 구분
       title: event.title || event.ccbaMnm1, // 행사 제목 또는 문화재 이름
-      imageUrl: event.imageUrl || event.ccbaAsno, // 이미지 URL
+      imageUrl: event.imageUrl || event.imageurl || event.ccbaAsno, // 이미지 URL
       begin_de: event.begin_de || event.startDate, // 시작일
       location: event.location || event.ccbaLcad, // 위치 정보
       content: event.programContent || event.content, // 내용 정보
@@ -359,13 +359,30 @@ const Home = () => {
                             ? `/search`
                             : `/event_schedule`
                         }
-                        state={{ selectedEvent: item }}
+                        state={{
+                          selectedEvent: {
+                            id: item.id,
+                            type: item.type,
+                            title: item.title,
+                            imageUrl: item.imageUrl || item.imageurl,
+                            location: item.location,
+                            content: item.content,
+                            begin_de: item.begin_de,
+                            ccbamnm1: item.title,
+                            ccbalcad: item.location,
+                            imageurl: item.imageUrl || item.imageurl,
+                            programName: item.title,
+                            programContent: item.content,
+                            startDate: item.begin_de,
+                            image: item.imageUrl || item.imageurl,
+                          },
+                        }}
                         className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded pr-10"
                       >
                         <div className="w-16 h-16 flex-shrink-0">
-                          {item.imageUrl ? (
+                          {item.imageUrl || item.imageurl ? (
                             <img
-                              src={item.imageUrl}
+                              src={item.imageUrl || item.imageurl}
                               alt={item.title}
                               className="w-full h-full object-cover rounded"
                             />
