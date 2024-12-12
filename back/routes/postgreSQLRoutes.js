@@ -27,17 +27,21 @@ router.get("/festivals", async (req, res) => {
     // Fetch data from the database
     const result = await pool.query("SELECT * FROM festivallist;");
 
+    const cleanDate = (dateString) => {
+      if (!dateString) return "N/A"; // Handle empty or undefined dates
+      return dateString.replace(/-/g, ""); // Remove hyphens only
+    };
     // Transform database rows if needed (optional based on your use case)
     const transformedResults = result.rows.map((row) => ({
-      programName: [row.subTitle] || "N/A",
-      programContent: [row.subContent] || "N/A",
-      startDate: [row.sDate] || "N/A",
-      endDate: [row.eDate] || "N/A",
-      location: [row.subDesc] || "N/A",
+      programName: [row.programname] || "N/A",
+      programContent: [row.programcontent] || "N/A",
+      startDate: [cleanDate(row.startdate)] || "N/A",
+      endDate: [cleanDate(row.enddate)] || "N/A",
+      location: [row.location] || "N/A",
       contact: [row.contact] || "N/A",
       sido: [row.sido] || "N/A",
-      targetAudience: [row.subDesc2] || "N/A",
-      imageUrl: [row.imageUrl] || "N/A",
+      targetAudience: [row.targetaudience] || "N/A",
+      imageUrl: [row.imageurl] || "N/A",
     }));
 
     const year = parseInt(req.query.year, 10) || new Date().getFullYear();
