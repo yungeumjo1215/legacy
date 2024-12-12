@@ -12,6 +12,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.prompts import PromptTemplate
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 
 def initialize_rag_system():
@@ -33,7 +34,7 @@ loaders = [
         bs_kwargs=dict(
             parse_only=bs4.SoupStrainer(
                 ["div", "p", "article"],
-                attrs={"class": None}
+                attrs={}
             )
         )
     )
@@ -43,14 +44,18 @@ loaders = [
 # 병렬로 웹 페이지 로드
 def load_document(loader):
     try:
+        time.sleep(2)
+        
         loaded_docs = loader.load()
         print(f"로드된 문서 내용: {[doc.page_content for doc in loaded_docs]}")
-        print(f"HTML 내용: {loader.scrape()}")
+        html_content = loader.scrape()
+        print(f"HTML 내용 길이: {len(str(html_content))}")
         if loaded_docs and any(doc.page_content.strip() for doc in loaded_docs):
             return loaded_docs
         print("문서가 비어있습니다")
     except Exception as e:
         print(f"문서 로딩 중 오류 발생: {str(e)}")
+        print(f"상세 오류: {e.__class__.__name__}")
     return []
 
 

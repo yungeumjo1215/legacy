@@ -31,10 +31,10 @@ const Sample = () => {
     <div className="sample">
       {data ? (
         <div>
-          <div className="ccbamnm1">
+          <div className="heritage">
             {JSON.stringify(data.heritage, null, 2)}
           </div>
-          <div className="content">
+          <div className="festivals">
             {JSON.stringify(data.festivals, null, 2)}
           </div>
         </div>
