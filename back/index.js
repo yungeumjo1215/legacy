@@ -183,7 +183,7 @@ app.post("/api/store-favoritesPGDB", (req, res) => {
     return res.status(400).json({ message: "No data to process." });
   }
 
-  executeTransaction((pool) => {
+  executeTransaction((당구) => {
     const promises = [];
 
     if (favoriteFestivals.length > 0) {
