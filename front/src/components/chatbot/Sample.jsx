@@ -44,9 +44,21 @@ const Sample = () => {
               ))}
             </ul>
           </div>
-          {/* <div className="festivals">
-            {JSON.stringify(data.festivals, null, 2)}
-          </div> */}
+          <div className="festivals">
+            <ul>
+              {data.festivals.map((item, i) => (
+                <li key={i}>
+                  <p>{item.programname}</p>
+                  <p>{item.programcontent}</p>
+                  <p>{item.startdate}</p>
+                  <p>{item.enddate}</p>
+                  <p>{item.groupname}</p>
+                  <p>{item.contact}</p>
+                  <p>{item.location}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       ) : (
         <p>데이터 로딩 중...</p>

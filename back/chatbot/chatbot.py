@@ -65,6 +65,6 @@ rag_chain = (
     | StrOutputParser()
 )
 
-recieved_question = "숭례문에 대해 두 줄로 설명해 주세요."
+recieved_question = "주지스님과 함께 하는 숲체험과 다도체험에 대해 두 줄로 설명해 주세요."
 answer = rag_chain.invoke(recieved_question)
 print(answer)
