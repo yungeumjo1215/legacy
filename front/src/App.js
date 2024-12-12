@@ -7,13 +7,10 @@ import Search from "./components/Search";
 import Login from "./user/Login";
 import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
-import { useAuth } from "./hooks/useAuth";
 import Event from "./components/Event";
 import LocalStorageViewer from "./components/Localstorageviewer";
 
 const App = () => {
-  useAuth();
-
   return (
     <BrowserRouter>
       <div className="App">
