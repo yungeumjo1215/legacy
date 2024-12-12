@@ -1,8 +1,14 @@
 const express = require("express");
+
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const {
+  executeTransaction,
+  insertFavoriteFestivals,
+  insertFavoriteHeritages,
+} = require("./controller/favoriteController");
 
 const accountRoutes = require("./routes/accountRoutes");
 // const heritageRoutes = require("./routes/heritageRoutes");
@@ -40,7 +46,6 @@ let storedFavorites = {
   favoriteHeritages: [],
   token: null,
 };
-module.exports = storedFavorites;
 
 app.use(
   cors({
@@ -60,6 +65,17 @@ app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
+
+// GET endpoint to fetch the stored data
+// app.get("/api/show-favorites", (req, res) => {
+//   res.status(200).json(storedFavorites);
+//   // console.log("Received favorite festivals:", storedFavorites);
+// });
+
+app.get("/api/show-favorites", (req, res) => {
+  res.status(200).json(storedFavorites);
+  // console.log("Received favorite festivals:", storedFavorites);
+});
 
 app.post("/api/store-favorites", (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
@@ -83,10 +99,45 @@ app.post("/api/store-favorites", (req, res) => {
   res.status(200).json({ message: "Data received successfully." });
 });
 
-// GET endpoint to fetch the stored data
-app.get("/api/show-favorites", (req, res) => {
-  res.status(200).json(storedFavorites);
-  // console.log("Received favorite festivals:", storedFavorites);
+app.post("/api/store-favoritesPGDB", (req, res) => {
+  const { favoriteFestivals, favoriteHeritages } = req.body;
+  const token = req.headers.token;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required." });
+  }
+
+  if (!favoriteFestivals.length && !favoriteHeritages.length) {
+    return res.status(400).json({ message: "No data to process." });
+  }
+
+  executeTransaction((pool) => {
+    const promises = [];
+
+    if (favoriteFestivals.length > 0) {
+      promises.push(insertFavoriteFestivals(pool, token, favoriteFestivals));
+    }
+
+    if (favoriteHeritages.length > 0) {
+      promises.push(insertFavoriteHeritages(pool, token, favoriteHeritages));
+    }
+
+    return Promise.all(promises);
+  })
+    .then(() =>
+      res
+        .status(200)
+        .json({ message: "Data successfully stored in PostgreSQL." })
+    )
+    .catch((error) => {
+      console.error("Error processing data:", error.message);
+      res
+        .status(500)
+        .json({
+          message: "Error storing data in PostgreSQL.",
+          error: error.message,
+        });
+    });
 });
 
 app.use((err, req, res, next) => {

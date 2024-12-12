@@ -79,6 +79,43 @@ const sendLocalStorageDataToBackend = async () => {
   }
 };
 
+function sendDataToPostgreSQL() {
+  // Fetch data from localStorage
+  const favoriteFestivals =
+    JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
+  const favoriteHeritages =
+    JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
+  const token = localStorage.getItem("token"); // Assume token is stored in localStorage
+
+  if (!token) {
+    console.error("Token is missing. Cannot send data.");
+    return;
+  }
+
+  // Send data to the backend
+  fetch("http://localhost:8000/api/store-favoritesPGDB", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+    body: JSON.stringify({ favoriteFestivals, favoriteHeritages }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message) {
+        console.log("Data successfully sent to PostgreSQL:", data.message);
+      } else {
+        console.error("Error sending data:", data.error || data);
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+    });
+}
+
+// Call the function to send data
+
 // const fetchAndReinsertFavorites = async () => {
 //   try {
 //     // Fetch data from the backend
@@ -117,3 +154,4 @@ const sendLocalStorageDataToBackend = async () => {
 syncLocalStorageMiddleware();
 sendLocalStorageDataToBackend();
 // fetchAndReinsertFavorites();
+sendDataToPostgreSQL();
