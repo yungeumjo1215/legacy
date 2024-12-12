@@ -18,11 +18,11 @@ sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
 # TextLoader를 사용하여 텍스트 파일 로드
-loader = TextLoader('../data.txt', encoding='utf-8')
+loader = TextLoader('./data.txt', encoding='utf-8')
 
 try:
     documents = loader.load()
-    print("문서 로딩 성공")
+    # print("문서 로딩 성공")
 except Exception as e:
     print(f"문서 로딩 중 오류 발생: {str(e)}")
     sys.exit(1)
@@ -65,6 +65,7 @@ rag_chain = (
     | StrOutputParser()
 )
 
-recieved_question = "주지스님과 함께 하는 숲체험과 다도체험에 대해 두 줄로 설명해 주세요."
+# recieved_question = "주지스님과 함께 하는 숲체험과 다도체험에 대해 두 줄로 설명해 주세요."
+recieved_question = sys.argv[1]
 answer = rag_chain.invoke(recieved_question)
 print(answer)

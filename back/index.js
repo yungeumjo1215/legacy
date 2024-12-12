@@ -65,59 +65,47 @@ app.get("/", (req, res) => {
 // 챗봇 라우트
 app.post("/chat", async (request, response) => {
   try {
-    const { message } = request.body;
+    const { question } = request.body;
+    console.log("받은 질문:", question);
 
-    if (!message) {
+    if (!question) {
       return response.status(400).json({
         message: "메시지가 없습니다.",
       });
     }
 
-    const pythonProcess = spawn(
-      "python",
-      [path.join(__dirname, "chatbot", "chatbot.py"), message],
-      {
-        env: {
-          ...process.env,
-          PYTHONIOENCODING: "utf-8",
-          PYTHONUNBUFFERED: "1",
-          USER_AGENT: "Mozilla/5.0",
-        },
-      }
-    );
+    // 파이썬 실행 경로 로깅 추가
+    const pythonPath = path.join(__dirname, "chatbot", "chatbot.py");
+    // console.log("파이썬 스크립트 경로:", pythonPath);
+
+    const pythonProcess = spawn("python", [pythonPath, question]);
 
     let answer = "";
+    let errorOutput = "";
     let hasResponded = false;
 
-    // 타임아웃 설정
-    const timeout = setTimeout(() => {
-      if (!hasResponded) {
-        hasResponded = true;
-        pythonProcess.kill(); // 프로세스 종료
-        response.status(504).json({
-          message: "응답 시간이 초과되었습니다.",
-        });
-      }
-    }, 30000); // 30초 타임아웃
-
     pythonProcess.stdout.on("data", (data) => {
+      // console.log("파이썬 출력:", data.toString());
       answer += data.toString();
     });
 
     pythonProcess.stderr.on("data", (data) => {
       const errorMsg = data.toString();
+      console.error("파이썬 에러 출력:", errorMsg);
+      errorOutput += errorMsg;
+
       if (!errorMsg.includes("USER_AGENT") && !hasResponded) {
         hasResponded = true;
         clearTimeout(timeout);
-        console.error("Python Error:", errorMsg);
         response.status(500).json({
           message: "챗봇 처리 중 오류가 발생했습니다.",
+          error: errorOutput,
         });
       }
     });
 
     pythonProcess.on("close", (code) => {
-      clearTimeout(timeout);
+      // clearTimeout(timeout);
       if (!hasResponded) {
         hasResponded = true;
         if (code === 0 && answer.trim()) {
@@ -125,8 +113,14 @@ app.post("/chat", async (request, response) => {
             message: answer.trim(),
           });
         } else {
+          console.error(`Python 프로세스 종료 상세정보:
+            코드: ${code}
+            응답: ${answer}
+            에러: ${errorOutput}`);
+
           response.status(500).json({
-            message: "응답을 생성하는 중 오류가 발생했습니다.",
+            message: "챗봇 응답 생성 실패",
+            details: `종료 코드: ${code}, 에러: ${errorOutput}`,
           });
         }
       }
