@@ -68,6 +68,26 @@ const Home = () => {
     setRecentItems(items);
   }, []);
 
+  // 최근 본 항목 추가 함수
+  const addToRecentItems = (event) => {
+    const newItem = {
+      id: event.id || event.ccbaKdcd, // 문화재나 행사의 고유 ID
+      type: event.ccbaKdcd ? "heritage" : "event", //타입 구분
+      title: event.title || event.ccbaMnm1, // 행사 제목 또는 문화재 이름
+      imageUrl: event.imageUrl || event.imageurl || event.ccbaAsno, // 이미지 URL
+      begin_de: event.begin_de || event.startDate, // 시작일
+      location: event.location || event.ccbaLcad, // 위치 정보
+      content: event.programContent || event.content, // 내용 정보
+    };
+
+    setRecentItems((prev) => {
+      const filtered = prev.filter((item) => item.id !== newItem.id);
+      const updated = [newItem, ...filtered].slice(0, 5);
+      localStorage.setItem("recentItems", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   // 새로고침 함수 추가
   const handleRefresh = () => {
     if (window.confirm("최근 본 목록을 모두 삭제하시겠습니까?")) {
