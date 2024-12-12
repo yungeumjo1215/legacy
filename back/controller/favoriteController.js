@@ -1,5 +1,19 @@
 const pool = require("../database/database");
+const jwt = require("jsonwebtoken");
+// ,env 참조
+const JWT_SECRET =
+  "d0a8d3a91b13c84522b7745d84cde35d1e1a944bdb178d85bb2bd3f85f04f2497f3568c33a3dc5f8a1a78f7c4e8a9132";
 
+// Function to parse and verify JWT
+function parseJWT(token) {
+  try {
+    // Verify the token and decode its payload
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    console.error("JWT Verification Error:", error.message);
+    throw new Error("Invalid or expired token");
+  }
+}
 // Global transaction handler
 async function executeTransaction(taskFn) {
   try {
@@ -13,7 +27,10 @@ async function executeTransaction(taskFn) {
   }
 }
 
-function insertFavoriteFestivals(pool, token, favoriteFestivals) {
+function insertFavoriteFestivals(pool, jwtToken, favoriteFestivals) {
+  const user = parseJWT(jwtToken); // Parse the JWT to get user information
+  const token = user.id || user.sub; // Use a relevant field from the token payload
+
   const promises = favoriteFestivals.map(async (festival) => {
     const {
       programName,
@@ -58,7 +75,10 @@ function insertFavoriteFestivals(pool, token, favoriteFestivals) {
   return Promise.all(promises);
 }
 
-function insertFavoriteHeritages(pool, token, favoriteHeritages) {
+function insertFavoriteHeritages(pool, jwtToken, favoriteHeritages) {
+  const user = parseJWT(jwtToken); // Parse the JWT to get user information
+  const token = user.id || user.sub; // Use a relevant field from the token payload
+
   const promises = favoriteHeritages.map(async (heritage) => {
     const { ccbamnm1, ccbalcad, content, imageurl, ccce_name } = heritage;
 
