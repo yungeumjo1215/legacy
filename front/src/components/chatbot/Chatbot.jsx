@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { IoSend } from "react-icons/io5";
 import axios from "axios";
+import { IoSend } from "react-icons/io5";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -33,26 +32,35 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/chat", {
-        message: inputMessage,
-      });
+      // Python 백엔드로 요청 전송
+      const response = await axios.post(
+        "http://localhost:8000/chat",
+        {
+          message: inputMessage,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const botMessage = {
-        type: "bot",
-        content: response.data.message,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
+      // 응답 처리
+      if (response.data && response.data.message) {
+        const botMessage = {
+          type: "bot",
+          content: response.data.message,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botMessage]);
+      }
     } catch (error) {
       console.error("챗봇 응답 오류:", error);
-
       const errorMessage = {
         type: "bot",
         content: "죄송합니다. 응답을 처리하는 중에 오류가 발생했습니다.",
         timestamp: new Date(),
       };
-
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
