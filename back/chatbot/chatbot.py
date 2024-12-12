@@ -1,9 +1,8 @@
-import os # 환경 변수 및 경로 처리
-import sys # 시스템 관련 처리
-import io # 입출력 관련 처리
-import bs4 # beautifulsoup4 라이브러리 - html 파싱(크롤링)
+import os
+import sys
+import io
+import bs4
 from dotenv import load_dotenv
-
 from langchain import hub
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
@@ -12,15 +11,13 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.prompts import PromptTemplate
-from concurrent.futures import ThreadPoolExecutor # 병렬 처리를 위한 모듈
+from concurrent.futures import ThreadPoolExecutor
 
 
-
-load_dotenv()
-os.getenv('OPENAI_API_KEY') 
-
-# USER_AGENT 환경변수 설정
-os.environ["LANGCHAIN_USER_AGENT"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+def initialize_rag_system():
+    load_dotenv()
+    os.getenv('OPENAI_API_KEY') 
+    os.environ["LANGCHAIN_USER_AGENT"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
@@ -82,24 +79,17 @@ vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings(
 retriever = vectorstore.as_retriever()
 
 prompt = PromptTemplate.from_template(
-    """당신은 질문-답변(Question-Answering)을 수행하는 친절한 AI 어시스턴트입니다. 당신의 임무는 주어진 문맥(context) 에서 주어진 질문(question) 에 답하는 것입니다.
-검색된 다음 문맥(context) 을 사용하여 질문(question) 에 답하세요. 만약, 주어진 문맥(context) 에서 답을 찾을 수 없다면, 답을 모른다면 `주어진 정보에서 질문에 대한 정보를 찾을 수 없습니다` 라고 답하세요.
-한글로 답변해 주세요. 단, 기술적인 용어나 이름은 번역하지 않고 그대로 사용해 주세요.
+        """당신은 한국의 문화재에 대해 전문적인 지식을 가진 도우미입니다. 
+        주어진 문맥(context)을 바탕으로 질문(question)에 답변해주세요.
+        답변은 한국어로 해주시고, 정확하고 친절하게 설명해주세요.
+
+        질문: {question}
+        문맥: {context}
+        답변:"""
+    )
 
 
-#Question:
-{question}
-
-
-#Context:
-{context}
-
-
-#Answer:"""
-)
-
-
-llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+llm = ChatOpenAI(model_name="gpt-4", temperature=0)
 
 
 rag_chain = (
@@ -110,7 +100,7 @@ rag_chain = (
 )
 
 
-# recieved_question = "추위를 타게 만드는 식습관에 대해 2줄로 요약해 주세요."
+# recieved_question = "역사 내용"
 recieved_question = sys.argv[1]
 
 
