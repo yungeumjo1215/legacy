@@ -5,10 +5,21 @@ class ActionProvider {
   }
 
   handleMessage = async (message) => {
+    // 고유 ID를 가진 로딩 메시지 생성
+    const loadingId = Date.now();
+    const loadingMessage = {
+      ...this.createChatBotMessage("잠시만 기다려주세요...", {
+        loading: true,
+        withAvatar: true,
+      }),
+      id: loadingId,
+    };
+
     try {
+      // 로딩 메시지 추가
       this.setState((prevState) => ({
         ...prevState,
-        loading: true,
+        messages: [...prevState.messages, loadingMessage],
       }));
 
       const response = await fetch("http://localhost:8000/chat", {
@@ -22,34 +33,28 @@ class ActionProvider {
       const data = await response.json();
 
       if (data.answer) {
-        const botMessage = this.createChatBotMessage(data.answer);
-        this.updateChatbotState(botMessage);
+        // 특정 로딩 메시지만 제거하고 새 메시지 추가
+        this.setState((prevState) => ({
+          ...prevState,
+          messages: [
+            ...prevState.messages.filter((msg) => msg.id !== loadingId),
+            this.createChatBotMessage(data.answer),
+          ],
+        }));
       }
-
-      this.setState((prevState) => ({
-        ...prevState,
-        loading: false,
-      }));
     } catch (error) {
       console.error("Error:", error);
-      const errorMessage = this.createChatBotMessage(
-        "오류가 발생했습니다. 다시 시도해주세요."
-      );
-      this.updateChatbotState(errorMessage);
 
+      // 에러 시에도 특정 로딩 메시지만 제거
       this.setState((prevState) => ({
         ...prevState,
-        loading: false,
+        messages: [
+          ...prevState.messages.filter((msg) => msg.id !== loadingId),
+          this.createChatBotMessage("오류가 발생했습니다. 다시 시도해주세요."),
+        ],
       }));
     }
   };
-
-  updateChatbotState(message) {
-    this.setState((prevState) => ({
-      ...prevState,
-      messages: [...prevState.messages, message],
-    }));
-  }
 }
 
 export default ActionProvider;
