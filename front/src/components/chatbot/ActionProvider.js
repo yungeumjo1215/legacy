@@ -8,7 +8,7 @@ class ActionProvider {
     // 고유 ID를 가진 로딩 메시지 생성
     const loadingId = Date.now();
     const loadingMessage = {
-      ...this.createChatBotMessage("로딩중...", {
+      ...this.createChatBotMessage("잠시만 기다려주세요...", {
         loading: true,
         withAvatar: true,
       }),
