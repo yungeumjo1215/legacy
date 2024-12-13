@@ -143,11 +143,26 @@
   width: 100% !important;
   overflow-x: hidden !important;
 }
+.react-chatbot-kit-chat-bot-message-arrow {
+  left: -8px !important;
+  right: auto !important;
+  border-width: 8px 8px 8px 0 !important;
+  border-color: transparent #3959b3 transparent transparent !important;
+}
 
-.react-chatbot-kit-chat-bot-message,
+.react-chatbot-kit-chat-bot-message {
+  max-width: 80% !important;
+  word-wrap: break-word !important;
+  width: 225px !important;
+  background-color: #3959b3 !important;
+}
+
 .react-chatbot-kit-user-chat-message {
   max-width: 80% !important;
   word-wrap: break-word !important;
+  width: 225px !important;
+  color: #000000 !important;
+  background-color: #eaeaea !important;
 }
 
 /* 챗봇 메시지 컨테이너 왼쪽 정렬 */
@@ -168,5 +183,14 @@
   left: -8px !important;
   right: auto !important;
   border-width: 8px 8px 8px 0 !important;
-  border-color: transparent #376B7E transparent transparent !important;
+  border-color: transparent #376b7e transparent transparent !important;
+}
+
+/* 더 구체적인 선택자 사용 */
+.react-chatbot-kit-chat-message-container
+  .react-chatbot-kit-chat-bot-message-arrow {
+  left: -8px !important;
+  right: auto !important;
+  border-width: 8px 8px 8px 0 !important;
+  border-color: transparent #3959b3 transparent transparent !important;
 }
