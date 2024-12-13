@@ -119,3 +119,38 @@
   font-size: 1.2rem;
   border-bottom: 1px solid #eaeaea;
 }
+
+.react-chatbot-kit-chat-bot-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: contain;
+}
+
+.react-chatbot-kit-chat-bot-avatar-container {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+/* 챗봇 메시지 컨테이너 왼쪽 정렬 */
+.react-chatbot-kit-chat-bot-message-container {
+  display: flex;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+}
+
+/* 챗봇 메시지 왼쪽 정렬 */
+.react-chatbot-kit-chat-bot-message {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* 챗봇 메시지 화살표 위치 조정 */
+.react-chatbot-kit-chat-bot-message-arrow {
+  left: -8px !important;
+  right: auto !important;
+  border-width: 8px 8px 8px 0 !important;
+  border-color: transparent #376B7E transparent transparent !important;
+}
