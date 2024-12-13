@@ -118,17 +118,136 @@ paths:
         "500":
           description: 서버 오류
 
-  /events:
-    get:
-      tags:
-        - Events
-      summary: 이벤트 목록 조회
-      description: 이벤트 목록을 조회합니다
-      responses:
-        "200":
-          description: 이벤트 목록 조회 성공
-        "500":
-          description: 서버 오류
+/heritage:
+  get:
+    tags:
+      - search  
+    summary: 문화재 목록 조회
+    description: 문화재 목록을 조회합니다
+    responses:
+      "200":
+        description: 문화재 목록 조회 성공
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  location:
+                    type: string
+                  description:
+                    type: string
+                  imageUrl:
+                    type: string
+      "500":
+        description: 서버 오류
+
+/festivals:
+  get:
+    tags:
+      - search
+    summary: 축제 목록 조회
+    description: 축제 목록을 조회합니다
+    parameters:
+      - in: query
+        name: year
+        schema:
+          type: integer
+        description: 조회할 연도
+      - in: query
+        name: month
+        schema:
+          type: integer
+        description: 조회할 월
+    responses:
+      "200":
+        description: 축제 목록 조회 성공
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year:
+                  type: integer
+                month:
+                  type: integer
+                transformedResults:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      programName:
+                        type: array
+                        items:
+                          type: string
+                      programContent:
+                        type: array
+                        items:
+                          type: string
+                      startDate:
+                        type: array
+                        items:
+                          type: string
+                      endDate:
+                        type: array
+                        items:
+                          type: string
+                      location:
+                        type: array
+                        items:
+                          type: string
+                      contact:
+                        type: array
+                        items:
+                          type: string
+                      sido:
+                        type: array
+                        items:
+                          type: string
+                      targetAudience:
+                        type: array
+                        items:
+                          type: string
+                      imageUrl:
+                        type: array
+                        items:
+                          type: string
+      "500":
+        description: 서버 오류
+
+/events:
+  get:
+    tags:
+      - search
+    summary: 이벤트 목록 조회
+    description: 현재 진행 중인 이벤트 목록을 조회합니다
+    responses:
+      "200":
+        description: 이벤트 목록 조회 성공
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  eventId:
+                    type: string
+                  eventName:
+                    type: string
+                  eventPeriod:
+                    type: string
+                  eventLocation:
+                    type: string
+                  eventDescription:
+                    type: string
+      "500":
+        description: 서버 오류
 
   /api/show-favorites:
     get:
