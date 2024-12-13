@@ -76,14 +76,20 @@ const Navbar = () => {
         <>
           <Link
             to="/mypage"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+            className="relative z-10 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden transition-all duration-300
+              before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-300
+              after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-300
+              hover:before:h-[50%] hover:after:h-[50%]"
           >
             {!isMobile && <UserCircleIcon className="h-4 w-4 mr-2" />}
             마이페이지
           </Link>
           <button
             onClick={handleLoginLogout}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+            className="relative z-10 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden transition-all duration-300
+              before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-300
+              after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-300
+              hover:before:h-[50%] hover:after:h-[50%]"
           >
             {!isMobile && <LogOutIcon className="h-4 w-4 mr-2" />}
             로그아웃
@@ -158,11 +164,15 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-colors duration-200 ${
-                  location.pathname === item.path
-                    ? "bg-blue-700 text-white"
-                    : "text-white hover:bg-blue-700"
-                }`}
+                className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-300 overflow-hidden
+                  ${
+                    location.pathname === item.path
+                      ? "bg-blue-700 text-white"
+                      : "text-white"
+                  }
+                  before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-300
+                  after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-300
+                  hover:before:h-[50%] hover:after:h-[50%]`}
               >
                 {item.name}
               </Link>
