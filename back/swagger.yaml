@@ -106,35 +106,6 @@ paths:
         "500":
           description: 서버 오류
 
-  /permissions/{uuid}:
-    put:
-      tags:
-        - Account
-      summary: 계정 권한 업데이트
-      description: UUID를 사용하여 계정 권한을 업데이트합니다
-      parameters:
-        - name: uuid
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                isAdmin:
-                  type: boolean
-      responses:
-        "200":
-          description: 권한 업데이트 성공
-        "404":
-          description: 계정을 찾을 수 없음
-        "500":
-          description: 서버 오류
-
   /info:
     get:
       tags:
@@ -156,42 +127,6 @@ paths:
       responses:
         "200":
           description: 이벤트 목록 조회 성공
-        "500":
-          description: 서버 오류
-
-  /accounts:
-    get:
-      tags:
-        - PostgreSQL
-      summary: 계정 목록 조회
-      description: PostgreSQL에서 계정 목록을 조회합니다
-      responses:
-        "200":
-          description: 계정 목록 조회 성공
-        "500":
-          description: 서버 오류
-
-  /heritage:
-    get:
-      tags:
-        - PostgreSQL
-      summary: 문화재 목록 조회
-      description: PostgreSQL에서 문화재 목록을 조회합니다
-      responses:
-        "200":
-          description: 문화재 목록 조회 성공
-        "500":
-          description: 서버 오류
-
-  /festivals:
-    get:
-      tags:
-        - PostgreSQL
-      summary: 축제 목록 조회
-      description: PostgreSQL에서 축제 목록을 조회합니다
-      responses:
-        "200":
-          description: 축제 목록 조회 성공
         "500":
           description: 서버 오류
 
