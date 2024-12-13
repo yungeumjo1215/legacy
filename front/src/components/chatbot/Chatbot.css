@@ -109,3 +109,13 @@
   display: flex !important;
   align-items: center !important;
 }
+
+.react-chatbot-kit-chat-header {
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-family: "Jua", sans-serif;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eaeaea;
+}
