@@ -119,7 +119,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
           />
         )}
 
-        <p className="SubFont text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed">
+        <p className="SubFont text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed whitespace-pre-line">
           {item.content}
         </p>
 
