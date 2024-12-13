@@ -19,6 +19,7 @@ class ActionProvider {
       if (data.answer) {
         const botMessage = this.createChatBotMessage(data.answer);
         this.updateChatbotState(botMessage);
+        return;
       }
 
       this.setState((prevState) => ({
