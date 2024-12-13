@@ -130,8 +130,9 @@ const FavoriteList = () => {
                   {getCurrentItems(heritages, heritagePage).map(
                     (heritage, idx) => (
                       <div
-                        key={idx}
-                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:scale-[1.04]"
+                        key={`${heritage.ccbamnm1}-${idx}`}
+                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu"
+                        style={{ animationDelay: `${idx * 0.1}s` }}
                         onClick={() => openModal(heritage, "heritage")}
                       >
                         <div className="flex flex-col h-full">
@@ -209,42 +210,45 @@ const FavoriteList = () => {
 
             <div className="flex justify-center gap-6 overflow-hidden w-full">
               <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center  w-full">
-                {getCurrentItems(festivals, festivalPage).map((festival) => (
-                  <div
-                    key={festival.programName}
-                    className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:scale-[1.04]"
-                    onClick={() => openModal(festival, "festival")}
-                  >
-                    <div className="flex flex-col h-full">
-                      <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
-                        <img
-                          className="w-full h-[160px] object-cover"
-                          src={festival.imageUrl || default_Img}
-                          alt={festival.programName}
-                          onError={onErrorImg}
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveFavorite(festival, "festival");
-                          }}
-                          className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                          aria-label="즐겨찾기 해제"
-                        >
-                          <AiFillStar className="text-2xl filter drop-shadow-md" />
-                        </button>
-                      </div>
-                      <div className="flex flex-col flex-1">
-                        <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
-                          {festival.programName}
-                        </h3>
-                        <p className="mt-auto text-gray-600 text-xs truncate">
-                          {festival.location}
-                        </p>
+                {getCurrentItems(festivals, festivalPage).map(
+                  (festival, idx) => (
+                    <div
+                      key={`${festival.programName}-${idx}`}
+                      className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200  relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu"
+                      style={{ animationDelay: `${idx * 0.1}s` }}
+                      onClick={() => openModal(festival, "festival")}
+                    >
+                      <div className="flex flex-col h-full">
+                        <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
+                          <img
+                            className="w-full h-[160px] object-cover"
+                            src={festival.imageUrl || default_Img}
+                            alt={festival.programName}
+                            onError={onErrorImg}
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveFavorite(festival, "festival");
+                            }}
+                            className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
+                            aria-label="즐겨찾기 해제"
+                          >
+                            <AiFillStar className="text-2xl filter drop-shadow-md" />
+                          </button>
+                        </div>
+                        <div className="flex flex-col flex-1">
+                          <h3 className="text-md font-semibold mb-2 line-clamp-2 min-h-[40px]">
+                            {festival.programName}
+                          </h3>
+                          <p className="mt-auto text-gray-600 text-xs truncate">
+                            {festival.location}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           </div>
