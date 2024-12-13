@@ -169,14 +169,14 @@
 .react-chatbot-kit-chat-bot-message {
   max-width: 80% !important;
   word-wrap: break-word !important;
-  width: 225px !important;
+  width: 400px !important;
   background-color: #3959b3 !important;
 }
 
 .react-chatbot-kit-user-chat-message {
   max-width: 80% !important;
   word-wrap: break-word !important;
-  width: 225px !important;
+  width: 400px !important;
   color: #000000 !important;
   background-color: #eaeaea !important;
 }
