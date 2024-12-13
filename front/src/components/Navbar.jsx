@@ -77,9 +77,9 @@ const Navbar = () => {
           <Link
             to="/mypage"
             className="relative z-10 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden transition-all duration-500
-              before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-500 before:ease-out
-              after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-500 after:ease-out
-              hover:before:h-[50%] hover:after:h-[50%]"
+              before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[180ms] before:ease-in-out
+              after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[180ms] after:ease-in-out after:delay-[180ms]
+              hover:before:w-full hover:after:w-full"
           >
             {!isMobile && <UserCircleIcon className="h-4 w-4 mr-2" />}
             마이페이지
@@ -87,9 +87,9 @@ const Navbar = () => {
           <button
             onClick={handleLoginLogout}
             className="relative z-10 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white overflow-hidden transition-all duration-500
-              before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-500 before:ease-out
-              after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-500 after:ease-out
-              hover:before:h-[50%] hover:after:h-[50%]"
+              before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[180ms] before:ease-in-out
+              after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[180ms] after:ease-in-out after:delay-[180ms]
+              hover:before:w-full hover:after:w-full"
           >
             {!isMobile && <LogOutIcon className="h-4 w-4 mr-2" />}
             로그아웃
@@ -167,12 +167,12 @@ const Navbar = () => {
                 className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-500 overflow-hidden
                   ${
                     location.pathname === item.path
-                      ? "bg-blue-700 text-white"
+                      ? "text-white before:!w-full after:!w-full before:!duration-0 after:!duration-0"
                       : "text-white"
                   }
-                  before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-0 before:bg-blue-700 before:-z-10 before:transition-all before:duration-500 before:ease-out
-                  after:content-[''] after:absolute after:bottom-[50%] after:left-0 after:w-full after:h-0 after:bg-blue-700 after:-z-10 after:transition-all after:duration-500 after:ease-out
-                  hover:before:h-[50%] hover:after:h-[50%]`}
+                  before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[180ms] before:ease-in-out
+                  after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[180ms] after:ease-in-out after:delay-[180ms]
+                  hover:before:w-full hover:after:w-full`}
               >
                 {item.name}
               </Link>
