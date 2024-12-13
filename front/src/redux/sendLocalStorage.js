@@ -27,58 +27,6 @@ const syncLocalStorageMiddleware = (store) => (next) => (action) => {
 
 export default syncLocalStorageMiddleware;
 
-// Function to send localStorage data to the backend
-const sendLocalStorageDataToBackend = async () => {
-  try {
-    // Fetch data from localStorage
-    const token = localStorage.getItem("token");
-    const favoriteFestivals =
-      JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
-    const favoriteHeritages =
-      JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
-
-    // Debugging localStorage content
-    console.log("Favorite Festivals:", favoriteFestivals);
-    console.log("Favorite Heritages:", favoriteHeritages);
-
-    // Ensure there's data to send
-    if (!favoriteFestivals.length && !favoriteHeritages.length) {
-      console.error("No data in localStorage to send.");
-      return;
-    }
-
-    // Prepare payload
-    const payload = {
-      favoriteFestivals,
-      favoriteHeritages,
-      token,
-    };
-
-    console.log("Payload to send:", payload);
-
-    // Send data to the backend
-    const response = await fetch("http://localhost:8000/api/store-favorites", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token,
-      },
-      body: JSON.stringify(payload), // Convert payload to JSON
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error response from backend:", errorData);
-      throw new Error(`Failed to send data. Status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log("Data successfully sent to backend:", result);
-  } catch (error) {
-    console.error("Error sending data to backend:", error);
-  }
-};
-
 function sendDataToPostgreSQL() {
   // Fetch data from localStorage
   const favoriteFestivals =
@@ -118,10 +66,10 @@ function sendDataToPostgreSQL() {
   );
 
   // Debugging: Log data being sent to the backend
-  // console.log("Favorite Festivals:", favoriteFestivals);
-  // console.log("Favorite Heritages:", favoriteHeritages);
-  // console.log("Festivals to Delete:", festivalsToDelete);
-  // console.log("Heritages to Delete:", heritagesToDelete);
+  console.log("Favorite Festivals:", favoriteFestivals);
+  console.log("Favorite Heritages:", favoriteHeritages);
+  console.log("Festivals to Delete:", festivalsToDelete);
+  console.log("Heritages to Delete:", heritagesToDelete);
 
   // Send data to the backend
   fetch("http://localhost:8000/api/store-favoritesPGDB", {
@@ -161,5 +109,4 @@ function sendDataToPostgreSQL() {
 }
 
 syncLocalStorageMiddleware();
-sendLocalStorageDataToBackend();
 sendDataToPostgreSQL();

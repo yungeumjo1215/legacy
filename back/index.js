@@ -52,13 +52,6 @@ app.use(
   })
 );
 
-// 즐겨찾기 저장소
-let storedFavorites = {
-  favoriteFestivals: [],
-  favoriteHeritages: [],
-  token: null,
-};
-
 // 기본 라우트
 app.get("/", (req, res) => {
   res.send("Server is running");
@@ -103,10 +96,6 @@ app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
 
-app.get("/api/show-favorites", (req, res) => {
-  res.status(200).json(storedFavorites);
-  // console.log("Received favorite festivals:", storedFavorites);
-});
 app.post("/api/store-favoritesPGDB", (req, res) => {
   const {
     favoriteFestivals,
