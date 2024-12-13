@@ -92,6 +92,37 @@ function sendDataToPostgreSQL() {
     return;
   }
 
+  // Previous favorite data fetched from localStorage to identify deleted items
+  const previousFavoriteFestivals =
+    JSON.parse(localStorage.getItem("previousFavoriteFestivals")) || [];
+  const previousFavoriteHeritages =
+    JSON.parse(localStorage.getItem("previousFavoriteHeritages")) || [];
+
+  // Identify items to delete
+  const festivalsToDelete = previousFavoriteFestivals.filter(
+    (prev) =>
+      !favoriteFestivals.some(
+        (current) =>
+          current.programName === prev.programName &&
+          current.location === prev.location
+      )
+  );
+
+  const heritagesToDelete = previousFavoriteHeritages.filter(
+    (prev) =>
+      !favoriteHeritages.some(
+        (current) =>
+          current.ccbamnm1 === prev.ccbamnm1 &&
+          current.ccbalcad === prev.ccbalcad
+      )
+  );
+
+  // Debugging: Log data being sent to the backend
+  console.log("Favorite Festivals:", favoriteFestivals);
+  console.log("Favorite Heritages:", favoriteHeritages);
+  console.log("Festivals to Delete:", festivalsToDelete);
+  console.log("Heritages to Delete:", heritagesToDelete);
+
   // Send data to the backend
   fetch("http://localhost:8000/api/store-favoritesPGDB", {
     method: "POST",
@@ -99,12 +130,27 @@ function sendDataToPostgreSQL() {
       "Content-Type": "application/json",
       token: token,
     },
-    body: JSON.stringify({ favoriteFestivals, favoriteHeritages }),
+    body: JSON.stringify({
+      favoriteFestivals,
+      favoriteHeritages,
+      festivalsToDelete,
+      heritagesToDelete,
+    }),
   })
     .then((response) => response.json())
     .then((data) => {
       if (data.message) {
         console.log("Data successfully sent to PostgreSQL:", data.message);
+
+        // Update "previous" localStorage after successful sync
+        localStorage.setItem(
+          "previousFavoriteFestivals",
+          JSON.stringify(favoriteFestivals)
+        );
+        localStorage.setItem(
+          "previousFavoriteHeritages",
+          JSON.stringify(favoriteHeritages)
+        );
       } else {
         console.error("Error sending data:", data.error || data);
       }
@@ -114,44 +160,6 @@ function sendDataToPostgreSQL() {
     });
 }
 
-// Call the function to send data
-
-// const fetchAndReinsertFavorites = async () => {
-//   try {
-//     // Fetch data from the backend
-//     const response = await fetch("http://localhost:8000/api/show-favorites");
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch favorites. Status: ${response.status}`);
-//     }
-
-//     const { favorites } = await response.json();
-//     console.log("Fetched favorites:", favorites);
-
-//     // Reinsert fetched data
-//     const reinsertResponse = await fetch(
-//       "http://localhost:8000/api/reinsert-favorites",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(favorites),
-//       }
-//     );
-
-//     if (!reinsertResponse.ok) {
-//       throw new Error(
-//         `Failed to reinsert favorites. Status: ${reinsertResponse.status}`
-//       );
-//     }
-
-//     const result = await reinsertResponse.json();
-//     console.log("Reinsertion result:", result);
-//   } catch (error) {
-//     console.error("Error in fetch and reinsert process:", error);
-//   }
-// };
 syncLocalStorageMiddleware();
 sendLocalStorageDataToBackend();
-// fetchAndReinsertFavorites();
 sendDataToPostgreSQL();

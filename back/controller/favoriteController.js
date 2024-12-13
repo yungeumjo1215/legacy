@@ -31,7 +31,6 @@ function decodeToken(token) {
 
 // Insert favorite festivals
 async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
-  // Decode the token to extract the email
   const email = decodeToken(token);
 
   const promises = favoriteFestivals.map(async (festival) => {
@@ -46,20 +45,18 @@ async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
       imageUrl,
     } = festival;
 
-    // Check if the festival already exists
     const existingRecord = await pool.query(
       `SELECT id FROM favoritelist WHERE "token" = $1 AND "programName" = $2 AND "location" = $3`,
       [email, programName, location]
     );
 
     if (existingRecord.rowCount === 0) {
-      // Insert only if the record doesn't exist
       return pool.query(
         `INSERT INTO favoritelist
         ("token", "programName", "programContent", "location", "startDate", "endDate", "targetAudience", "contact", "imageUrl")
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
-          email, // Insert the decoded email into the token column
+          email,
           programName,
           programContent,
           location,
@@ -80,20 +77,17 @@ async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
 
 // Insert favorite heritages
 async function insertFavoriteHeritages(pool, token, favoriteHeritages) {
-  // Decode the token to extract the email
   const email = decodeToken(token);
 
   const promises = favoriteHeritages.map(async (heritage) => {
     const { ccbamnm1, ccbalcad, content, imageurl, ccce_name } = heritage;
 
-    // Check if the heritage already exists
     const existingRecord = await pool.query(
       `SELECT id FROM favoritelist WHERE "token" = $1 AND "ccbamnm1" = $2 AND "ccbalcad" = $3`,
       [email, ccbamnm1, ccbalcad]
     );
 
     if (existingRecord.rowCount === 0) {
-      // Insert only if the record doesn't exist
       return pool.query(
         `INSERT INTO favoritelist
         ("token", "ccbamnm1", "ccbalcad", "content", "imageUrl", "ccce_name")
@@ -108,8 +102,48 @@ async function insertFavoriteHeritages(pool, token, favoriteHeritages) {
   return Promise.all(promises);
 }
 
+// Delete favorite festivals
+async function deleteFavoriteFestivals(pool, token, festivalsToDelete) {
+  const email = decodeToken(token);
+
+  const promises = festivalsToDelete.map(async (festival) => {
+    const { programName, location } = festival;
+
+    console.log(`Deleting festival: ${programName}, Location: ${location}`); // Log the item being deleted
+
+    return pool.query(
+      `DELETE FROM favoritelist 
+       WHERE "token" = $1 AND "programName" = $2 AND "location" = $3`,
+      [email, programName, location]
+    );
+  });
+
+  return Promise.all(promises);
+}
+
+// Delete favorite heritages
+async function deleteFavoriteHeritages(pool, token, heritagesToDelete) {
+  const email = decodeToken(token);
+
+  const promises = heritagesToDelete.map(async (heritage) => {
+    const { ccbamnm1, ccbalcad } = heritage;
+
+    console.log(`Deleting heritage: ${ccbamnm1}, Address: ${ccbalcad}`); // Log the item being deleted
+
+    return pool.query(
+      `DELETE FROM favoritelist 
+       WHERE "token" = $1 AND "ccbamnm1" = $2 AND "ccbalcad" = $3`,
+      [email, ccbamnm1, ccbalcad]
+    );
+  });
+
+  return Promise.all(promises);
+}
+
 module.exports = {
   executeTransaction,
   insertFavoriteFestivals,
   insertFavoriteHeritages,
+  deleteFavoriteFestivals,
+  deleteFavoriteHeritages,
 };
