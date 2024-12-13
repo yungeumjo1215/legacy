@@ -344,7 +344,7 @@ const SearchPage = () => {
               {getCurrentPageData().map((item, index) => (
                 <li
                   key={item.ccbakdcd || index}
-                  className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.3s_ease-out_forwards]"
+                  className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div

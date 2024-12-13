@@ -19,6 +19,14 @@ module.exports = {
           "0%": { transform: "translateX(-100%)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
         },
+        sendPlane: {
+          "0%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(6px)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        "send-plane": "sendPlane 0.3s ease-in-out",
       },
     },
   },
