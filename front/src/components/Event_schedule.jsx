@@ -494,7 +494,7 @@ const EventSchedule = () => {
             onClick={() => handlePageChange(currentPage + 1)}
             className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
           >
-            다��
+            다음
           </button>
         )}
       </div>
@@ -661,13 +661,18 @@ const EventSchedule = () => {
               <ul className="SubFont text-3xl space-y-4 overflow-hidden">
                 {currentItems.length > 0 ? (
                   currentItems.map((festival, index) => (
-                    <EventItem
+                    <li
                       key={`${festival.programName}-${index}`}
-                      event={festival}
-                      isStarred={isEventStarred(festival.programName)}
-                      handleStarClick={handleStarClick}
-                      onEventClick={handleEventClick}
-                    />
+                      className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.3s_ease-out_forwards]"
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                    >
+                      <EventItem
+                        event={festival}
+                        isStarred={isEventStarred(festival.programName)}
+                        handleStarClick={handleStarClick}
+                        onEventClick={handleEventClick}
+                      />
+                    </li>
                   ))
                 ) : (
                   <p className="text-center text-gray-500 py-8">
