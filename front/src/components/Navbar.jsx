@@ -102,7 +102,10 @@ const Navbar = () => {
       return (
         <Link
           to="/signup"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+          className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-500 overflow-hidden text-white inline-flex items-center
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[150ms] before:ease-in-out
+            after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[150ms] after:ease-in-out after:delay-[150ms]
+            hover:before:w-full hover:after:w-full`}
         >
           회원가입
         </Link>
@@ -113,7 +116,10 @@ const Navbar = () => {
       return (
         <button
           onClick={() => navigate("/login")}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+          className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-500 overflow-hidden text-white inline-flex items-center
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[150ms] before:ease-in-out
+            after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[150ms] after:ease-in-out after:delay-[150ms]
+            hover:before:w-full hover:after:w-full`}
         >
           <LogInIcon className="h-4 w-4 mr-2" />
           로그인
@@ -125,14 +131,20 @@ const Navbar = () => {
       <>
         <button
           onClick={() => navigate("/login")}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+          className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-500 overflow-hidden text-white inline-flex items-center
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[150ms] before:ease-in-out
+            after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[150ms] after:ease-in-out after:delay-[150ms]
+            hover:before:w-full hover:after:w-full`}
         >
           {!isMobile && <LogInIcon className="h-4 w-4 mr-2" />}
           로그인
         </button>
         <Link
           to="/signup"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:bg-blue-700"
+          className={`relative z-10 px-2 lg:px-3 md:px-4 py-1 md:py-2 lg:py-2 rounded-md text-sm lg:text-base md:text-base font-medium transition-all duration-500 overflow-hidden text-white inline-flex items-center
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-0 before:h-[2px] before:bg-white before:-z-10 before:transition-all before:duration-[150ms] before:ease-in-out
+            after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-0 after:h-[2px] after:bg-white after:-z-10 after:transition-all after:duration-[150ms] after:ease-in-out after:delay-[150ms]
+            hover:before:w-full hover:after:w-full`}
         >
           회원가입
         </Link>
