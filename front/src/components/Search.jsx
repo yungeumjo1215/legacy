@@ -370,7 +370,11 @@ const SearchPage = () => {
         </div>
 
         {filteredData.length > 0 && (
-          <div className="fixed bottom-0 left-0 md:left-0 w-[280px] md:w-[320px] lg:w-[380px] bg-white border-t border-[#e2e2e2] py-4">
+          <div
+            className={`fixed bottom-0 ${
+              isSidebarOpen ? "left-0" : "-left-full"
+            } md:left-0 w-[280px] md:w-[320px] lg:w-[380px] bg-white border-t border-[#e2e2e2] py-4 transition-all duration-300`}
+          >
             <div className="flex justify-center items-center gap-1 px-3">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
