@@ -230,7 +230,7 @@ const getUserInfo = async (req, res) => {
     // Extract email from req.user (set by authenticate middleware)
     const email = req.user.email;
 
-    // console.log("Fetching user info for email:", email); // Debugging log
+    console.log("Fetching user info for email:", email); // Debugging log
 
     // Fetch basic user information
     const userResult = await pool.query(
@@ -308,7 +308,7 @@ const getUserInfo = async (req, res) => {
       // Return user info even if fetching favorites fails
     }
 
-    // console.log("Sending user info:", userInfo); // Debugging log
+    console.log("Sending user info:", userInfo); // Debugging log
     res.status(200).json(userInfo);
   } catch (error) {
     console.error("Error in getUserInfo:", error);
