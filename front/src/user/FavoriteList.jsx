@@ -131,7 +131,7 @@ const FavoriteList = () => {
                     (heritage, idx) => (
                       <div
                         key={`${heritage.ccbamnm1}-${idx}`}
-                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu"
+                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                         style={{ animationDelay: `${idx * 0.1}s` }}
                         onClick={() => openModal(heritage, "heritage")}
                       >
@@ -140,7 +140,7 @@ const FavoriteList = () => {
                             <img
                               src={heritage.imageurl}
                               alt={heritage.ccbamnm1}
-                              className="w-full h-[160px] object-cover"
+                              className="w-full h-[160px] object-cover transition-transform duration-200 group-hover:scale-[1.08]"
                               onError={onErrorImg}
                             />
 
@@ -214,14 +214,14 @@ const FavoriteList = () => {
                   (festival, idx) => (
                     <div
                       key={`${festival.programName}-${idx}`}
-                      className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200  relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu"
+                      className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                       style={{ animationDelay: `${idx * 0.1}s` }}
                       onClick={() => openModal(festival, "festival")}
                     >
                       <div className="flex flex-col h-full">
                         <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                           <img
-                            className="w-full h-[160px] object-cover"
+                            className="w-full h-[160px] object-cover transition-transform duration-200 group-hover:scale-[1.08]"
                             src={festival.imageUrl || default_Img}
                             alt={festival.programName}
                             onError={onErrorImg}
