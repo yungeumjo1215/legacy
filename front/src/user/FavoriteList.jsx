@@ -131,7 +131,7 @@ const FavoriteList = () => {
                     (heritage, idx) => (
                       <div
                         key={idx}
-                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
+                        className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:scale-[1.04]"
                         onClick={() => openModal(heritage, "heritage")}
                       >
                         <div className="flex flex-col h-full">
@@ -212,7 +212,7 @@ const FavoriteList = () => {
                 {getCurrentItems(festivals, festivalPage).map((festival) => (
                   <div
                     key={festival.programName}
-                    className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200"
+                    className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:scale-[1.04]"
                     onClick={() => openModal(festival, "festival")}
                   >
                     <div className="flex flex-col h-full">
