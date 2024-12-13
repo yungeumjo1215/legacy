@@ -5,13 +5,11 @@ class MessageParser {
   }
 
   parse(message) {
-    // 먼저 로딩 상태를 true로 설정
-    this.actionProvider.setState((prevState) => ({
-      ...prevState,
-      loading: true,
-    }));
+    if (!message) return;
 
-    // 그 다음 메시지 처리 시작
+    console.log("사용자 메시지:", message); // 디버깅용
+
+    // 일반 질문 처리
     this.actionProvider.handleMessage(message);
   }
 }
