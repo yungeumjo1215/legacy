@@ -118,10 +118,10 @@ function sendDataToPostgreSQL() {
   );
 
   // Debugging: Log data being sent to the backend
-  console.log("Favorite Festivals:", favoriteFestivals);
-  console.log("Favorite Heritages:", favoriteHeritages);
-  console.log("Festivals to Delete:", festivalsToDelete);
-  console.log("Heritages to Delete:", heritagesToDelete);
+  // console.log("Favorite Festivals:", favoriteFestivals);
+  // console.log("Favorite Heritages:", favoriteHeritages);
+  // console.log("Festivals to Delete:", festivalsToDelete);
+  // console.log("Heritages to Delete:", heritagesToDelete);
 
   // Send data to the backend
   fetch("http://localhost:8000/api/store-favoritesPGDB", {
