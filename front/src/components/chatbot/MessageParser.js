@@ -5,28 +5,12 @@ class MessageParser {
   }
 
   parse(message) {
-    const lowerCaseMessage = message.toLowerCase();
+    if (!message) return;
 
-    // 기본 키워드 응답
-    if (lowerCaseMessage.includes("안녕")) {
-      return this.actionProvider.handleHello();
-    }
+    console.log("사용자 메시지:", message); // 디버깅용
 
-    // 문화재 관련 키워드 체크
-    if (lowerCaseMessage.includes("경복궁")) {
-      return this.actionProvider.handleGyeongbokgung();
-    }
-
-    if (lowerCaseMessage.includes("불국사")) {
-      return this.actionProvider.handleBulguksa();
-    }
-
-    if (lowerCaseMessage.includes("석굴암")) {
-      return this.actionProvider.handleSeokguram();
-    }
-
-    // 일반적인 질문은 API로 전달
-    return this.actionProvider.handleGeneralQuery(message);
+    // 일반 질문 처리
+    this.actionProvider.handleMessage(message);
   }
 }
 

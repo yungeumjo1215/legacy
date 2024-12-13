@@ -27,15 +27,37 @@ const Sample = () => {
     fetchData();
   }, []);
 
+  console.log(data);
+
   return (
     <div className="sample">
       {data ? (
         <div>
           <div className="heritage">
-            {JSON.stringify(data.heritage, null, 2)}
+            <ul>
+              {data.heritage.map((item, i) => (
+                <li key={i}>
+                  <p>{item.ccbalcad}</p>
+                  <p>{item.ccbamnm1}</p>
+                  <p>{item.content}</p>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="festivals">
-            {JSON.stringify(data.festivals, null, 2)}
+            <ul>
+              {data.festivals.map((item, i) => (
+                <li key={i}>
+                  <p>{item.programname}</p>
+                  <p>{item.programcontent}</p>
+                  <p>{item.startdate}</p>
+                  <p>{item.enddate}</p>
+                  <p>{item.groupname}</p>
+                  <p>{item.contact}</p>
+                  <p>{item.location}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       ) : (

@@ -1,104 +1,62 @@
 import os
 import sys
 import io
-import bs4
 from dotenv import load_dotenv
 from langchain import hub
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.document_loaders import TextLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.prompts import PromptTemplate
-from concurrent.futures import ThreadPoolExecutor
-import time
 
-
-def initialize_rag_system():
-    load_dotenv()
-    api_key = os.getenv('OPENAI_API_KEY')
-    if not api_key:
-        raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
-    os.environ["LANGCHAIN_USER_AGENT"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-
+load_dotenv()
+os.getenv('OPENAI_API_KEY')
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
-web_pages = ["http://localhost:3000/sample"]
+# TextLoader를 사용하여 텍스트 파일 로드
+loader = TextLoader('./data.txt', encoding='utf-8')
 
-loaders = [
-    WebBaseLoader(
-        web_paths=(url,),
-        bs_kwargs=dict(
-            parse_only=bs4.SoupStrainer(
-                ["div", "p", "article"],
-                attrs={}
-            )
-        )
-    )
-    for url in web_pages
-]
-
-# 병렬로 웹 페이지 로드
-def load_document(loader):
-    try:
-        time.sleep(2)
-        
-        loaded_docs = loader.load()
-        print(f"로드된 문서 내용: {[doc.page_content for doc in loaded_docs]}")
-        html_content = loader.scrape()
-        print(f"HTML 내용 길이: {len(str(html_content))}")
-        if loaded_docs and any(doc.page_content.strip() for doc in loaded_docs):
-            return loaded_docs
-        print("문서가 비어있습니다")
-    except Exception as e:
-        print(f"문서 로딩 중 오류 발생: {str(e)}")
-        print(f"상세 오류: {e.__class__.__name__}")
-    return []
-
-
-with ThreadPoolExecutor() as executor:
-    results = executor.map(load_document, loaders)
-
-
-documents = [doc for result in results for doc in result if result]
-
+try:
+    documents = loader.load()
+    # print("문서 로딩 성공")
+except Exception as e:
+    print(f"문서 로딩 중 오류 발생: {str(e)}")
+    sys.exit(1)
 
 # 문서가 비어있는지 확인
 if not documents:
     print("문서를 가져오지 못했습니다. 프로그램을 종료합니다.")
     sys.exit(1)
 
-
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-
-
 splits = text_splitter.split_documents(documents)
-# print(f"문서의  {len(splits)}")
-# len(splits)
 
 if not splits:
-    print("분활된 문서가 없습니다. 프로그램을 종료합니다.")
+    print("분할된 문서가 없습니다. 프로그램을 종료합니다.")
     sys.exit(1)
 
 vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings())
 retriever = vectorstore.as_retriever()
 
 prompt = PromptTemplate.from_template(
-        """당신은 한국의 문화재에 대해 전문적인 지식을 가진 도우미입니다. 
-        주어진 문맥(context)을 바탕으로 질문(question)에 답변해주세요.
-        답변은 한국어로 해주시고, 정확하고 친절하게 설명해주세요.
+    """당신은 질문-답변(Question-Answering)을 수행하는 친절한 AI 어시스턴트입니다. 당신의 임무는 주어진 문맥(context) 에서 주어진 질문(question) 에 답하는 것입니다.
+검색된 다음 문맥(context) 을 사용하여 질문(question) 에 답하세요. 만약, 주어진 문맥(context) 에서 답을 찾을 수 없다면, 답을 모른다면 `주어진 정보에서 질문에 대한 정보를 찾을 수 없습니다` 라고 답하세요.
+한글로 답변해 주세요. 단, 기술적인 용어나 이름은 번역하지 않고 그대로 사용해 주세요.
 
-        질문: {question}
-        문맥: {context}
-        답변:"""
-    )
+#Question:
+{question}
 
+#Context:
+{context}
 
-llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+#Answer:"""
+)
 
+llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
 
 rag_chain = (
     {"context": retriever, "question": RunnablePassthrough()}
@@ -107,10 +65,7 @@ rag_chain = (
     | StrOutputParser()
 )
 
-
-recieved_question = "숭례문에 대해 알려주세요."
-# recieved_question = sys.argv[1]
-
-
+# recieved_question = "주지스님과 함께 하는 숲체험과 다도체험에 대해 두 줄로 설명해 주세요."
+recieved_question = sys.argv[1]
 answer = rag_chain.invoke(recieved_question)
 print(answer)
