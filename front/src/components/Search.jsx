@@ -344,7 +344,8 @@ const SearchPage = () => {
               {getCurrentPageData().map((item, index) => (
                 <li
                   key={item.ccbakdcd || index}
-                  className="my-3 md:my-5 flex items-center"
+                  className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div
                     onClick={() => handleStarClick(item)}
@@ -358,7 +359,7 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left "
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left"
                   >
                     {item.ccbamnm1}
                   </button>
