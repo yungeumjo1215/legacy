@@ -353,3 +353,25 @@ Logical Name(논리명)
 -------------------------------------------------------------------------------------------
 -- drop constraint 로 외래키 제거 
 ---------------------------------------------------------------------------------------------
+-- Add account_id to favoritelist
+ALTER TABLE favoritelist
+ADD COLUMN account_id UUID REFERENCES accounts(uuid) ON DELETE CASCADE;
+
+--die 
+ALTER TABLE favoritelist DROP COLUMN token;
+
+SELECT constraint_name
+FROM information_schema.table_constraints
+WHERE table_name = 'favoritelist' AND constraint_type = 'FOREIGN KEY';
+
+
+ALTER TABLE accounts ADD CONSTRAINT unique_email UNIQUE (email);
+
+ALTER TABLE favoritelist ADD COLUMN email VARCHAR(100);
+
+ALTER TABLE favoritelist
+ADD CONSTRAINT fk_favoritelist_email
+FOREIGN KEY (email)
+REFERENCES accounts (email)
+ON DELETE CASCADE;
+

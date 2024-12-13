@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const jwtDecode = require("jwt-decode"); // Import jwt-decode
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
 
 const authenticate = (req, res, next) => {
@@ -32,4 +33,20 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = { authenticate };
+const decodeJWT = (token) => {
+  try {
+    if (!token || typeof token !== "string" || token.split(".").length !== 3) {
+      throw new Error(
+        "Invalid token format. JWT must have three parts separated by dots."
+      );
+    }
+    const decoded = jwtDecode(token); // Decode the token without verifying
+    console.log("Decoded JWT:", decoded); // Log the decoded token
+    return decoded;
+  } catch (error) {
+    console.error("Error decoding JWT:", error.message);
+    return null; // Return null if decoding fails
+  }
+};
+
+module.exports = { authenticate, decodeJWT };

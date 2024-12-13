@@ -1,4 +1,6 @@
 const pool = require("../database/database");
+const jwt = require("jsonwebtoken"); // Use jwt for decoding
+const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
 
 // Global transaction handler
 async function executeTransaction(taskFn) {
@@ -13,7 +15,25 @@ async function executeTransaction(taskFn) {
   }
 }
 
-function insertFavoriteFestivals(pool, token, favoriteFestivals) {
+// Decode and verify the token
+function decodeToken(token) {
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (!decoded || !decoded.email) {
+      throw new Error("Email not found in token payload.");
+    }
+    return decoded.email; // Return email from the decoded token
+  } catch (err) {
+    console.error("Token decoding error:", err.message);
+    throw err; // Re-throw to indicate token is invalid
+  }
+}
+
+// Insert favorite festivals
+async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
+  // Decode the token to extract the email
+  const email = decodeToken(token);
+
   const promises = favoriteFestivals.map(async (festival) => {
     const {
       programName,
@@ -29,7 +49,7 @@ function insertFavoriteFestivals(pool, token, favoriteFestivals) {
     // Check if the festival already exists
     const existingRecord = await pool.query(
       `SELECT id FROM favoritelist WHERE "token" = $1 AND "programName" = $2 AND "location" = $3`,
-      [token, programName, location]
+      [email, programName, location]
     );
 
     if (existingRecord.rowCount === 0) {
@@ -39,7 +59,7 @@ function insertFavoriteFestivals(pool, token, favoriteFestivals) {
         ("token", "programName", "programContent", "location", "startDate", "endDate", "targetAudience", "contact", "imageUrl")
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
-          token,
+          email, // Insert the decoded email into the token column
           programName,
           programContent,
           location,
@@ -58,14 +78,18 @@ function insertFavoriteFestivals(pool, token, favoriteFestivals) {
   return Promise.all(promises);
 }
 
-function insertFavoriteHeritages(pool, token, favoriteHeritages) {
+// Insert favorite heritages
+async function insertFavoriteHeritages(pool, token, favoriteHeritages) {
+  // Decode the token to extract the email
+  const email = decodeToken(token);
+
   const promises = favoriteHeritages.map(async (heritage) => {
     const { ccbamnm1, ccbalcad, content, imageurl, ccce_name } = heritage;
 
     // Check if the heritage already exists
     const existingRecord = await pool.query(
       `SELECT id FROM favoritelist WHERE "token" = $1 AND "ccbamnm1" = $2 AND "ccbalcad" = $3`,
-      [token, ccbamnm1, ccbalcad]
+      [email, ccbamnm1, ccbalcad]
     );
 
     if (existingRecord.rowCount === 0) {
@@ -74,7 +98,7 @@ function insertFavoriteHeritages(pool, token, favoriteHeritages) {
         `INSERT INTO favoritelist
         ("token", "ccbamnm1", "ccbalcad", "content", "imageUrl", "ccce_name")
         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [token, ccbamnm1, ccbalcad, content, imageurl, ccce_name]
+        [email, ccbamnm1, ccbalcad, content, imageurl, ccce_name]
       );
     } else {
       console.log(`Duplicate heritage found: ${ccbamnm1}, skipping insert.`);

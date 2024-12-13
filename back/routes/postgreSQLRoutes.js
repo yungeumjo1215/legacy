@@ -83,6 +83,8 @@ router.get("/favoritestest", async (req, res) => {
   }
 });
 
+module.exports = router;
+
 // // 즐겨찾기 추가
 // router.post("/favorites", async (req, res) => {
 //   try {
