@@ -121,7 +121,7 @@ const EventItem = memo(
 
           <div className="flex-1">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="MainFont text-xl sm:text-2xl">
+              <h3 className="MainFont text-xl sm:text-2xl -mt-1">
                 {event.programName}
               </h3>
               <button
@@ -666,12 +666,112 @@ const EventSchedule = () => {
                       className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.3s_ease-out_forwards]"
                       style={{ animationDelay: `${index * 0.05}s` }}
                     >
-                      <EventItem
-                        event={festival}
-                        isStarred={isEventStarred(festival.programName)}
-                        handleStarClick={handleStarClick}
-                        onEventClick={handleEventClick}
-                      />
+                      <div className="border p-4 rounded-lg transition-colors w-full">
+                        <div className="flex items-start">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStarClick(festival);
+                            }}
+                            className={`star-button mr-2 sm:mr-3 ${
+                              isEventStarred(festival.programName)
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                            tabIndex={0}
+                            aria-label={`${festival.programName} 즐겨찾기 ${
+                              isEventStarred(festival.programName)
+                                ? "제거"
+                                : "추가"
+                            }`}
+                          >
+                            <TiStarFullOutline className="text-2xl sm:text-3xl" />
+                          </button>
+
+                          <div className="flex-1">
+                            <div className="flex justify-between items-center mb-2">
+                              <h3 className="MainFont text-xl sm:text-2xl">
+                                {festival.programName}
+                              </h3>
+                              <button
+                                className="border-2 border-blue-800 rounded-md
+                                           hover:bg-blue-800 hover:text-white
+                                          text-sm sm:text-base lg:text-lg
+                                          px-2 sm:px-3 lg:px-4
+                                          py-1 sm:py-1.5 lg:py-2
+                                          transition-all duration-300 ease-in-out
+                                          shadow-sm hover:shadow-md
+                                          text-center text-nowrap
+                                          font-bold"
+                                onClick={() => handleEventClick(festival)}
+                              >
+                                더보기
+                              </button>
+                            </div>
+
+                            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+                              <div className="lg:max-w-56 w-full">
+                                <img
+                                  src={
+                                    festival.image && festival.image !== "N/A"
+                                      ? festival.image
+                                      : default_Img
+                                  }
+                                  alt={festival.programName}
+                                  className="w-full h-auto object-cover border rounded-lg"
+                                  loading="lazy"
+                                  onError={onErrorImg}
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        행사 내용:
+                                      </span>
+                                      {formatValue(festival.programContent)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        기간:
+                                      </span>
+                                      {festival.startDate} ~{" "}
+                                      {formatValue(festival.endDate)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        장소:
+                                      </span>
+                                      {formatValue(festival.location)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        대상:
+                                      </span>
+                                      {formatValue(festival.targetAudience)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        문의:
+                                      </span>
+                                      {formatValue(festival.contact)}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </li>
                   ))
                 ) : (
