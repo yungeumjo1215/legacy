@@ -6,6 +6,11 @@ class ActionProvider {
 
   handleMessage = async (message) => {
     try {
+      this.setState((prevState) => ({
+        ...prevState,
+        loading: true,
+      }));
+
       const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: {
@@ -19,7 +24,6 @@ class ActionProvider {
       if (data.answer) {
         const botMessage = this.createChatBotMessage(data.answer);
         this.updateChatbotState(botMessage);
-        return;
       }
 
       this.setState((prevState) => ({
