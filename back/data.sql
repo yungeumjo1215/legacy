@@ -375,3 +375,43 @@ FOREIGN KEY (email)
 REFERENCES accounts (email)
 ON DELETE CASCADE;
 
+-------------------------------data 구분법 
+
+
+SELECT *
+FROM favoritelist
+WHERE token IS NOT NULL AND token LIKE '%test%';
+  
+
+SELECT "token"
+       "programName", 
+       "programContent", 
+       "location", 
+       "startDate", 
+       "endDate", 
+       "targetAudience", 
+       "contact", 
+       "imageUrl"
+FROM favoritelist
+WHERE "programName" IS NOT NULL
+  AND "programContent" IS NOT NULL
+  AND "location" IS NOT NULL
+  AND "startDate" IS NOT NULL
+  AND "endDate" IS NOT NULL
+  AND "targetAudience" IS NOT NULL
+  AND "contact" IS NOT NULL
+  AND "token" LIKE '%test%';
+
+  
+
+SELECT "token",
+       "ccbamnm1", 
+       "ccbalcad", 
+       "content", 
+       "imageUrl"
+FROM favoritelist
+WHERE "ccbamnm1" IS NOT NULL
+  AND "ccbalcad" IS NOT NULL
+  AND "content" IS NOT NULL
+  AND "imageUrl" IS NOT NULL
+  AND "token" LIKE '%test%';
