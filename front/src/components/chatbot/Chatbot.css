@@ -17,8 +17,11 @@
 .react-chatbot-kit-chat-message-container {
   height: calc(100% - 65px) !important;
   overflow-y: auto;
+  overflow-x: hidden !important;
   padding: 20px;
   scroll-behavior: smooth;
+  background-color: #f8f9fa !important;
+  width: 100% !important;
 }
 
 .react-chatbot-kit-chat-input-container {
@@ -134,23 +137,15 @@
   padding: 2px;
 }
 
-/* 챗봇 메시지 컨테이너 왼쪽 정렬 */
-.react-chatbot-kit-chat-bot-message-container {
-  display: flex;
-  justify-content: flex-start !important;
-  margin-left: 0 !important;
+/* 메시지 컨테이너 내부의 메시지들도 가로 스크롤 방지 */
+.react-chatbot-kit-chat-bot-message-container,
+.react-chatbot-kit-user-chat-message-container {
+  width: 100% !important;
+  overflow-x: hidden !important;
 }
 
-/* 챗봇 메시지 왼쪽 정렬 */
-.react-chatbot-kit-chat-bot-message {
-  margin-left: 0 !important;
-  margin-right: auto !important;
-}
-
-/* 챗봇 메시지 화살표 위치 조정 */
-.react-chatbot-kit-chat-bot-message-arrow {
-  left: -8px !important;
-  right: auto !important;
-  border-width: 8px 8px 8px 0 !important;
-  border-color: transparent #376B7E transparent transparent !important;
+.react-chatbot-kit-chat-bot-message,
+.react-chatbot-kit-user-chat-message {
+  max-width: 80% !important;
+  word-wrap: break-word !important;
 }
