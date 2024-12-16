@@ -100,7 +100,7 @@
 
 /* 챗봇 래퍼와 컨테이너 스타일 추가 */
 .chat-wrapper {
-  width: 100%;
+  width: 60%;
   height: calc(100vh - 64px - 1px);
   margin-top: 64px;
   display: flex;
@@ -108,11 +108,11 @@
   align-items: center;
   overflow: hidden;
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 0;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: #fff;
 }
 
 .chat-container {
@@ -179,6 +179,7 @@
   width: 400px !important;
   color: #000000 !important;
   background-color: #eaeaea !important;
+  font-weight: 750 !important;
 }
 
 /* 챗봇 메시지 컨테이너 왼쪽 정렬 */
