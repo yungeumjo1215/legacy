@@ -1,4 +1,14 @@
 /* 챗봇 커스텀 */
+.back {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgb(249 250 251) !important;
+  z-index: 40;
+}
+
 .react-chatbot-kit-chat-container {
   width: 100% !important;
   height: 100% !important;
@@ -20,7 +30,7 @@
   overflow-x: hidden !important;
   padding: 20px;
   scroll-behavior: smooth;
-  background-color: #f8f9fa !important;
+  background-color: #fff !important;
   width: 100% !important;
 }
 
@@ -101,7 +111,7 @@
 /* 챗봇 래퍼와 컨테이너 스타일 추가 */
 .chat-wrapper {
   width: 60%;
-  height: calc(100vh - 64px - 1px);
+  height: calc(100vh - 64px - 50px);
   margin-top: 64px;
   display: flex;
   justify-content: center;
@@ -109,10 +119,14 @@
   overflow: hidden;
   position: fixed;
   left: 50%;
+  top: 3%;
+  bottom: 3%;
   transform: translateX(-50%);
-  bottom: 0;
   padding: 20px;
   background-color: #fff;
+  z-index: 50;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
 }
 
 .chat-container {
@@ -130,7 +144,7 @@
 }
 
 .react-chatbot-kit-chat-header {
-  background-color: #f8f9fa;
+  background-color: #fff;
   padding: 15px;
   text-align: center;
   font-weight: bold;
@@ -143,7 +157,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 13px;
   object-fit: contain;
 }
 
