@@ -38,10 +38,10 @@
   position: sticky;
   bottom: 0;
   background: white;
-  padding: 10px !important;
+  padding: 10px 0 !important;
   border-top: 1px solid #eaeaea;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-  height: 65px !important;
+  _height: 65px !important;
   display: flex !important;
   align-items: center !important;
 }
@@ -122,7 +122,7 @@
   top: 3%;
   bottom: 3%;
   transform: translateX(-50%);
-  padding: 20px;
+  padding: 20px 20px 0;
   background-color: #fff;
   z-index: 50;
   border: 1px solid #eaeaea;
@@ -183,14 +183,15 @@
 .react-chatbot-kit-chat-bot-message {
   max-width: 80% !important;
   word-wrap: break-word !important;
-  width: 400px !important;
+  width: fit-content !important;
+  min-width: 50px !important;
   background-color: #3959b3 !important;
 }
 
 .react-chatbot-kit-user-chat-message {
   max-width: 80% !important;
   word-wrap: break-word !important;
-  width: 400px !important;
+  width: fit-content !important;
   color: #000000 !important;
   background-color: #eaeaea !important;
   font-weight: 750 !important;
