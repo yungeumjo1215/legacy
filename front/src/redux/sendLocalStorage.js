@@ -2,18 +2,6 @@ const syncLocalStorageMiddleware = (store) => (next) => (action) => {
   const result = next(action); // Dispatch the action
   const state = store.getState(); // Get the updated state
 
-  // Sync specific parts of the Redux state to localStorage
-  if (state.favorites) {
-    localStorage.setItem(
-      "favoriteFestivals",
-      JSON.stringify(state.favorites.festivals || [])
-    );
-    localStorage.setItem(
-      "favoriteHeritages",
-      JSON.stringify(state.favorites.heritages || [])
-    );
-  }
-
   // Sync token to localStorage (if it exists in the state)
   if (state.auth && state.auth.token) {
     console.log("Syncing token to localStorage:", state.auth.token);
@@ -28,11 +16,6 @@ const syncLocalStorageMiddleware = (store) => (next) => (action) => {
 export default syncLocalStorageMiddleware;
 
 function sendDataToPostgreSQL() {
-  // Fetch data from localStorage
-  const favoriteFestivals =
-    JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
-  const favoriteHeritages =
-    JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
   const token = localStorage.getItem("token"); // Assume token is stored in localStorage
 
   if (!token) {
@@ -40,67 +23,23 @@ function sendDataToPostgreSQL() {
     return;
   }
 
-  // Previous favorite data fetched from localStorage to identify deleted items
-  const previousFavoriteFestivals =
-    JSON.parse(localStorage.getItem("previousFavoriteFestivals")) || [];
-  const previousFavoriteHeritages =
-    JSON.parse(localStorage.getItem("previousFavoriteHeritages")) || [];
+  // Debugging: Log the token being sent to the backend
+  console.log("Token being sent to the backend:", token);
 
-  // Identify items to delete
-  const festivalsToDelete = previousFavoriteFestivals.filter(
-    (prev) =>
-      !favoriteFestivals.some(
-        (current) =>
-          current.programName === prev.programName &&
-          current.location === prev.location
-      )
-  );
-
-  const heritagesToDelete = previousFavoriteHeritages.filter(
-    (prev) =>
-      !favoriteHeritages.some(
-        (current) =>
-          current.ccbamnm1 === prev.ccbamnm1 &&
-          current.ccbalcad === prev.ccbalcad
-      )
-  );
-
-  // Debugging: Log data being sent to the backend
-  console.log("Favorite Festivals:", favoriteFestivals);
-  console.log("Favorite Heritages:", favoriteHeritages);
-  console.log("Festivals to Delete:", festivalsToDelete);
-  console.log("Heritages to Delete:", heritagesToDelete);
-
-  // Send data to the backend
-  fetch("http://localhost:8000/api/store-favoritesPGDB", {
+  // Send only the token to the backend
+  fetch("http://localhost:8000/pgdb/favoritelist", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      token: token,
+      Authorization: `Bearer ${token}`, // Pass token in Authorization header
     },
-    body: JSON.stringify({
-      favoriteFestivals,
-      favoriteHeritages,
-      festivalsToDelete,
-      heritagesToDelete,
-    }),
   })
     .then((response) => response.json())
     .then((data) => {
       if (data.message) {
-        console.log("Data successfully sent to PostgreSQL:", data.message);
-
-        // Update "previous" localStorage after successful sync
-        localStorage.setItem(
-          "previousFavoriteFestivals",
-          JSON.stringify(favoriteFestivals)
-        );
-        localStorage.setItem(
-          "previousFavoriteHeritages",
-          JSON.stringify(favoriteHeritages)
-        );
+        console.log("Token successfully sent to PostgreSQL:", data.message);
       } else {
-        console.error("Error sending data:", data.error || data);
+        console.error("Error sending token:", data.error || data);
       }
     })
     .catch((error) => {
@@ -108,5 +47,6 @@ function sendDataToPostgreSQL() {
     });
 }
 
+// Call functions
 syncLocalStorageMiddleware();
 sendDataToPostgreSQL();

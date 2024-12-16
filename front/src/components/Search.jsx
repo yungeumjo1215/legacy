@@ -214,6 +214,7 @@ const SearchPage = () => {
       } else {
         const heritageData = {
           type: "heritage",
+          heritageid: heritage.heritageid,
           id: heritage.ccbamnm1,
           ccbamnm1: heritage.ccbamnm1,
           ccbalcad: heritage.ccbalcad,

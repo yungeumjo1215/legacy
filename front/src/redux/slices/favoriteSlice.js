@@ -40,14 +40,13 @@ export const fetchFavorites = createAsyncThunk(
     }
   }
 );
-
 // Async thunk to add multiple favorites
 export const addFavorites = createAsyncThunk(
   "favorites/addFavorites",
-  async ({ token, newFavorites }, { rejectWithValue }) => {
+  async ({ token, favoriteId, type }, { rejectWithValue }) => {
     try {
-      console.log("Adding favorites with token:", token);
-      console.log("New Favorites Payload:", newFavorites);
+      console.log("Adding favorite with token:", token);
+      console.log("Favorite ID:", favoriteId, "Type:", type);
 
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "POST",
@@ -55,20 +54,23 @@ export const addFavorites = createAsyncThunk(
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ favoriteFestivals: newFavorites }),
+        body: JSON.stringify({
+          id: favoriteId, // Can be festivalid or heritageid
+          type, // "event" or "heritage"
+        }),
       });
 
       console.log("Add Response Status:", response.status);
 
       if (!response.ok) {
         console.error("Add failed with response:", response);
-        throw new Error("Failed to add favorites");
+        throw new Error("Failed to add favorite");
       }
 
       const result = await response.json();
       console.log("Add Result:", result);
 
-      return Array.isArray(newFavorites) ? newFavorites : [];
+      return result;
     } catch (err) {
       console.error("Error in addFavorites:", err.message);
       return rejectWithValue(err.message);
@@ -79,10 +81,10 @@ export const addFavorites = createAsyncThunk(
 // Async thunk to delete multiple favorites
 export const deleteFavorites = createAsyncThunk(
   "favorites/deleteFavorites",
-  async ({ token, favoritesToDelete }, { rejectWithValue }) => {
+  async ({ token, favoriteId, type }, { rejectWithValue }) => {
     try {
-      console.log("Deleting favorites with token:", token);
-      console.log("Favorites to Delete:", favoritesToDelete);
+      console.log("Deleting favorite with token:", token);
+      console.log("Favorite ID:", favoriteId, "Type:", type);
 
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "DELETE",
@@ -90,20 +92,23 @@ export const deleteFavorites = createAsyncThunk(
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ festivalsToDelete: favoritesToDelete }),
+        body: JSON.stringify({
+          id: favoriteId, // Can be festivalid or heritageid
+          type, // "event" or "heritage"
+        }),
       });
 
       console.log("Delete Response Status:", response.status);
 
       if (!response.ok) {
         console.error("Delete failed with response:", response);
-        throw new Error("Failed to delete favorites");
+        throw new Error("Failed to delete favorite");
       }
 
       const result = await response.json();
       console.log("Delete Result:", result);
 
-      return Array.isArray(favoritesToDelete) ? favoritesToDelete : [];
+      return result;
     } catch (err) {
       console.error("Error in deleteFavorites:", err.message);
       return rejectWithValue(err.message);
