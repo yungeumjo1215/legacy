@@ -113,7 +113,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위치 정보 변경 중 오류 발생:", error);
+          console.error("위�� 정보 변경 중 오류 발생:", error);
         }
       };
 
@@ -271,8 +271,10 @@ const SearchPage = () => {
   const getCurrentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const pageData = filteredData.slice(startIndex, endIndex);
-    return pageData;
+    return filteredData.slice(startIndex, endIndex).map((item, index) => ({
+      ...item,
+      uniqueId: `${item.ccbakdcd}_${startIndex + index}`,
+    }));
   };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -340,12 +342,16 @@ const SearchPage = () => {
               데이터를 불러오는 중...
             </div>
           ) : (
-            <ul className="h-auto" key={currentPage}>
-              {getCurrentPageData().map((item, index) => (
+            <ul className="h-auto">
+              {getCurrentPageData().map((item) => (
                 <li
-                  key={item.ccbakdcd || index}
+                  key={item.uniqueId}
                   className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  style={{
+                    animationDelay: `${
+                      getCurrentPageData().indexOf(item) * 0.1
+                    }s`,
+                  }}
                 >
                   <div
                     onClick={() => handleStarClick(item)}
@@ -359,10 +365,13 @@ const SearchPage = () => {
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left"
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left flex-grow"
                   >
                     {item.ccbamnm1}
                   </button>
+                  <div className="text-xs text-gray-500 ml-2">
+                    {item.ccbalcad && item.ccbalcad.split(" ")[0]}
+                  </div>
                 </li>
               ))}
             </ul>
