@@ -46,9 +46,9 @@ loader = TextLoader(data_path, encoding='utf-8')
 
 try:
     documents = loader.load()
-    print(f"문서 로딩 완료: {time.time() - start_time:.2f}초")
+    # print(f"문서 로딩 완료: {time.time() - start_time:.2f}초")
 except Exception as e:
-    print(f"문서 로딩 중 오류 발생: {str(e)}")
+    # print(f"문서 로딩 중 오류 발생: {str(e)}")
     sys.exit(1)
 
 
@@ -62,7 +62,7 @@ if not documents:
 split_start = time.time()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 splits = text_splitter.split_documents(documents)
-print(f"문서 분할 완료: {time.time() - split_start:.2f}초, 분할된 문서 개수: {len(splits)}")
+# print(f"문서 분할 완료: {time.time() - split_start:.2f}초, 분할된 문서 개수: {len(splits)}")
 
 
 if not splits:
@@ -74,14 +74,14 @@ if not splits:
 vector_start = time.time()
 
 if os.path.exists(cache_file):
-    print("캐시된 벡터 저장소를 불러옵니다.")
+    # print("캐시된 벡터 저장소를 불러옵니다.")
     load_start = time.time()
     vectorstore = FAISS.load_local(
         cache_dir,
         OpenAIEmbeddings(),
         allow_dangerous_deserialization=True  # 이 옵션을 추가
     )
-    print(f"캐시된 벡터 저장소 로드 완료: {time.time() - load_start:.2f}초")
+    # print(f"캐시된 벡터 저장소 로드 완료: {time.time() - load_start:.2f}초")
 else:
     print("새로운 벡터 저장소를 생성합니다.")
     create_start = time.time()
@@ -91,7 +91,7 @@ else:
     )
     os.makedirs(cache_dir, exist_ok=True)
     vectorstore.save_local(cache_dir)
-    print(f"새로운 벡터 저장소 생성 완료: {time.time() - create_start:.2f}초")
+    # print(f"새로운 벡터 저장소 생성 완료: {time.time() - create_start:.2f}초")
 
 
 # 벡터 저장소 크기 확인
@@ -103,7 +103,7 @@ else:
 
 
 retriever = vectorstore.as_retriever()
-print(f"벡터 저장소 생성 완료: {time.time() - vector_start:.2f}초")
+# print(f"벡터 저장소 생성 완료: {time.time() - vector_start:.2f}초")
 
 
 # # 벡터 저장소 상태 확인
@@ -149,7 +149,7 @@ query_start = time.time()
 recieved_question = "숭례문에 대해 간략하게 설명해 주세요"
 answer = rag_chain.invoke(recieved_question)
 print(answer)
-print(f"질문 처리 완료: {time.time() - query_start:.2f}초")
-print(f"전체 실행 시간: {time.time() - start_time:.2f}초")
+# print(f"질문 처리 완료: {time.time() - query_start:.2f}초")
+# print(f"전체 실행 시간: {time.time() - start_time:.2f}초")
 
 
