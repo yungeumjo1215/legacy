@@ -5,6 +5,8 @@ export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async (token, { rejectWithValue }) => {
     try {
+      console.log("Fetching favorites with token:", token);
+
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "GET",
         headers: {
@@ -12,9 +14,15 @@ export const fetchFavorites = createAsyncThunk(
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch favorites");
+      console.log("Fetch Response Status:", response.status);
+
+      if (!response.ok) {
+        console.error("Fetch failed with response:", response);
+        throw new Error("Failed to fetch favorites");
+      }
 
       const data = await response.json();
+      console.log("Fetched Data:", data);
 
       // Filter festivals and heritages based on fields
       const festivals = data.filter(
@@ -22,8 +30,12 @@ export const fetchFavorites = createAsyncThunk(
       );
       const heritages = data.filter((item) => item.ccbamnm1 && item.ccbalcad);
 
+      console.log("Filtered Festivals:", festivals);
+      console.log("Filtered Heritages:", heritages);
+
       return { festivals, heritages };
     } catch (err) {
+      console.error("Error in fetchFavorites:", err.message);
       return rejectWithValue(err.message);
     }
   }
@@ -34,6 +46,9 @@ export const addFavorites = createAsyncThunk(
   "favorites/addFavorites",
   async ({ token, newFavorites }, { rejectWithValue }) => {
     try {
+      console.log("Adding favorites with token:", token);
+      console.log("New Favorites Payload:", newFavorites);
+
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "POST",
         headers: {
@@ -43,10 +58,19 @@ export const addFavorites = createAsyncThunk(
         body: JSON.stringify({ favoriteFestivals: newFavorites }),
       });
 
-      if (!response.ok) throw new Error("Failed to add favorites");
+      console.log("Add Response Status:", response.status);
+
+      if (!response.ok) {
+        console.error("Add failed with response:", response);
+        throw new Error("Failed to add favorites");
+      }
+
+      const result = await response.json();
+      console.log("Add Result:", result);
 
       return Array.isArray(newFavorites) ? newFavorites : [];
     } catch (err) {
+      console.error("Error in addFavorites:", err.message);
       return rejectWithValue(err.message);
     }
   }
@@ -57,6 +81,9 @@ export const deleteFavorites = createAsyncThunk(
   "favorites/deleteFavorites",
   async ({ token, favoritesToDelete }, { rejectWithValue }) => {
     try {
+      console.log("Deleting favorites with token:", token);
+      console.log("Favorites to Delete:", favoritesToDelete);
+
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "DELETE",
         headers: {
@@ -66,25 +93,37 @@ export const deleteFavorites = createAsyncThunk(
         body: JSON.stringify({ festivalsToDelete: favoritesToDelete }),
       });
 
-      if (!response.ok) throw new Error("Failed to delete favorites");
+      console.log("Delete Response Status:", response.status);
+
+      if (!response.ok) {
+        console.error("Delete failed with response:", response);
+        throw new Error("Failed to delete favorites");
+      }
+
+      const result = await response.json();
+      console.log("Delete Result:", result);
 
       return Array.isArray(favoritesToDelete) ? favoritesToDelete : [];
     } catch (err) {
+      console.error("Error in deleteFavorites:", err.message);
       return rejectWithValue(err.message);
     }
   }
 );
 
+// Redux slice
 const favoriteSlice = createSlice({
   name: "favorites",
   initialState: {
-    favoriteFestivals: [], // Default empty array
-    favoriteHeritages: [], // Default empty array
+    favoriteFestivals: [],
+    favoriteHeritages: [],
     status: "idle",
     error: null,
   },
   reducers: {
     addFavorite(state, action) {
+      console.log("addFavorite Action:", action.payload);
+
       const { favorites, type } = action.payload;
 
       if (type === "festival" && Array.isArray(favorites)) {
@@ -110,8 +149,13 @@ const favoriteSlice = createSlice({
           ),
         ];
       }
+
+      console.log("Updated favoriteFestivals:", state.favoriteFestivals);
+      console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
     removeFavorite(state, action) {
+      console.log("removeFavorite Action:", action.payload);
+
       const { favoritesToRemove, type } = action.payload;
 
       if (type === "festival" && Array.isArray(favoritesToRemove)) {
@@ -130,25 +174,13 @@ const favoriteSlice = createSlice({
             favoritesToRemove &&
             !favoritesToRemove.some((item) => item.id === heritage.id)
         );
-
-        // favoritesToRemove 배열의 각 항목에 대해 서버 요청
-        favoritesToRemove.forEach((item) => {
-          fetch("http://localhost:8000/pgdb/favoritelist", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              type: "heritage",
-              id: item.id, // item의 id 사용
-            }),
-          }).catch((error) =>
-            console.error("Error removing favorite from server:", error)
-          );
-        });
       }
+
+      console.log("Updated favoriteFestivals:", state.favoriteFestivals);
+      console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
     clearFavorites(state) {
+      console.log("Clearing all favorites...");
       state.favoriteFestivals = [];
       state.favoriteHeritages = [];
     },
@@ -156,40 +188,20 @@ const favoriteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFavorites.pending, (state) => {
+        console.log("fetchFavorites: Pending");
         state.status = "loading";
       })
       .addCase(fetchFavorites.fulfilled, (state, action) => {
+        console.log("fetchFavorites: Fulfilled", action.payload);
         const { festivals, heritages } = action.payload;
         state.favoriteFestivals = festivals || [];
         state.favoriteHeritages = heritages || [];
         state.status = "succeeded";
       })
       .addCase(fetchFavorites.rejected, (state, action) => {
+        console.error("fetchFavorites: Rejected", action.payload);
         state.status = "failed";
         state.error = action.payload || "Failed to fetch favorites.";
-      })
-      .addCase(addFavorites.fulfilled, (state, action) => {
-        if (Array.isArray(action.payload)) {
-          state.favoriteFestivals = [
-            ...state.favoriteFestivals,
-            ...action.payload,
-          ];
-        }
-      })
-      .addCase(deleteFavorites.fulfilled, (state, action) => {
-        const favoritesToDelete = action.payload;
-
-        if (Array.isArray(favoritesToDelete)) {
-          state.favoriteFestivals = state.favoriteFestivals.filter(
-            (fav) =>
-              favoritesToDelete &&
-              !favoritesToDelete.some(
-                (item) =>
-                  item.programName === fav.programName &&
-                  item.location === fav.location
-              )
-          );
-        }
       });
   },
 });
