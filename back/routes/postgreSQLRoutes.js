@@ -73,29 +73,6 @@ router.get("/festivals", async (req, res) => {
   }
 });
 
-// DELETE: Remove Favorite Festivals and Heritages
-router.delete("/favoritelist", async (req, res) => {
-  const { festivalsToDelete, heritagesToDelete } = req.body;
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: Missing token." });
-  }
-  try {
-    await executeTransaction(async (pool) => {
-      if (Array.isArray(festivalsToDelete) && festivalsToDelete.length > 0) {
-        await deleteFavoriteFestivals(pool, token, festivalsToDelete);
-      }
-      if (Array.isArray(heritagesToDelete) && heritagesToDelete.length > 0) {
-        await deleteFavoriteHeritages(pool, token, heritagesToDelete);
-      }
-    });
-    res.status(200).json({ message: "Favorites removed successfully." });
-  } catch (error) {
-    console.error("Error removing favorites:", error.message);
-    res.status(500).json({ message: "Server error while removing favorites." });
-  }
-});
-
 // router.get("/favoritelist", async (req, res) => {
 //   try {
 //     // Query all records from the favoritelist table
@@ -115,55 +92,87 @@ router.delete("/favoritelist", async (req, res) => {
 //   }
 // });
 
-// POST: Add Favorite Festivals and Heritages
-router.post("/favoritelist", async (req, res) => {
-  const { favoriteFestivals, favoriteHeritages } = req.body;
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+router.get("/favoritelist", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: Missing token." });
   }
 
   try {
-    await executeTransaction(async (pool) => {
-      if (Array.isArray(favoriteFestivals) && favoriteFestivals.length > 0) {
-        await insertFavoriteFestivals(pool, token, favoriteFestivals);
-      }
-      if (Array.isArray(favoriteHeritages) && favoriteHeritages.length > 0) {
-        await insertFavoriteHeritages(pool, token, favoriteHeritages);
-      }
-    });
+    const email = decodeToken(token);
 
-    res.status(201).json({ message: "Favorites added successfully." });
+    const result = await pool.query(
+      `SELECT f_id, h_id, type FROM favoritelist WHERE token = $1`,
+      [email]
+    );
+
+    res.json(result.rows);
   } catch (error) {
-    console.error("Error adding favorites:", error.message);
-    res.status(500).json({ message: "Server error while adding favorites." });
+    console.error("Error fetching favorites:", error.message);
+    res.status(500).json({ message: "Server error while fetching favorites." });
+  }
+});
+
+// POST: Add Favorite Festivals and Heritages
+router.post("/favoritelist", async (req, res) => {
+  const { id, type } = req.body; // Extract ID and type
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token
+
+  if (!token || !id || !type) {
+    return res.status(400).json({ message: "Missing required fields." });
+  }
+
+  try {
+    const email = decodeToken(token);
+
+    if (type === "event") {
+      await pool.query(
+        `INSERT INTO favoritelist (token, f_id, type) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [email, id, type]
+      );
+    } else if (type === "heritage") {
+      await pool.query(
+        `INSERT INTO favoritelist (token, h_id, type) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [email, id, type]
+      );
+    }
+
+    res.status(201).json({ message: "Favorite added successfully." });
+  } catch (error) {
+    console.error("Error adding favorite:", error.message);
+    res.status(500).json({ message: "Server error while adding favorite." });
   }
 });
 
 // DELETE: Remove Favorite Festivals and Heritages
 router.delete("/favoritelist", async (req, res) => {
-  const { festivalsToDelete, heritagesToDelete } = req.body;
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+  const { id, type } = req.body; // Extract ID and type
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: Missing token." });
+  if (!token || !id || !type) {
+    return res.status(400).json({ message: "Missing required fields." });
   }
 
   try {
-    await executeTransaction(async (pool) => {
-      if (Array.isArray(festivalsToDelete) && festivalsToDelete.length > 0) {
-        await deleteFavoriteFestivals(pool, token, festivalsToDelete);
-      }
-      if (Array.isArray(heritagesToDelete) && heritagesToDelete.length > 0) {
-        await deleteFavoriteHeritages(pool, token, heritagesToDelete);
-      }
-    });
+    const email = decodeToken(token);
 
-    res.status(200).json({ message: "Favorites removed successfully." });
+    if (type === "event") {
+      await pool.query(
+        `DELETE FROM favoritelist WHERE token = $1 AND f_id = $2 AND type = $3`,
+        [email, id, type]
+      );
+    } else if (type === "heritage") {
+      await pool.query(
+        `DELETE FROM favoritelist WHERE token = $1 AND h_id = $2 AND type = $3`,
+        [email, id, type]
+      );
+    }
+
+    res.status(200).json({ message: "Favorite removed successfully." });
   } catch (error) {
-    console.error("Error removing favorites:", error.message);
-    res.status(500).json({ message: "Server error while removing favorites." });
+    console.error("Error removing favorite:", error.message);
+    res.status(500).json({ message: "Server error while removing favorite." });
   }
 });
 

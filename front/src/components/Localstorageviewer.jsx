@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchFavorites } from "../redux/slices/favoriteSlice";
-import { loginSuccess } from "../redux/slices/authSlice"; // Assuming you have an auth slice
+import {
+  fetchFavorites,
+  addFavorites,
+  deleteFavorites,
+} from "../redux/slices/favoriteSlice";
+import { loginSuccess } from "../redux/slices/authSlice";
 
 const LocalStorageViewer = () => {
   const dispatch = useDispatch();
@@ -13,8 +17,7 @@ const LocalStorageViewer = () => {
     status,
     error,
   } = useSelector((state) => state.favorites);
-
-  const { isLoggedIn } = useSelector((state) => state.auth); // Assuming you track login status in auth slice
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   // Retrieve token from localStorage
   const token = localStorage.getItem("token");
@@ -22,8 +25,7 @@ const LocalStorageViewer = () => {
   // Handle token-based login and fetch favorites
   useEffect(() => {
     if (token && !isLoggedIn) {
-      // Dispatch login action if token exists but user isn't logged in
-      const user = JSON.parse(localStorage.getItem("user")); // Retrieve user details from localStorage
+      const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         dispatch(
           loginSuccess({
@@ -35,10 +37,19 @@ const LocalStorageViewer = () => {
     }
 
     if (token) {
-      // Fetch favorites if the token exists
       dispatch(fetchFavorites(token));
     }
   }, [dispatch, token, isLoggedIn]);
+
+  // Handler to add a favorite (example: festival)
+  const handleAddFavorite = (id, type) => {
+    dispatch(addFavorites({ token, favoriteId: id, type }));
+  };
+
+  // Handler to delete a favorite (example: heritage)
+  const handleDeleteFavorite = (id, type) => {
+    dispatch(deleteFavorites({ token, favoriteId: id, type }));
+  };
 
   return (
     <div className="p-4">
@@ -58,8 +69,15 @@ const LocalStorageViewer = () => {
       {status === "succeeded" && favoriteFestivals.length > 0 && (
         <ul className="list-disc pl-5">
           {favoriteFestivals.map((festival, idx) => (
-            <li key={idx}>
-              <strong>{festival.programName}</strong> - {festival.location}
+            <li key={idx} className="flex justify-between items-center">
+              <div>
+                <strong>{festival.programName}</strong> - {festival.location}
+              </div>
+              <button
+                onClick={() => handleDeleteFavorite(festival.id, "event")}
+                className="text-red-500 hover:underline">
+                Remove
+              </button>
             </li>
           ))}
         </ul>
@@ -73,8 +91,15 @@ const LocalStorageViewer = () => {
       {status === "succeeded" && favoriteHeritages.length > 0 && (
         <ul className="list-disc pl-5">
           {favoriteHeritages.map((heritage, idx) => (
-            <li key={idx}>
-              <strong>{heritage.ccbamnm1}</strong> - {heritage.ccbalcad}
+            <li key={idx} className="flex justify-between items-center">
+              <div>
+                <strong>{heritage.ccbamnm1}</strong> - {heritage.ccbalcad}
+              </div>
+              <button
+                onClick={() => handleDeleteFavorite(heritage.id, "heritage")}
+                className="text-red-500 hover:underline">
+                Remove
+              </button>
             </li>
           ))}
         </ul>
