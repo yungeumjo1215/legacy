@@ -113,7 +113,7 @@ const SearchPage = () => {
             setSelectedLocation({ lat, lng });
           }
         } catch (error) {
-          console.error("위�� 정보 변경 중 오류 발생:", error);
+          console.error("위치 정보 변경 중 오류 발생:", error);
         }
       };
 
@@ -369,9 +369,7 @@ const SearchPage = () => {
                   >
                     {item.ccbamnm1}
                   </button>
-                  <div className="text-xs text-gray-500 ml-2">
-                    {item.ccbalcad && item.ccbalcad.split(" ")[0]}
-                  </div>
+                  <div className="text-xs text-gray-500 ml-2"></div>
                 </li>
               ))}
             </ul>
