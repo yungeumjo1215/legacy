@@ -90,7 +90,7 @@ const SearchBar = memo(({ value, onChange }) => (
       />
       <button
         type="submit"
-        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0"
+        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0 hover:bg-blue-700"
       >
         <span className="relative z-10">검색</span>
       </button>
