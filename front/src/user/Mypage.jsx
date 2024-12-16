@@ -108,7 +108,7 @@ const Mypage = () => {
                   <p className="text-gray-600 font-medium">이름</p>
                 </div>
                 <p className="text-gray-900 font-medium pl-8">
-                  {userInfo.programName}
+                  {userInfo.username}
                 </p>
               </div>
               {userInfo.created_at && (
