@@ -18,9 +18,10 @@ const EventModal = ({ event, onClose }) => {
   };
 
   useEffect(() => {
-    const favoriteStatus = festivals.some(
-      (festival) => festival.programName === event?.programName
-    );
+    const favoriteStatus =
+      Array.isArray(festivals) &&
+      festivals.some((festival) => festival.programName === event?.programName);
+
     setIsFavorite(favoriteStatus);
   }, [festivals, event?.programName]);
 
@@ -85,22 +86,19 @@ const EventModal = ({ event, onClose }) => {
       />
       <div
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                     bg-white rounded-lg shadow-xl z-50 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
-      >
+                     bg-white rounded-lg shadow-xl z-50 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
         <div>
           <div className="flex justify-between items-center mb-[8px]">
             <h2 className="MainFont text-2xl">{event.programName}</h2>
             <div className="flex items-center gap-4">
               <button
                 onClick={handleFavoriteClick}
-                className="text-2xl text-yellow-500 hover:text-yellow-600"
-              >
+                className="text-2xl text-yellow-500 hover:text-yellow-600">
                 {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
               </button>
               <button
                 onClick={onClose}
-                className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
-              >
+                className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer">
                 X
               </button>
             </div>
@@ -156,22 +154,19 @@ const EventModal = ({ event, onClose }) => {
                 <>
                   <button
                     onClick={handleLoginClick}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     로그인하기
                   </button>
                   <button
                     onClick={closeAlert}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                     닫기
                   </button>
                 </>
               ) : (
                 <button
                   onClick={closeAlert}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                   확인
                 </button>
               )}

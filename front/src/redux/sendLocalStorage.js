@@ -29,10 +29,10 @@ export default syncLocalStorageMiddleware;
 
 function sendDataToPostgreSQL() {
   // Fetch data from localStorage
-  const favoriteFestivals =
-    JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
-  const favoriteHeritages =
-    JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
+  // const favoriteFestivals =
+  //   JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
+  // const favoriteHeritages =
+  //   JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
   const token = localStorage.getItem("token"); // Assume token is stored in localStorage
 
   if (!token) {
@@ -41,35 +41,35 @@ function sendDataToPostgreSQL() {
   }
 
   // Previous favorite data fetched from localStorage to identify deleted items
-  const previousFavoriteFestivals =
-    JSON.parse(localStorage.getItem("previousFavoriteFestivals")) || [];
-  const previousFavoriteHeritages =
-    JSON.parse(localStorage.getItem("previousFavoriteHeritages")) || [];
+  // const previousFavoriteFestivals =
+  //   JSON.parse(localStorage.getItem("previousFavoriteFestivals")) || [];
+  // const previousFavoriteHeritages =
+  //   JSON.parse(localStorage.getItem("previousFavoriteHeritages")) || [];
 
   // Identify items to delete
-  const festivalsToDelete = previousFavoriteFestivals.filter(
-    (prev) =>
-      !favoriteFestivals.some(
-        (current) =>
-          current.programName === prev.programName &&
-          current.location === prev.location
-      )
-  );
+  // const festivalsToDelete = previousFavoriteFestivals.filter(
+  //   (prev) =>
+  //     !favoriteFestivals.some(
+  //       (current) =>
+  //         current.programName === prev.programName &&
+  //         current.location === prev.location
+  //     )
+  // );
 
-  const heritagesToDelete = previousFavoriteHeritages.filter(
-    (prev) =>
-      !favoriteHeritages.some(
-        (current) =>
-          current.ccbamnm1 === prev.ccbamnm1 &&
-          current.ccbalcad === prev.ccbalcad
-      )
-  );
+  // const heritagesToDelete = previousFavoriteHeritages.filter(
+  //   (prev) =>
+  //     !favoriteHeritages.some(
+  //       (current) =>
+  //         current.ccbamnm1 === prev.ccbamnm1 &&
+  //         current.ccbalcad === prev.ccbalcad
+  //     )
+  // );
 
   // Debugging: Log data being sent to the backend
-  console.log("Favorite Festivals:", favoriteFestivals);
-  console.log("Favorite Heritages:", favoriteHeritages);
-  console.log("Festivals to Delete:", festivalsToDelete);
-  console.log("Heritages to Delete:", heritagesToDelete);
+  // console.log("Favorite Festivals:", favoriteFestivals);
+  // console.log("Favorite Heritages:", favoriteHeritages);
+  // console.log("Festivals to Delete:", festivalsToDelete);
+  // console.log("Heritages to Delete:", heritagesToDelete);
 
   // Send data to the backend
   fetch("http://localhost:8000/api/store-favoritesPGDB", {
@@ -79,10 +79,10 @@ function sendDataToPostgreSQL() {
       token: token,
     },
     body: JSON.stringify({
-      favoriteFestivals,
-      favoriteHeritages,
-      festivalsToDelete,
-      heritagesToDelete,
+      // favoriteFestivals,
+      // favoriteHeritages,
+      // festivalsToDelete,
+      // heritagesToDelete,
     }),
   })
     .then((response) => response.json())
@@ -91,14 +91,14 @@ function sendDataToPostgreSQL() {
         console.log("Data successfully sent to PostgreSQL:", data.message);
 
         // Update "previous" localStorage after successful sync
-        localStorage.setItem(
-          "previousFavoriteFestivals",
-          JSON.stringify(favoriteFestivals)
-        );
-        localStorage.setItem(
-          "previousFavoriteHeritages",
-          JSON.stringify(favoriteHeritages)
-        );
+        // localStorage.setItem(
+        //   "previousFavoriteFestivals",
+        //   JSON.stringify(favoriteFestivals)
+        // );
+        // localStorage.setItem(
+        //   "previousFavoriteHeritages",
+        //   JSON.stringify(favoriteHeritages)
+        // );
       } else {
         console.error("Error sending data:", data.error || data);
       }

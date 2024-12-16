@@ -77,8 +77,7 @@ const Mypage = () => {
         <div
           className={`w-80 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-8 transition-all duration-300 hover:shadow-xl ${
             windowWidth <= 800 ? "hidden" : ""
-          }`}
-        >
+          }`}>
           <div className="text-center mb-8">
             <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center transform transition-all duration-300 hover:scale-105 ">
               <FaUser className="text-blue-500 text-3xl" />
@@ -109,7 +108,7 @@ const Mypage = () => {
                   <p className="text-gray-600 font-medium">이름</p>
                 </div>
                 <p className="text-gray-900 font-medium pl-8">
-                  {userInfo.username}
+                  {userInfo.programName}
                 </p>
               </div>
               {userInfo.created_at && (
@@ -121,7 +120,7 @@ const Mypage = () => {
                     <p className="text-gray-600 font-medium">가입일</p>
                   </div>
                   <p className="text-gray-900 font-medium pl-8">
-                    {new Date(userInfo.created_at).toLocaleDateString()}
+                    {new Date(userInfo.location).toLocaleDateString()}
                   </p>
                 </div>
               )}

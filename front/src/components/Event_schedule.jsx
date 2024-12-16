@@ -90,7 +90,7 @@ const SearchBar = memo(({ value, onChange }) => (
       />
       <button
         type="submit"
-        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0 hover:bg-blue-700"
+        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0"
       >
         <span className="relative z-10">검색</span>
       </button>
@@ -120,74 +120,71 @@ const EventItem = memo(
           </button>
 
           <div className="flex-1">
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-baseline">
-                <h3 className="MainFont text-xl sm:text-2xl translate-y-[-8px]">
-                  {event.programName}
-                </h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="MainFont text-xl sm:text-2xl -mt-1">
+                {event.programName}
+              </h3>
+              <button
+                className="border-2 border-blue-800 rounded-md
+                           hover:bg-blue-800 hover:text-white
+                          text-sm sm:text-base lg:text-lg
+                          px-2 sm:px-3 lg:px-4
+                          py-1 sm:py-1.5 lg:py-2
+                          transition-all duration-300 ease-in-out
+                          shadow-sm hover:shadow-md
+                          text-center text-nowrap
+                          font-bold"
+                onClick={() => onEventClick(event)}
+              >
+                더보기
+              </button>
+            </div>
 
-                <button
-                  className="border-2 border-blue-800 rounded-md
-                             hover:bg-blue-800 hover:text-white
-                            text-sm sm:text-base lg:text-lg
-                            px-2 sm:px-3 lg:px-4
-                            py-1 sm:py-1.5 lg:py-2
-                            transition-all duration-300 ease-in-out
-                            shadow-sm hover:shadow-md
-                            text-center text-nowrap
-                            font-bold"
-                  onClick={() => onEventClick(event)}
-                >
-                  더보기
-                </button>
+            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+              <div className="lg:max-w-56 w-full">
+                <img
+                  src={
+                    event.image && event.image !== "N/A"
+                      ? event.image
+                      : default_Img
+                  }
+                  alt={event.programName}
+                  className="w-full h-auto object-cover border rounded-lg"
+                  loading="lazy"
+                  onError={onErrorImg}
+                />
               </div>
-
-              <div className="flex flex-col lg:flex-row gap-4 mb-4">
-                <div className="lg:max-w-56 w-full">
-                  <img
-                    src={
-                      event.image && event.image !== "N/A"
-                        ? event.image
-                        : default_Img
-                    }
-                    alt={event.programName}
-                    className="w-full h-auto object-cover border rounded-lg"
-                    loading="lazy"
-                    onError={onErrorImg}
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-                    <div className=" p-2 sm:p-3 rounded-lg">
-                      <p className="SubFont text-base sm:text-lg">
-                        <span className="font-medium mr-2">행사 내용:</span>
-                        {formatValue(event.programContent)}
-                      </p>
-                    </div>
-                    <div className=" p-2 sm:p-3 rounded-lg">
-                      <p className="SubFont text-base sm:text-lg">
-                        <span className="font-medium mr-2">기간:</span>
-                        {event.startDate} ~ {formatValue(event.endDate)}
-                      </p>
-                    </div>
-                    <div className=" p-2 sm:p-3 rounded-lg">
-                      <p className="SubFont text-base sm:text-lg">
-                        <span className="font-medium mr-2">장소:</span>
-                        {formatValue(event.location)}
-                      </p>
-                    </div>
-                    <div className=" p-2 sm:p-3 rounded-lg">
-                      <p className="SubFont text-base sm:text-lg">
-                        <span className="font-medium mr-2">대상:</span>
-                        {formatValue(event.targetAudience)}
-                      </p>
-                    </div>
-                    <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
-                      <p className="SubFont text-base sm:text-lg">
-                        <span className="font-medium mr-2">문의:</span>
-                        {formatValue(event.contact)}
-                      </p>
-                    </div>
+              <div className="flex-1">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
+                      <span className="font-medium mr-2">행사 내용:</span>
+                      {formatValue(event.programContent)}
+                    </p>
+                  </div>
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
+                      <span className="font-medium mr-2">기간:</span>
+                      {event.startDate} ~ {formatValue(event.endDate)}
+                    </p>
+                  </div>
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
+                      <span className="font-medium mr-2">장소:</span>
+                      {formatValue(event.location)}
+                    </p>
+                  </div>
+                  <div className=" p-2 sm:p-3 rounded-lg">
+                    <p className="SubFont text-base sm:text-lg">
+                      <span className="font-medium mr-2">대상:</span>
+                      {formatValue(event.targetAudience)}
+                    </p>
+                  </div>
+                  <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
+                    <p className="SubFont text-base sm:text-lg">
+                      <span className="font-medium mr-2">문의:</span>
+                      {formatValue(event.contact)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -240,7 +237,10 @@ const EventSchedule = () => {
 
   const isEventStarred = useCallback(
     (programName) => {
-      return festivals.some((festival) => festival.programName === programName);
+      return (
+        Array.isArray(festivals) &&
+        festivals.some((festival) => festival.programName === programName)
+      );
     },
     [festivals]
   );
@@ -693,85 +693,82 @@ const EventSchedule = () => {
                           </button>
 
                           <div className="flex-1">
-                            <div className="flex flex-col gap-4">
-                              <div className="flex justify-between items-baseline">
-                                <h3 className="MainFont text-xl sm:text-2xl translate-y-[-8px]">
-                                  {festival.programName}
-                                </h3>
+                            <div className="flex justify-between items-center mb-2">
+                              <h3 className="MainFont text-xl sm:text-2xl">
+                                {festival.programName}
+                              </h3>
+                              <button
+                                className="border-2 border-blue-800 rounded-md
+                                           hover:bg-blue-800 hover:text-white
+                                          text-sm sm:text-base lg:text-lg
+                                          px-2 sm:px-3 lg:px-4
+                                          py-1 sm:py-1.5 lg:py-2
+                                          transition-all duration-300 ease-in-out
+                                          shadow-sm hover:shadow-md
+                                          text-center text-nowrap
+                                          font-bold"
+                                onClick={() => handleEventClick(festival)}
+                              >
+                                더보기
+                              </button>
+                            </div>
 
-                                <button
-                                  className="border-2 border-blue-800 rounded-md
-                                             hover:bg-blue-800 hover:text-white
-                                            text-sm sm:text-base lg:text-lg
-                                            px-2 sm:px-3 lg:px-4
-                                            py-1 sm:py-1.5 lg:py-2
-                                            transition-all duration-300 ease-in-out
-                                            shadow-sm hover:shadow-md
-                                            text-center text-nowrap
-                                            font-bold"
-                                  onClick={() => handleEventClick(festival)}
-                                >
-                                  더보기
-                                </button>
+                            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+                              <div className="lg:max-w-56 w-full">
+                                <img
+                                  src={
+                                    festival.image && festival.image !== "N/A"
+                                      ? festival.image
+                                      : default_Img
+                                  }
+                                  alt={festival.programName}
+                                  className="w-full h-auto object-cover border rounded-lg"
+                                  loading="lazy"
+                                  onError={onErrorImg}
+                                />
                               </div>
-
-                              <div className="flex flex-col lg:flex-row gap-4 mb-4">
-                                <div className="lg:max-w-56 w-full">
-                                  <img
-                                    src={
-                                      festival.image && festival.image !== "N/A"
-                                        ? festival.image
-                                        : default_Img
-                                    }
-                                    alt={festival.programName}
-                                    className="w-full h-auto object-cover border rounded-lg"
-                                    loading="lazy"
-                                    onError={onErrorImg}
-                                  />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
-                                    <div className=" p-2 sm:p-3 rounded-lg">
-                                      <p className="SubFont text-base sm:text-lg">
-                                        <span className="font-medium mr-2">
-                                          행사 내용:
-                                        </span>
-                                        {formatValue(festival.programContent)}
-                                      </p>
-                                    </div>
-                                    <div className=" p-2 sm:p-3 rounded-lg">
-                                      <p className="SubFont text-base sm:text-lg">
-                                        <span className="font-medium mr-2">
-                                          기간:
-                                        </span>
-                                        {festival.startDate} ~{" "}
-                                        {formatValue(festival.endDate)}
-                                      </p>
-                                    </div>
-                                    <div className=" p-2 sm:p-3 rounded-lg">
-                                      <p className="SubFont text-base sm:text-lg">
-                                        <span className="font-medium mr-2">
-                                          장소:
-                                        </span>
-                                        {formatValue(festival.location)}
-                                      </p>
-                                    </div>
-                                    <div className=" p-2 sm:p-3 rounded-lg">
-                                      <p className="SubFont text-base sm:text-lg">
-                                        <span className="font-medium mr-2">
-                                          대상:
-                                        </span>
-                                        {formatValue(festival.targetAudience)}
-                                      </p>
-                                    </div>
-                                    <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
-                                      <p className="SubFont text-base sm:text-lg">
-                                        <span className="font-medium mr-2">
-                                          문의:
-                                        </span>
-                                        {formatValue(festival.contact)}
-                                      </p>
-                                    </div>
+                              <div className="flex-1">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        행사 내용:
+                                      </span>
+                                      {formatValue(festival.programContent)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        기간:
+                                      </span>
+                                      {festival.startDate} ~{" "}
+                                      {formatValue(festival.endDate)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        장소:
+                                      </span>
+                                      {formatValue(festival.location)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        대상:
+                                      </span>
+                                      {formatValue(festival.targetAudience)}
+                                    </p>
+                                  </div>
+                                  <div className=" p-2 sm:p-3 rounded-lg lg:col-span-2">
+                                    <p className="SubFont text-base sm:text-lg">
+                                      <span className="font-medium mr-2">
+                                        문의:
+                                      </span>
+                                      {formatValue(festival.contact)}
+                                    </p>
                                   </div>
                                 </div>
                               </div>

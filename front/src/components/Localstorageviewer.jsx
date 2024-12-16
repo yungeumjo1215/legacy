@@ -1,58 +1,84 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchFavorites } from "../redux/slices/favoriteSlice";
+import { loginSuccess } from "../redux/slices/authSlice"; // Assuming you have an auth slice
 
 const LocalStorageViewer = () => {
-  const [favoriteFestivals, setFavoriteFestivals] = useState([]);
-  const [favoriteHeritages, setFavoriteHeritages] = useState([]);
+  const dispatch = useDispatch();
 
+  // Access Redux state
+  const {
+    favoriteFestivals = [],
+    favoriteHeritages = [],
+    status,
+    error,
+  } = useSelector((state) => state.favorites);
+
+  const { isLoggedIn } = useSelector((state) => state.auth); // Assuming you track login status in auth slice
+
+  // Retrieve token from localStorage
+  const token = localStorage.getItem("token");
+
+  // Handle token-based login and fetch favorites
   useEffect(() => {
-    // Fetch data from localStorage
-    const festivals =
-      JSON.parse(localStorage.getItem("favoriteFestivals")) || [];
-    const heritages =
-      JSON.parse(localStorage.getItem("favoriteHeritages")) || [];
+    if (token && !isLoggedIn) {
+      // Dispatch login action if token exists but user isn't logged in
+      const user = JSON.parse(localStorage.getItem("user")); // Retrieve user details from localStorage
+      if (user) {
+        dispatch(
+          loginSuccess({
+            token,
+            user,
+          })
+        );
+      }
+    }
 
-    // Set the data in state
-    setFavoriteFestivals(festivals);
-    setFavoriteHeritages(heritages);
-
-    // Log data to the console for debugging
-    console.log("Favorite Festivals:", festivals);
-    console.log("Favorite Heritages:", heritages);
-  }, []);
+    if (token) {
+      // Fetch favorites if the token exists
+      dispatch(fetchFavorites(token));
+    }
+  }, [dispatch, token, isLoggedIn]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Local Storage Data Viewer</h2>
-      <div>
-        <h3>Favorite Festivals</h3>
-        {favoriteFestivals.length > 0 ? (
-          <ul>
-            {favoriteFestivals.map((festival, index) => (
-              <li key={index}>
-                <strong>{festival.programName}</strong>:{" "}
-                {festival.programContent || "No content available"}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No favorite festivals saved.</p>
-        )}
-      </div>
-      <div>
-        <h3>Favorite Heritages</h3>
-        {favoriteHeritages.length > 0 ? (
-          <ul>
-            {favoriteHeritages.map((heritage, index) => (
-              <li key={index}>
-                <strong>{heritage.ccbaMnm1 || "Unknown Heritage"}</strong>:{" "}
-                {heritage.content || "No content available"}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No favorite heritages saved.</p>
-        )}
-      </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Favorites</h1>
+
+      {/* Loading and Error States */}
+      {status === "loading" && <p>Loading...</p>}
+      {status === "failed" && (
+        <p className="text-red-500">Error: {error || "Failed to load data."}</p>
+      )}
+
+      {/* Favorite Festivals */}
+      <h2 className="text-xl font-semibold mt-4">Favorite Festivals</h2>
+      {status === "succeeded" && favoriteFestivals.length === 0 && (
+        <p>No favorite festivals.</p>
+      )}
+      {status === "succeeded" && favoriteFestivals.length > 0 && (
+        <ul className="list-disc pl-5">
+          {favoriteFestivals.map((festival, idx) => (
+            <li key={idx}>
+              <strong>{festival.programName}</strong> - {festival.location}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Favorite Heritages */}
+      <h2 className="text-xl font-semibold mt-4">Favorite Heritages</h2>
+      {status === "succeeded" && favoriteHeritages.length === 0 && (
+        <p>No favorite heritages.</p>
+      )}
+      {status === "succeeded" && favoriteHeritages.length > 0 && (
+        <ul className="list-disc pl-5">
+          {favoriteHeritages.map((heritage, idx) => (
+            <li key={idx}>
+              <strong>{heritage.ccbamnm1}</strong> - {heritage.ccbalcad}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

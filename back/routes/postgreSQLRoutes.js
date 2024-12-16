@@ -55,23 +55,9 @@ router.get("/festivals", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-// //즐겨찾기 테스트 get
-// router.get("/favoritelist", async (req, res) => {
-//   try {
-//     const result = await pool.query("SELECT * FROM favoritelist;");
-//     res.json(result.rows);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// });
-// POST: Add Favorite Festivals and Heritages
-router.post("/favoritelist", async (req, res) => {
-  const { favoriteFestivals, favoriteHeritages } = req.body;
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: Missing token." });
-  }
+
+//즐겨찾기 테스트 get
+router.get("/favoritelist", async (req, res) => {
   try {
     await executeTransaction(async (pool) => {
       if (Array.isArray(favoriteFestivals) && favoriteFestivals.length > 0) {
@@ -131,4 +117,84 @@ router.get("/favoritelist", async (req, res) => {
     res.status(500).json({ message: "Server error while fetching favorites." });
   }
 });
+
+// POST: Add Favorite Festivals and Heritages
+router.post("/favoritelist", async (req, res) => {
+  const { favoriteFestivals, favoriteHeritages } = req.body;
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: Missing token." });
+  }
+
+  try {
+    await executeTransaction(async (pool) => {
+      if (Array.isArray(favoriteFestivals) && favoriteFestivals.length > 0) {
+        await insertFavoriteFestivals(pool, token, favoriteFestivals);
+      }
+      if (Array.isArray(favoriteHeritages) && favoriteHeritages.length > 0) {
+        await insertFavoriteHeritages(pool, token, favoriteHeritages);
+      }
+    });
+
+    res.status(201).json({ message: "Favorites added successfully." });
+  } catch (error) {
+    console.error("Error adding favorites:", error.message);
+    res.status(500).json({ message: "Server error while adding favorites." });
+  }
+});
+
+// DELETE: Remove Favorite Festivals and Heritages
+router.delete("/favoritelist", async (req, res) => {
+  const { festivalsToDelete, heritagesToDelete } = req.body;
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: Missing token." });
+  }
+
+  try {
+    await executeTransaction(async (pool) => {
+      if (Array.isArray(festivalsToDelete) && festivalsToDelete.length > 0) {
+        await deleteFavoriteFestivals(pool, token, festivalsToDelete);
+      }
+      if (Array.isArray(heritagesToDelete) && heritagesToDelete.length > 0) {
+        await deleteFavoriteHeritages(pool, token, heritagesToDelete);
+      }
+    });
+
+    res.status(200).json({ message: "Favorites removed successfully." });
+  } catch (error) {
+    console.error("Error removing favorites:", error.message);
+    res.status(500).json({ message: "Server error while removing favorites." });
+  }
+});
+
+// // GET: Fetch Favorite Festivals and Heritages
+// router.get("/favoritelist", async (req, res) => {
+//   const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+
+//   if (!token) {
+//     return res.status(401).json({ message: "Unauthorized: Missing token." });
+//   }
+
+//   try {
+//     const email = decodeToken(token);
+//     const result = await pool.query(
+//       `SELECT * FROM favoritelist WHERE "token" = $1;`,
+//       [email]
+//     );
+
+//     const festivals = result.rows.filter(
+//       (row) => row.programName && row.location
+//     );
+//     const heritages = result.rows.filter((row) => row.ccbamnm1 && row.ccbalcad);
+
+//     res.json({ festivals, heritages });
+//   } catch (error) {
+//     console.error("Error fetching favorites:", error.message);
+//     res.status(500).json({ message: "Server error while fetching favorites." });
+//   }
+// });
+
 module.exports = router;

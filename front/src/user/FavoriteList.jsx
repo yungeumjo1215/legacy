@@ -58,13 +58,19 @@ const FavoriteList = () => {
 
   const handlePageChange = (direction, type) => {
     if (type === "heritage") {
-      const maxPage = Math.ceil(heritages.length / itemsPerPage) - 1;
+      const maxPage =
+        Math.ceil(
+          (Array.isArray(heritages) ? heritages.length : 0) / itemsPerPage
+        ) - 1;
       const newPage = heritagePage + direction;
       if (newPage >= 0 && newPage <= maxPage) {
         setHeritagePage(newPage);
       }
     } else {
-      const maxPage = Math.ceil(festivals.length / itemsPerPage) - 1;
+      const maxPage =
+        Math.ceil(
+          (Array.isArray(festivals) ? festivals.length : 0) / itemsPerPage
+        ) - 1;
       const newPage = festivalPage + direction;
       if (newPage >= 0 && newPage <= maxPage) {
         setFestivalPage(newPage);
@@ -72,11 +78,10 @@ const FavoriteList = () => {
     }
   };
 
-  const getCurrentItems = (items, page) => {
+  const getCurrentItems = (items = [], page) => {
     const start = page * itemsPerPage;
     return items.slice(start, start + itemsPerPage);
   };
-
   const onErrorImg = (e) => {
     e.target.src = default_Img;
   };
@@ -94,22 +99,21 @@ const FavoriteList = () => {
       {/* 문화재 섹션 */}
       <div className="mb-0">
         <h2 className="text-xl font-semibold mb-4">
-          ◎ 문화재 ({heritages.length})
+          ◎ 문화재 ({Array.isArray(heritages) ? heritages.length : 0})
         </h2>
         <div className="-mb-24">
-          {heritages.length === 0 ? (
+          {Array.isArray(heritages) && heritages.length === 0 ? (
             <div className="text-center text-gray-500 mt-8 mb-4 min-h-[300px] flex items-center justify-center">
               즐겨찾기한 문화재가 없습니다.
             </div>
           ) : (
             <div className="relative px-8 min-h-[400px]">
-              {heritages.length > itemsPerPage && (
+              {Array.isArray(heritages) && heritages.length > itemsPerPage && (
                 <>
                   <button
                     onClick={() => handlePageChange(-1, "heritage")}
                     className="absolute left-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                    disabled={heritagePage === 0}
-                  >
+                    disabled={heritagePage === 0}>
                     <IoIosArrowBack size={24} />
                   </button>
                   <button
@@ -118,8 +122,7 @@ const FavoriteList = () => {
                     disabled={
                       heritagePage >=
                       Math.ceil(heritages.length / itemsPerPage) - 1
-                    }
-                  >
+                    }>
                     <IoIosArrowForward size={24} />
                   </button>
                 </>
@@ -133,8 +136,7 @@ const FavoriteList = () => {
                         key={`${heritage.ccbamnm1}-${idx}`}
                         className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                         style={{ animationDelay: `${idx * 0.1}s` }}
-                        onClick={() => openModal(heritage, "heritage")}
-                      >
+                        onClick={() => openModal(heritage, "heritage")}>
                         <div className="flex flex-col h-full">
                           <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                             <img
@@ -150,8 +152,7 @@ const FavoriteList = () => {
                                 handleRemoveFavorite(heritage, "heritage");
                               }}
                               className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                              aria-label="즐겨찾기 해제"
-                            >
+                              aria-label="즐겨찾기 해제">
                               <AiFillStar className="text-2xl filter drop-shadow-md" />
                             </button>
                           </div>
@@ -177,22 +178,21 @@ const FavoriteList = () => {
       {/* 행사 섹션 */}
       <div className="mb-0">
         <h2 className="text-xl font-semibold mb-2">
-          ◎ 행사 ({festivals.length})
+          ◎ 행사 ({Array.isArray(festivals) ? festivals.length : 0})
         </h2>
 
-        {festivals.length === 0 ? (
+        {Array.isArray(festivals) && festivals.length === 0 ? (
           <div className="text-center text-gray-500 mt-8 min-h-[400px] flex items-center justify-center">
             즐겨찾기한 행사가 없습니다.
           </div>
         ) : (
           <div className="relative px-8">
-            {festivals.length > itemsPerPage && (
+            {Array.isArray(festivals) && festivals.length > itemsPerPage && (
               <>
                 <button
                   onClick={() => handlePageChange(-1, "festival")}
                   className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                  disabled={festivalPage === 0}
-                >
+                  disabled={festivalPage === 0}>
                   <IoIosArrowBack size={24} />
                 </button>
                 <button
@@ -201,8 +201,7 @@ const FavoriteList = () => {
                   disabled={
                     festivalPage >=
                     Math.ceil(festivals.length / itemsPerPage) - 1
-                  }
-                >
+                  }>
                   <IoIosArrowForward size={24} />
                 </button>
               </>
@@ -216,8 +215,7 @@ const FavoriteList = () => {
                       key={`${festival.programName}-${idx}`}
                       className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                       style={{ animationDelay: `${idx * 0.1}s` }}
-                      onClick={() => openModal(festival, "festival")}
-                    >
+                      onClick={() => openModal(festival, "festival")}>
                       <div className="flex flex-col h-full">
                         <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                           <img
@@ -232,8 +230,7 @@ const FavoriteList = () => {
                               handleRemoveFavorite(festival, "festival");
                             }}
                             className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                            aria-label="즐겨찾기 해제"
-                          >
+                            aria-label="즐겨찾기 해제">
                             <AiFillStar className="text-2xl filter drop-shadow-md" />
                           </button>
                         </div>
