@@ -17,6 +17,8 @@ import {
   IoIosArrowUp,
 } from "react-icons/io";
 import { BsChatDotsFill, BsTrash } from "react-icons/bs";
+import { GrPrevious } from "react-icons/gr";
+import { GrNext } from "react-icons/gr";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -298,14 +300,14 @@ const Home = () => {
         >
           <button
             onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
-            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-2 rounded-l-lg shadow-lg transition-all duration-300"
-            style={{ height: "50px" }}
+            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-2 rounded-l-lg shadow-lg transition-all duration-300 "
+            style={{ height: "52px" }}
           >
-            {isRecentBoxOpen ? ">" : "<"}
+            {isRecentBoxOpen ? <GrNext /> : <GrPrevious />}
           </button>
 
           <div className="bg-white shadow-lg rounded-l-lg w-80">
-            <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
+            <div className="bg-blue-900 text-white p-3 ">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold">최근 본 목록</h3>
                 <button
