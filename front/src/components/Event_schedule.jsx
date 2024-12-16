@@ -98,8 +98,6 @@ const SearchBar = memo(({ value, onChange }) => (
   </div>
 ));
 
-<<<<<<< HEAD
-=======
 const EventItem = memo(
   ({ event, isStarred, handleStarClick, onEventClick }) => (
     <li className="pb-2">
@@ -201,7 +199,6 @@ const EventItem = memo(
   )
 );
 
->>>>>>> 5bf6eb1273e61429f2ed601a12eebd01d2e68980
 const EventSchedule = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const dispatch = useDispatch();
