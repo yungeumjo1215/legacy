@@ -415,3 +415,41 @@ WHERE "ccbamnm1" IS NOT NULL
   AND "content" IS NOT NULL
   AND "imageUrl" IS NOT NULL
   AND "token" LIKE '%test%';
+
+
+
+
+SELECT 
+  fav.id AS favoriteid,
+  fav.type,
+
+  -- Festival-specific fields
+  fl.festivalid,
+  fl.programname AS festivalname,
+  fl.programcontent AS festivalcontent,
+  fl.location AS festivallocation,
+  fl.startdate AS festivalstartdate,
+  fl.enddate AS festivalenddate,
+  fl.targetaudience AS festivaltargetaudience,
+  fl.contact AS festivalcontact,
+  fl.imageurl AS festivalimageurl,
+
+  -- Heritage-specific fields
+  hl.heritageid,
+  hl.ccbamnm1 AS heritagename,
+  hl.ccbalcad AS heritageaddress,
+  hl.content AS heritagecontent,
+  hl.imageurl AS heritageimageurl
+
+FROM favoritelist AS fav
+LEFT JOIN festivallist AS fl ON fav.f_id = fl.festivalid
+LEFT JOIN heritagelist AS hl ON fav.h_id = hl.heritageid
+WHERE fav.token = $1;
+
+
+
+
+
+
+
+
