@@ -32,8 +32,8 @@ function decodeToken(token) {
 // Insert favorite festivals
 async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
   const email = decodeToken(token);
-
-  const promises = favoriteFestivals.map(async (festival) => {
+  console.log("favorite : " + favoriteFestivals);
+  const promises = favoriteFestivals.map(async (festival, index) => {
     const {
       programName,
       programContent,
@@ -43,14 +43,15 @@ async function insertFavoriteFestivals(pool, token, favoriteFestivals) {
       targetAudience,
       contact,
       imageUrl,
-    } = festival;
+    } = await festival;
 
     const existingRecord = await pool.query(
       `SELECT id FROM favoritelist WHERE "token" = $1 AND "programName" = $2 AND "location" = $3`,
       [email, programName, location]
     );
-
-    if (existingRecord.rowCount === 0) {
+    console.log("existingRecord: " + existingRecord.rowCount);
+    if (existingRecord.rowCount == 0) {
+      console.log("쿼리 실행 횟수" + index + programName);
       return pool.query(
         `INSERT INTO favoritelist
         ("token", "programName", "programContent", "location", "startDate", "endDate", "targetAudience", "contact", "imageUrl")

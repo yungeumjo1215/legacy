@@ -186,7 +186,10 @@ const SearchPage = () => {
   };
 
   const isFavorite = (item) => {
-    return heritages.some((heritage) => heritage.ccbamnm1 === item.ccbamnm1);
+    return (
+      Array.isArray(heritages) &&
+      heritages.some((heritage) => heritage.ccbamnm1 === item.ccbamnm1)
+    );
   };
 
   const handleStarClick = async (heritage) => {
@@ -259,13 +262,15 @@ const SearchPage = () => {
   };
 
   const handleFavoriteChange = (id, isFavorite) => {
-    const updatedData = filteredData.map((item) => {
-      if (item.ccbakdcd === id) {
-        return { ...item, isFavorite };
-      }
-      return item;
-    });
-    setFilteredData(updatedData);
+    const updatedData =
+      Array.isArray(filteredData) &&
+      filteredData.map((item) => {
+        if (item.ccbakdcd === id) {
+          return { ...item, isFavorite };
+        }
+        return item;
+      });
+    setFilteredData(updatedData || []);
   };
 
   const getCurrentPageData = () => {
@@ -286,8 +291,7 @@ const SearchPage = () => {
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="fixed top-20 left-4 z-20 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 md:hidden"
-        aria-label="사이드바 토글"
-      >
+        aria-label="사이드바 토글">
         <MenuIcon className="text-xl" />
       </button>
 
@@ -313,8 +317,7 @@ const SearchPage = () => {
         gap-1 md:gap-1
         z-40
         transition-all duration-300 ease-in-out
-      `}
-      >
+      `}>
         <div className="mb-1 md:mb-2 flex">
           <input
             type="text"
@@ -328,8 +331,7 @@ const SearchPage = () => {
           <button
             className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white inline-block hover:animate-[push_0.3s_linear_1]"
             onClick={handleSearch}
-            aria-label="검색하기"
-          >
+            aria-label="검색하기">
             <FaSearch className="text-xl md:text-2xl" />
           </button>
         </div>
@@ -345,22 +347,19 @@ const SearchPage = () => {
                 <li
                   key={item.ccbakdcd || index}
                   className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+                  style={{ animationDelay: `${index * 0.1}s` }}>
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${
                       isFavorite(item) ? "text-yellow-400" : "text-gray-300"
                     }`}
                     role="button"
-                    tabIndex={0}
-                  >
+                    tabIndex={0}>
                     <TiStarFullOutline className="text-2xl md:text-3xl" />
                   </div>
                   <button
                     onClick={() => handleHeritageClick(item)}
-                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left"
-                  >
+                    className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left">
                     {item.ccbamnm1}
                   </button>
                 </li>
@@ -373,8 +372,7 @@ const SearchPage = () => {
           <div
             className={`fixed bottom-0 ${
               isSidebarOpen ? "left-0" : "-left-full"
-            } md:left-0 w-[280px] md:w-[320px] lg:w-[380px] bg-white border-t border-[#e2e2e2] py-4 transition-all duration-300`}
-          >
+            } md:left-0 w-[280px] md:w-[320px] lg:w-[380px] bg-white border-t border-[#e2e2e2] py-4 transition-all duration-300`}>
             <div className="flex justify-center items-center gap-1 px-3">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -383,8 +381,7 @@ const SearchPage = () => {
                   currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 hover:bg-gray-100"
-                }`}
-              >
+                }`}>
                 이전
               </button>
 
@@ -409,8 +406,7 @@ const SearchPage = () => {
                         currentPage === pageNum
                           ? "bg-blue-700 text-white"
                           : "bg-white border border-gray-300 hover:bg-gray-100"
-                      }`}
-                    >
+                      }`}>
                       {pageNum}
                     </button>
                   );
@@ -424,8 +420,7 @@ const SearchPage = () => {
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 hover:bg-gray-200"
-                }`}
-              >
+                }`}>
                 다음
               </button>
             </div>
@@ -439,8 +434,7 @@ const SearchPage = () => {
         ml-0 md:ml-[320px] lg:ml-[380px]
         h-[93vh]
         transition-all duration-300 ease-in-out
-      `}
-      >
+      `}>
         <Map selectedLocation={selectedLocation} />
       </div>
 
@@ -456,8 +450,7 @@ const SearchPage = () => {
                      w-[90%] md:w-[400px] max-w-[400px]
                      h-[180px] md:h-[200px] 
                      flex flex-col justify-center items-center text-center"
-            role="alert"
-          >
+            role="alert">
             <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
               {error}
             </p>
@@ -465,15 +458,13 @@ const SearchPage = () => {
               <button
                 onClick={handleLoginClick}
                 className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                         cursor-pointer hover:bg-blue-700 transition-colors"
-              >
+                         cursor-pointer hover:bg-blue-700 transition-colors">
                 로그인하기
               </button>
               <button
                 onClick={closeError}
                 className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                         cursor-pointer hover:bg-gray-600 transition-colors"
-              >
+                         cursor-pointer hover:bg-gray-600 transition-colors">
                 닫기
               </button>
             </div>
@@ -493,16 +484,14 @@ const SearchPage = () => {
                      w-[90%] md:w-[400px] max-w-[400px]
                      h-[150px] md:h-[170px] 
                      flex flex-col justify-center items-center text-center"
-            role="alert"
-          >
+            role="alert">
             <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
               {successMessage}
             </p>
             <button
               onClick={closeSuccessMessage}
               className="mt-4 md:mt-6 bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                       cursor-pointer hover:bg-blue-700 transition-colors"
-            >
+                       cursor-pointer hover:bg-blue-700 transition-colors">
               확인
             </button>
           </div>
