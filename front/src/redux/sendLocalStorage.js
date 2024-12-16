@@ -27,7 +27,7 @@ function sendDataToPostgreSQL() {
   console.log("Token being sent to the backend:", token);
 
   // Send only the token to the backend
-  fetch("http://localhost:8000/api/store-favoritesPGDB", {
+  fetch("http://localhost:8000/pgdb/favoritelist", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

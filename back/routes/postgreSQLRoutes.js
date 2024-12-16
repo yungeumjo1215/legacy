@@ -94,22 +94,42 @@ router.get("/festivals", async (req, res) => {
 
 router.get("/favoritelist", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // Extract token
-
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: Missing token." });
   }
 
   try {
+    // Decode the token to extract email
     const email = decodeToken(token);
 
-    const result = await pool.query(
-      `SELECT f_id, h_id, type FROM favoritelist WHERE token = $1`,
-      [email]
-    );
+    // Query to join favoritelist with festivallist and heritagelist
+    const query = `
+      SELECT 
+        fav.id AS favoriteid,
+        fav.type,
+        -- Festival-specific fields
+        fl.festivalid,
+        fl.programname AS festivalname,
+        fl.location AS festivallocation,
+        -- Heritage-specific fields
+        hl.heritageid,
+        hl.ccbamnm1 AS heritagename,
+        hl.ccbalcad AS heritageaddress
+      FROM favoritelist AS fav
+      LEFT JOIN festivallist AS fl ON fav.f_id = fl.festivalid
+      LEFT JOIN heritagelist AS hl ON fav.h_id = hl.heritageid
+      WHERE fav.token = $1;
+    `;
 
-    res.json(result.rows);
+    const result = await pool.query(query, [email]);
+
+    // Split the results into festivals and heritages
+    const festivals = result.rows.filter((row) => row.type === "event");
+    const heritages = result.rows.filter((row) => row.type === "heritage");
+
+    res.status(200).json({ festivals, heritages });
   } catch (error) {
-    console.error("Error fetching favorites:", error.message);
+    console.error("Error fetching favorites with details:", error.message);
     res.status(500).json({ message: "Server error while fetching favorites." });
   }
 });
