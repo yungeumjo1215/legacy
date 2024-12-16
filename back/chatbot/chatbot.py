@@ -145,8 +145,8 @@ rag_chain = (
 query_start = time.time()
 
 
-# recieved_question = sys.argv[1]
-recieved_question = "숭례문에 대해 간략하게 설명해 주세요"
+recieved_question = sys.argv[1]
+# recieved_question = "숭례문에 대해 간략하게 설명해 주세요"
 answer = rag_chain.invoke(recieved_question)
 print(answer)
 # print(f"질문 처리 완료: {time.time() - query_start:.2f}초")
