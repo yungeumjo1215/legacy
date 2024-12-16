@@ -323,7 +323,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="p-3 max-h-[600px] overflow-y-auto w-full">
+            <div className="p-3 max-h-[600px] overflow-y-auto w-full border border-gray-200">
               {recentItems.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   최근 본 항목이 없습니다
