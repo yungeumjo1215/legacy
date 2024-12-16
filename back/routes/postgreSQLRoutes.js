@@ -56,7 +56,7 @@ router.get("/festivals", async (req, res) => {
   }
 });
 
-//즐겨찾기 테스트 get
+// 즐겨찾기 테스트 get
 // router.get("/favoritelist", async (req, res) => {
 //   try {
 //     await executeTransaction(async (pool) => {
@@ -118,6 +118,25 @@ router.delete("/favoritelist", async (req, res) => {
 //   }
 // });
 
+router.get("/favoritelist", async (req, res) => {
+  try {
+    // Query all records from the favoritelist table
+    const result = await pool.query(`SELECT * FROM favoritelist;`);
+
+    // Filter festivals and heritages based on fields
+    const festivals = result.rows.filter(
+      (row) => row.programName && row.location
+    );
+    const heritages = result.rows.filter((row) => row.ccbamnm1 && row.ccbalcad);
+
+    // Respond with the filtered data
+    res.json({ festivals, heritages });
+  } catch (error) {
+    console.error("Error fetching favorites:", error.message);
+    res.status(500).json({ message: "Server error while fetching favorites." });
+  }
+});
+
 // POST: Add Favorite Festivals and Heritages
 router.post("/favoritelist", async (req, res) => {
   const { favoriteFestivals, favoriteHeritages } = req.body;
@@ -171,39 +190,39 @@ router.delete("/favoritelist", async (req, res) => {
 });
 
 // GET: Fetch Favorite Festivals and Heritages
-router.get("/favoritelist", async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+// router.get("/favoritelist", async (req, res) => {
+//   const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: Missing token." });
-  }
+//   if (!token) {
+//     return res.status(401).json({ message: "Unauthorized: Missing token." });
+//   }
 
-  try {
-    // Decode token
-    const email = decodeToken(token);
-    console.log("Decoded Email:", email); // Debug email
+//   try {
+//     // Decode token
+//     const email = decodeToken(token);
+//     console.log("Decoded Email:", email); // Debug email
 
-    // Execute query
-    const result = await pool.query(
-      `SELECT * FROM favoritelist WHERE "token" = $1;`,
-      [email]
-    );
-    console.log("Query Result:", result.rows); // Debug query result
+//     // Execute query
+//     const result = await pool.query(
+//       `SELECT * FROM favoritelist WHERE "token" = $1;`,
+//       [email]
+//     );
+//     console.log("Query Result:", result.rows); // Debug query result
 
-    // Filter festivals and heritages
-    const festivals = result.rows.filter(
-      (row) => row.programName && row.location
-    );
-    const heritages = result.rows.filter((row) => row.ccbamnm1 && row.ccbalcad);
+//     // Filter festivals and heritages
+//     const festivals = result.rows.filter(
+//       (row) => row.programName && row.location
+//     );
+//     const heritages = result.rows.filter((row) => row.ccbamnm1 && row.ccbalcad);
 
-    console.log("Filtered Festivals:", festivals); // Debug filtered festivals
-    console.log("Filtered Heritages:", heritages); // Debug filtered heritages
+//     console.log("Filtered Festivals:", festivals); // Debug filtered festivals
+//     console.log("Filtered Heritages:", heritages); // Debug filtered heritages
 
-    res.json({ festivals, heritages });
-  } catch (error) {
-    console.error("Error fetching favorites:", error.message);
-    res.status(500).json({ message: "Server error while fetching favorites." });
-  }
-});
+//     res.json({ festivals, heritages });
+//   } catch (error) {
+//     console.error("Error fetching favorites:", error.message);
+//     res.status(500).json({ message: "Server error while fetching favorites." });
+//   }
+// });
 
 module.exports = router;
