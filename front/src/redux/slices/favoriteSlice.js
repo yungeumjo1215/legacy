@@ -39,6 +39,18 @@ const favoriteSlice = createSlice({
         );
         if (!exists) {
           state.festivals.push(itemData);
+          fetch("http://localhost:8000/pgdb/favoritelist", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "event",
+              data: itemData,
+            }),
+          }).catch((error) =>
+            console.error("Error saving favorite to server:", error)
+          );
         }
       } else {
         const exists = state.heritages.some(
@@ -46,6 +58,18 @@ const favoriteSlice = createSlice({
         );
         if (!exists) {
           state.heritages.push(itemData);
+          fetch("http://localhost:8000/pgdb/favoritelist", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "heritage",
+              data: itemData,
+            }),
+          }).catch((error) =>
+            console.error("Error saving favorite to server:", error)
+          );
         }
       }
       saveToLocalStorage(state);
@@ -57,9 +81,33 @@ const favoriteSlice = createSlice({
         state.festivals = state.festivals.filter(
           (festival) => festival.programName !== id
         );
+        fetch("http://localhost:8000/pgdb/favoritelist", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "event",
+            id: id,
+          }),
+        }).catch((error) =>
+          console.error("Error removing favorite from server:", error)
+        );
       } else {
         state.heritages = state.heritages.filter(
           (heritage) => heritage.id !== id
+        );
+        fetch("http://localhost:8000/pgdb/favoritelist", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "heritage",
+            id: id,
+          }),
+        }).catch((error) =>
+          console.error("Error removing favorite from server:", error)
         );
       }
       saveToLocalStorage(state);
@@ -69,6 +117,15 @@ const favoriteSlice = createSlice({
       state.festivals = [];
       localStorage.removeItem("favoriteHeritages");
       localStorage.removeItem("favoriteFestivals");
+
+      fetch("http://localhost:8000/pgdb/favoritelist", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).catch((error) =>
+        console.error("Error clearing favorites from server:", error)
+      );
     },
     fetchUserFavorites: (state, action) => {
       const { heritages, festivals } = action.payload;
