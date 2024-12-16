@@ -12,7 +12,7 @@ const config = {
       <img
         src={logo_w}
         alt="챗봇 아바타"
-        className="react-chatbot-kit-chat-bot-avatar bg-blue-900"
+        className="react-chatbot-kit-chat-bot-avatar bg-blue-900 "
       />
     ),
   },
