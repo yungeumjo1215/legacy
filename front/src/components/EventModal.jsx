@@ -46,6 +46,7 @@ const EventModal = ({ event, onClose }) => {
         dispatch(
           addFavorite({
             type: "event",
+            festivalid: event.festivalid,
             id: event.programName,
             programName: event.programName,
             programContent: event.programContent,

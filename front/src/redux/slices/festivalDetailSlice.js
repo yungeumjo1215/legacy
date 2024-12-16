@@ -14,6 +14,7 @@ export const fetchFestivalData = createAsyncThunk(
       if (response.data && response.data.transformedResults) {
         // 데이터 구조 정규화
         return response.data.transformedResults.map((item) => ({
+          festivalid: item.festivalid || item.festivalid,
           programName: item.programName || item.subTitle,
           programContent: item.programContent || item.subContent,
           startDate: item.startDate || item.sDate,
