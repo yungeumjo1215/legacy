@@ -130,18 +130,22 @@ const favoriteSlice = createSlice({
             favoritesToRemove &&
             !favoritesToRemove.some((item) => item.id === heritage.id)
         );
-        fetch("http://localhost:8000/pgdb/favoritelist", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: "heritage",
-            id: id,
-          }),
-        }).catch((error) =>
-          console.error("Error removing favorite from server:", error)
-        );
+
+        // favoritesToRemove 배열의 각 항목에 대해 서버 요청
+        favoritesToRemove.forEach((item) => {
+          fetch("http://localhost:8000/pgdb/favoritelist", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "heritage",
+              id: item.id, // item의 id 사용
+            }),
+          }).catch((error) =>
+            console.error("Error removing favorite from server:", error)
+          );
+        });
       }
     },
     clearFavorites(state) {
