@@ -130,6 +130,18 @@ const favoriteSlice = createSlice({
             favoritesToRemove &&
             !favoritesToRemove.some((item) => item.id === heritage.id)
         );
+        fetch("http://localhost:8000/pgdb/favoritelist", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "heritage",
+            id: id,
+          }),
+        }).catch((error) =>
+          console.error("Error removing favorite from server:", error)
+        );
       }
     },
     clearFavorites(state) {

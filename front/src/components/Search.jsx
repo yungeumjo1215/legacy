@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiStarFullOutline } from "react-icons/ti";
 import axios from "axios";
@@ -276,8 +276,10 @@ const SearchPage = () => {
   const getCurrentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const pageData = filteredData.slice(startIndex, endIndex);
-    return pageData;
+    return filteredData.slice(startIndex, endIndex).map((item, index) => ({
+      ...item,
+      uniqueId: `${item.ccbakdcd}_${startIndex + index}`,
+    }));
   };
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -329,7 +331,7 @@ const SearchPage = () => {
             className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
           />
           <button
-            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white inline-block hover:animate-[push_0.3s_linear_1]"
+            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white inline-block hover:animate-[push_0.3s_linear_1] hover:bg-blue-700"
             onClick={handleSearch}
             aria-label="검색하기">
             <FaSearch className="text-xl md:text-2xl" />
@@ -342,10 +344,10 @@ const SearchPage = () => {
               데이터를 불러오는 중...
             </div>
           ) : (
-            <ul className="h-auto" key={currentPage}>
-              {getCurrentPageData().map((item, index) => (
+            <ul className="h-auto">
+              {getCurrentPageData().map((item) => (
                 <li
-                  key={item.ccbakdcd || index}
+                  key={item.uniqueId}
                   className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
                   style={{ animationDelay: `${index * 0.1}s` }}>
                   <div
@@ -362,6 +364,7 @@ const SearchPage = () => {
                     className="text-sm md:text-base hover:text-blue-600 transition-colors truncate max-w-[350px] text-left">
                     {item.ccbamnm1}
                   </button>
+                  <div className="text-xs text-gray-500 ml-2"></div>
                 </li>
               ))}
             </ul>
