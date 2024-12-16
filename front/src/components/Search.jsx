@@ -349,7 +349,7 @@ const SearchPage = () => {
                 <li
                   key={item.uniqueId}
                   className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.25s_ease-out_forwards]"
-                  style={{ animationDelay: `${index * 0.1}s` }}>
+                  style={{ animationDelay: `${"index" * 0.1}s` }}>
                   <div
                     onClick={() => handleStarClick(item)}
                     className={`cursor-pointer mr-2 md:mr-2.5 ${

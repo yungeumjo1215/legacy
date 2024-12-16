@@ -137,7 +137,7 @@ const favoriteSlice = createSlice({
           },
           body: JSON.stringify({
             type: "heritage",
-            id: id,
+            id: "id",
           }),
         }).catch((error) =>
           console.error("Error removing favorite from server:", error)
