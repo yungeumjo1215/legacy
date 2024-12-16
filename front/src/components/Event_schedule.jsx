@@ -310,7 +310,7 @@ const EventSchedule = () => {
               );
               break;
             case "busan":
-              matchesRegion = /���산|busan/i.test(regionSido);
+              matchesRegion = /부산|busan/i.test(regionSido);
               break;
             case "ulsan":
               matchesRegion = /울산|ulsan/i.test(regionSido);
@@ -781,7 +781,7 @@ const EventSchedule = () => {
                     </li>
                   ))
                 ) : (
-                  <p className="text-center text-gray-500 py-8">
+                  <p className="text-center text-gray-500 py-8 text-xl">
                     해당 날짜에 예정된 행사가 없습니다.
                   </p>
                 )}
