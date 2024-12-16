@@ -446,6 +446,10 @@ LEFT JOIN festivallist AS fl ON fav.f_id = fl.festivalid
 LEFT JOIN heritagelist AS hl ON fav.h_id = hl.heritageid
 WHERE fav.token = $1;
 
+ALTER TABLE favoritelist
+ADD CONSTRAINT unique_favorite_event UNIQUE (token, f_id, type),
+ADD CONSTRAINT unique_favorite_heritage UNIQUE (token, h_id, type);
+
 
 
 

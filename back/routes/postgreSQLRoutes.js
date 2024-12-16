@@ -146,6 +146,7 @@ WHERE fav.token = $1;
 });
 
 // POST: Add Favorite Festivals and Heritages
+// POST: Add Favorite Festivals and Heritages
 router.post("/favoritelist", async (req, res) => {
   const { id, type } = req.body; // Extract ID and type
   const token = req.headers.authorization?.split(" ")[1]; // Extract token
@@ -155,16 +156,20 @@ router.post("/favoritelist", async (req, res) => {
   }
 
   try {
-    const email = decodeToken(token);
+    const email = decodeToken(token); // Decode token to get user email
 
     if (type === "event") {
       await pool.query(
-        `INSERT INTO favoritelist (token, f_id, type) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        `INSERT INTO favoritelist (token, f_id, type)
+         VALUES ($1, $2, $3)
+         ON CONFLICT DO NOTHING`, // Avoid duplicate entries
         [email, id, type]
       );
     } else if (type === "heritage") {
       await pool.query(
-        `INSERT INTO favoritelist (token, h_id, type) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        `INSERT INTO favoritelist (token, h_id, type)
+         VALUES ($1, $2, $3)
+         ON CONFLICT DO NOTHING`, // Avoid duplicate entries
         [email, id, type]
       );
     }
