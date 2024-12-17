@@ -120,7 +120,7 @@ export const deleteFavorites = createAsyncThunk(
 const favoriteSlice = createSlice({
   name: "favorites",
   initialState: {
-    favoriteFestivals: [],
+    festivals: [],
     favoriteHeritages: [],
     status: "idle",
     error: null,
@@ -128,65 +128,62 @@ const favoriteSlice = createSlice({
   reducers: {
     addFavorite(state, action) {
       console.log("addFavorite Action:", action.payload);
+      const { type, data } = action.payload;
 
-      const { favorites, type } = action.payload;
+      if (type === "festival") {
+        // festivals 배열에 추가
+        const isDuplicate = state.festivals.some(
+          (festival) => festival.programName === data.programName
+        );
 
-      if (type === "festival" && Array.isArray(favorites)) {
-        state.favoriteFestivals = [
-          ...state.favoriteFestivals,
-          ...favorites.filter(
-            (fav) =>
-              state.favoriteFestivals &&
-              !state.favoriteFestivals.some(
-                (item) =>
-                  item.programName === fav.programName &&
-                  item.location === fav.location
-              )
-          ),
-        ];
-      } else if (type === "heritage" && Array.isArray(favorites)) {
+        if (!isDuplicate) {
+          state.festivals.push(data);
+        }
+      } else if (
+        type === "heritage" &&
+        Array.isArray(action.payload.favorites)
+      ) {
+        // heritage는 기존 로직 유지
         state.favoriteHeritages = [
           ...state.favoriteHeritages,
-          ...favorites.filter(
+          ...action.payload.favorites.filter(
             (heritage) =>
-              state.favoriteHeritages &&
               !state.favoriteHeritages.some((item) => item.id === heritage.id)
           ),
         ];
       }
 
-      console.log("Updated favoriteFestivals:", state.favoriteFestivals);
+      console.log("Updated favoriteFestivals:", state.festivals);
       console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
+
     removeFavorite(state, action) {
       console.log("removeFavorite Action:", action.payload);
+      const { type, programName } = action.payload;
 
-      const { favoritesToRemove, type } = action.payload;
-
-      if (type === "festival" && Array.isArray(favoritesToRemove)) {
-        state.favoriteFestivals = state.favoriteFestivals.filter(
-          (fav) =>
-            favoritesToRemove &&
-            !favoritesToRemove.some(
-              (item) =>
-                item.programName === fav.programName &&
-                item.location === fav.location
-            )
+      if (type === "festival") {
+        state.festivals = state.festivals.filter(
+          (festival) => festival.programName !== programName
         );
-      } else if (type === "heritage" && Array.isArray(favoritesToRemove)) {
+      } else if (
+        type === "heritage" &&
+        Array.isArray(action.payload.favoritesToRemove)
+      ) {
+        // heritage는 기존 로직 유지
         state.favoriteHeritages = state.favoriteHeritages.filter(
           (heritage) =>
-            favoritesToRemove &&
-            !favoritesToRemove.some((item) => item.id === heritage.id)
+            !action.payload.favoritesToRemove.some(
+              (item) => item.id === heritage.id
+            )
         );
       }
 
-      console.log("Updated favoriteFestivals:", state.favoriteFestivals);
+      console.log("Updated favoriteFestivals:", state.festivals);
       console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
     clearFavorites(state) {
       console.log("Clearing all favorites...");
-      state.favoriteFestivals = [];
+      state.festivals = [];
       state.favoriteHeritages = [];
     },
   },
@@ -199,7 +196,7 @@ const favoriteSlice = createSlice({
       .addCase(fetchFavorites.fulfilled, (state, action) => {
         console.log("fetchFavorites: Fulfilled", action.payload);
         const { festivals, heritages } = action.payload;
-        state.favoriteFestivals = festivals || [];
+        state.festivals = festivals || [];
         state.favoriteHeritages = heritages || [];
         state.status = "succeeded";
       })

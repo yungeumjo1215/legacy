@@ -8,11 +8,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import { jwtDecode } from "jwt-decode";
 
 const SearchPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn, userId } = useSelector((state) => state.auth);
   const { heritages } = useSelector((state) => state.favorites);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -172,12 +173,11 @@ const SearchPage = () => {
   const isFavorite = (item) => {
     return (
       Array.isArray(heritages) &&
-      heritages.some((heritage) => heritage.ccbamnm1 === item.ccbamnm1)
+      heritages.some((heritage) => heritage.heritageid === item.heritageid)
     );
   };
 
   const handleStarClick = async (heritage) => {
-    console.log("Star Click Heritage Data:", heritage);
     if (!isLoggedIn) {
       setError(
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -185,37 +185,73 @@ const SearchPage = () => {
       return;
     }
 
-    const isAlreadySelected = isFavorite(heritage);
-
     try {
-      if (isAlreadySelected) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("로그인이 필요한 서비스입니다.");
+        return;
+      }
+
+      const requestData = {
+        id: Number(heritage.heritageid),
+        type: "heritage",
+      };
+
+      const isCurrentlyFavorite = isFavorite(heritage);
+
+      if (!isCurrentlyFavorite) {
+        await axios.post(
+          "http://localhost:8000/pgdb/favoritelist",
+          requestData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         dispatch(
-          removeFavorite({
+          addFavorite({
             type: "heritage",
-            id: heritage.ccbamnm1,
+            favorites: [
+              {
+                heritageid: heritage.heritageid,
+                id: heritage.ccbamnm1,
+                ccbamnm1: heritage.ccbamnm1,
+                ccbalcad: heritage.ccbalcad,
+                content: heritage.content,
+                imageurl: heritage.imageurl,
+                lat: heritage.lat,
+                lng: heritage.lng,
+                ccceName: heritage.ccceName,
+              },
+            ],
           })
         );
       } else {
-        const heritageData = {
-          type: "heritage",
-          heritageid: heritage.heritageid,
-          id: heritage.ccbamnm1,
-          ccbamnm1: heritage.ccbamnm1,
-          ccbalcad: heritage.ccbalcad,
-          content: heritage.content,
-          imageurl: heritage.imageurl,
-          lat: heritage.lat,
-          lng: heritage.lng,
-          ccceName: heritage.ccceName,
-        };
+        await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
+          data: requestData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-        dispatch(addFavorite(heritageData));
+        dispatch(
+          removeFavorite({
+            type: "heritage",
+            favoritesToRemove: [
+              {
+                id: heritage.ccbamnm1,
+              },
+            ],
+          })
+        );
       }
 
-      handleFavoriteChange(heritage.ccbakdcd, !isAlreadySelected);
-
       setSuccessMessage(
-        isAlreadySelected
+        isCurrentlyFavorite
           ? "즐겨찾기가 해제되었습니다."
           : "즐겨찾기에 추가되었습니다."
       );

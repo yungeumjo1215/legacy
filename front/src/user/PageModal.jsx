@@ -3,15 +3,30 @@ import { useDispatch } from "react-redux";
 import { AiFillStar } from "react-icons/ai";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
+import axios from "axios";
 
 const PageModal = ({ isOpen, onClose, item, type }) => {
   const dispatch = useDispatch();
 
   if (!isOpen || !item) return null;
 
-  const handleRemoveFavorite = (e) => {
+  const handleRemoveFavorite = async (e) => {
     e.stopPropagation();
     try {
+      const token = localStorage.getItem("token");
+      const requestData = {
+        id: type === "heritage" ? item.heritageid : item.id,
+        type: type === "heritage" ? "heritage" : "event",
+      };
+
+      await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
+        data: requestData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "event",

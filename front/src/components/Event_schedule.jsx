@@ -8,7 +8,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
-import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import {
+  addFavorite,
+  removeFavorite,
+  addFavorites,
+  deleteFavorites,
+  fetchFavorites,
+} from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
 import { IoIosArrowUp } from "react-icons/io";
 
@@ -366,9 +372,7 @@ const EventSchedule = () => {
   }, []);
 
   const handleStarClick = useCallback(
-    (festival) => {
-      console.log("Adding festival with image:", festival.image);
-
+    async (festival) => {
       if (!isLoggedIn) {
         setError(
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -377,34 +381,63 @@ const EventSchedule = () => {
       }
 
       try {
+        const token = localStorage.getItem("token");
         const isAlreadySelected = isEventStarred(festival.programName);
+        console.log("Current favorites state:", festivals); // 현재 상태 로깅
+        console.log("Is already selected:", isAlreadySelected); // 선택 상태 로깅
 
         if (!isAlreadySelected) {
-          dispatch(
-            addFavorite({
+          const result = await dispatch(
+            addFavorites({
+              token,
+              favoriteId: festival.festivalid,
               type: "event",
-              festivalid: festival.festivalid,
-              id: festival.programName,
-              programName: festival.programName,
-              programContent: festival.programContent,
-              location: festival.location,
-              startDate: festival.startDate,
-              endDate: festival.endDate,
-              targetAudience: festival.targetAudience,
-              contact: festival.contact,
-              imageUrl: festival.image,
             })
-          );
-          setSuccessMessage("즐겨찾기에 추가되었습니다.");
+          ).unwrap();
+
+          if (result) {
+            dispatch(
+              addFavorite({
+                type: "festival",
+                data: {
+                  programName: festival.programName,
+                  programContent: festival.programContent,
+                  location: festival.location,
+                  startDate: festival.startDate,
+                  endDate: festival.endDate,
+                  targetAudience: festival.targetAudience,
+                  contact: festival.contact,
+                  image: festival.image,
+                  festivalid: festival.festivalid,
+                },
+              })
+            );
+            console.log("After adding favorite:", festivals); // 추가 후 상태 로깅
+            setSuccessMessage("즐겨찾기에 추가되었습니다.");
+          }
         } else {
-          dispatch(
-            removeFavorite({
+          const result = await dispatch(
+            deleteFavorites({
+              token,
+              favoriteId: festival.festivalid,
               type: "event",
-              id: festival.programName,
             })
-          );
-          setSuccessMessage("즐겨찾기가 해제되었습니다.");
+          ).unwrap();
+
+          if (result) {
+            dispatch(
+              removeFavorite({
+                type: "festival",
+                programName: festival.programName,
+              })
+            );
+            setSuccessMessage("즐겨찾기가 해제되었습니다.");
+          }
         }
+
+        // 즐겨찾기 목록 새로고침
+        await dispatch(fetchFavorites(token));
+        console.log("After fetching favorites:", festivals); // 새로고침 후 상태 로깅
 
         setTimeout(() => {
           setSuccessMessage("");
@@ -414,7 +447,7 @@ const EventSchedule = () => {
         setError("즐겨찾기 처리 중 오류가 발생했습니다.");
       }
     },
-    [isLoggedIn, dispatch, isEventStarred]
+    [isLoggedIn, dispatch, isEventStarred, festivals]
   );
 
   const handleEventClick = useCallback((event) => {
