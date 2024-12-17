@@ -111,10 +111,19 @@ router.get("/favoritelist", async (req, res) => {
         fav.type,
         fl.festivalid,
         fl.programname AS festivalname,
+        fl.programcontent AS festivalcontent,
         fl.location AS festivallocation,
+        fl.startdate AS festivalstartdate,
+        fl.enddate AS festivalenddate,
+        fl.targetaudience AS festivaltargetaudience,
+        fl.contact AS festivalcontact,
+        fl.imageurl AS festivalimageurl,
+
         hl.heritageid,
         hl.ccbamnm1 AS heritagename,
-        hl.ccbalcad AS heritageaddress
+        hl.ccbalcad AS heritageaddress,
+        hl.content AS heritagecontent,
+        hl.imageurl AS heritageimageurl
       FROM favoritelist AS fav
       INNER JOIN accounts AS a ON fav.token = a.email
       LEFT JOIN festivallist AS fl ON fav.f_id = fl.festivalid
