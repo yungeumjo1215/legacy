@@ -9,6 +9,7 @@ import axios from "axios";
 
 const FavoriteList = () => {
   const dispatch = useDispatch();
+  const reduxFavorites = useSelector((state) => state.favorites);
   const [favorites, setFavorites] = useState({ heritages: [], festivals: [] });
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
@@ -29,9 +30,11 @@ const FavoriteList = () => {
             },
           }
         );
+
+        const serverData = response.data;
         setFavorites({
-          heritages: response.data.heritages || [],
-          festivals: response.data.festivals || [],
+          heritages: serverData.heritages || [],
+          festivals: serverData.festivals || [],
         });
       } catch (error) {
         console.error("즐겨찾기 목록 가져오기 실패:", error);
@@ -39,7 +42,7 @@ const FavoriteList = () => {
     };
 
     fetchFavorites();
-  }, []);
+  }, [reduxFavorites]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,17 +73,18 @@ const FavoriteList = () => {
     try {
       const token = localStorage.getItem("token");
       const requestData = {
-        id: type === "heritage" ? item.heritageid : item.id,
+        id: type === "heritage" ? item.heritageid : item.festivalid,
         type: type === "heritage" ? "heritage" : "event",
       };
 
-      await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
-        data: requestData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.delete(
+        `http://localhost:8000/pgdb/favoritelist?id=${requestData.id}&type=${requestData.type}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       setFavorites((prev) => ({
         ...prev,
@@ -89,14 +93,14 @@ const FavoriteList = () => {
         ].filter((i) =>
           type === "heritage"
             ? i.heritageid !== item.heritageid
-            : i.id !== item.id
+            : i.festivalid !== item.festivalid
         ),
       }));
 
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "event",
-          id: type === "heritage" ? item.ccbamnm1 : item.id,
+          id: type === "heritage" ? item.ccbamnm1 : item.festivalid,
         })
       );
     } catch (error) {
@@ -277,6 +281,7 @@ const FavoriteList = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+                              console.log("삭제할 festival 데이터:", festival);
                               handleRemoveFavorite(festival, "festival");
                             }}
                             className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
