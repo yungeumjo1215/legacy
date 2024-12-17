@@ -51,7 +51,6 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
           onUpdate();
         }
 
-        alert("즐겨찾기가 성공적으로 제거되었습니다.");
         onClose();
       }
     } catch (error) {
