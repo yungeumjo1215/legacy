@@ -243,6 +243,7 @@ const EventSchedule = () => {
 
   const isEventStarred = useCallback(
     (programName) => {
+      console.log("Current festivals:", festivals); // 디버깅을 위한 로그
       return (
         Array.isArray(festivals) &&
         festivals.some((festival) => festival.programName === programName)
@@ -383,53 +384,57 @@ const EventSchedule = () => {
       try {
         const token = localStorage.getItem("token");
         const isAlreadySelected = isEventStarred(festival.programName);
+        console.log("Attempting to update favorite status:", {
+          festival,
+          isAlreadySelected,
+        }); // 디버깅용
 
         if (!isAlreadySelected) {
           // 즐겨찾기 추가
-          await dispatch(
+          const addResult = await dispatch(
             addFavorites({
               token,
               favoriteId: festival.festivalid,
               type: "event",
             })
           ).unwrap();
+          console.log("Add result:", addResult); // 디버깅용
 
           // 로컬 상태 업데이트
           dispatch(
             addFavorite({
-              type: "festival",
-              data: {
-                festivalid: festival.festivalid,
-                id: festival.festivalid,
-                programName: festival.programName,
-                programContent: festival.programContent,
-                location: festival.location,
-                startDate: festival.startDate,
-                endDate: festival.endDate,
-                targetAudience: festival.targetAudience,
-                contact: festival.contact,
-                image: festival.image,
-              },
+              programName: festival.programName,
+              festivalid: festival.festivalid,
+              type: "event",
             })
           );
+
+          // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
+          await dispatch(fetchFavorites(token));
+
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         } else {
           // 즐겨찾기 제거
-          await dispatch(
+          const deleteResult = await dispatch(
             deleteFavorites({
               token,
               favoriteId: festival.festivalid,
               type: "event",
             })
           ).unwrap();
+          console.log("Delete result:", deleteResult); // 디버깅용
 
           // 로컬 상태 업데이트
           dispatch(
             removeFavorite({
-              type: "festival",
-              id: festival.festivalid,
+              programName: festival.programName,
+              festivalid: festival.festivalid,
             })
           );
+
+          // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
+          await dispatch(fetchFavorites(token));
+
           setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
 
@@ -438,7 +443,7 @@ const EventSchedule = () => {
         }, 3000);
       } catch (error) {
         console.error("즐겨찾기 처리 중 오류 발생:", error);
-        setError("즐겨찾기 처리 중 오류가 발생했습니다.");
+        setError(`즐겨찾기 처리 중 오류가 발생했습니다: ${error.message}`);
       }
     },
     [isLoggedIn, dispatch, isEventStarred]
@@ -556,6 +561,28 @@ const EventSchedule = () => {
       setSelectedEvent(event);
     }
   }, [location.state]);
+
+  // festivals 상태 디버깅을 위한 useEffect 추가
+  useEffect(() => {
+    console.log("Festivals updated:", festivals);
+  }, [festivals]);
+
+  // 로그인 상태가 변경되거나 컴포넌트가 마운트될 때 즐겨찾기 목록을 가져옵니다
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        console.log("Fetching favorites..."); // 디버깅용
+        dispatch(fetchFavorites(token))
+          .then(() => {
+            console.log("Favorites fetched successfully"); // 디버깅용
+          })
+          .catch((error) => {
+            console.error("Error fetching favorites:", error); // 디버깅용
+          });
+      }
+    }
+  }, [isLoggedIn, dispatch]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">
