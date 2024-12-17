@@ -36,7 +36,9 @@ router.get("/accounts", async (req, res) => {
 });
 router.get("/heritage", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM heritagelist;");
+    const result = await pool.query(
+      "SELECT * FROM heritagelist ORDER BY ccbaasno ASC;"
+    );
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
@@ -153,7 +155,7 @@ WHERE a.email = $1;
   }
 });
 // Fetch all heritages sorted by ccbaasno
-router.get("/heritage/sorted", async (req, res) => {
+router.get("/favoritelist/sorted", async (req, res) => {
   try {
     // Query to select all heritages and sort by ccbaasno
     const query = `
