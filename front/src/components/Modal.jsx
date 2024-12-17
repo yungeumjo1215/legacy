@@ -19,7 +19,7 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
     setIsFavorite(favoriteStatus);
   }, [heritages, item?.ccbamnm1]);
 
-  const handleFavoriteClick = async () => {
+  const handleFavoriteClick = () => {
     if (!isLoggedIn) {
       setAlertMessage(
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
