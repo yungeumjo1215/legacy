@@ -152,6 +152,26 @@ WHERE a.email = $1;
     res.status(500).json({ message: "Server error while fetching favorites." });
   }
 });
+// Fetch all heritages sorted by ccbaasno
+router.get("/heritage/sorted", async (req, res) => {
+  try {
+    // Query to select all heritages and sort by ccbaasno
+    const query = `
+      SELECT * 
+      FROM heritagelist
+      ORDER BY ccbaasno ASC;
+    `;
+
+    // Execute the query
+    const result = await pool.query(query);
+
+    // Send the response with sorted data
+    res.status(200).json({ heritages: result.rows });
+  } catch (error) {
+    console.error("Error fetching sorted heritages:", error.message);
+    res.status(500).json({ message: "Server error while fetching heritages." });
+  }
+});
 
 // POST: Add Favorite Festivals and Heritages
 router.post("/favoritelist", async (req, res) => {
