@@ -175,11 +175,15 @@ const Section = ({
   const maxPage = Math.ceil(data.length / itemsPerPage) - 1;
 
   return (
-    <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4">
+    <div
+      className={`${type === "heritage" ? "mb-20" : "mb-8"} ${
+        type === "festival" ? "mt-8" : ""
+      }`}
+    >
+      <h2 className="text-xl font-semibold mb-6">
         {title} ({data.length})
       </h2>
-      <div className="relative px-8 h-[265px]">
+      <div className="relative px-12 h-[240px]">
         {data.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <p className="text-center text-gray-500">
