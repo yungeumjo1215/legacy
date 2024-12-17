@@ -22,7 +22,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
 
       const requestData = {
         id: type === "heritage" ? item.heritageid : item.festivalid,
-        type: type === "heritage" ? "heritage" : "festival",
+        type: type === "heritage" ? "heritage" : "event",
       };
 
       console.log("요청 데이터:", requestData);

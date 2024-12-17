@@ -1,12 +1,12 @@
 const express = require("express");
 const pool = require("../database/database");
-const {
-  executeTransaction,
-  insertFavoriteFestivals,
-  insertFavoriteHeritages,
-  deleteFavoriteFestivals,
-  deleteFavoriteHeritages,
-} = require("../controller/favoriteController");
+// const {
+//   executeTransaction,
+//   insertFavoriteFestivals,
+//   insertFavoriteHeritages,
+//   deleteFavoriteFestivals,
+//   deleteFavoriteHeritages,
+// } = require("../controller/favoriteController");
 const router = express.Router();
 const jwt = require("jsonwebtoken"); // Use jwt for decoding
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
