@@ -149,18 +149,21 @@ const SearchPage = () => {
 
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
     const newItem = {
-      id: item.문화재id,
+      id: item.heritageid || item.문화재id,
       type: "heritage",
       title: item.ccbamnm1,
       imageurl: item.imageurl,
+      location: item.ccbalcad,
+      content: item.content,
       lat: item.lat,
       lng: item.lng,
-      content: item.content,
     };
 
-    const filtered = recentItems.filter((recent) => recent.id !== newItem.id);
-    const updated = [newItem, ...filtered].slice(0, 5);
-    localStorage.setItem("recentItems", JSON.stringify(updated));
+    const filteredItems = recentItems.filter(
+      (recent) => recent.id !== newItem.id
+    );
+    const updatedItems = [newItem, ...filteredItems].slice(0, 5);
+    localStorage.setItem("recentItems", JSON.stringify(updatedItems));
 
     if (item.lat && item.lng) {
       setSelectedLocation({

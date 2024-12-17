@@ -17,8 +17,6 @@ import {
   IoIosArrowUp,
 } from "react-icons/io";
 import { BsChatDotsFill, BsTrash } from "react-icons/bs";
-import { GrPrevious } from "react-icons/gr";
-import { GrNext } from "react-icons/gr";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -33,7 +31,6 @@ const Home = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [recentItems, setRecentItems] = useState([]);
   const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEvent());
@@ -73,17 +70,10 @@ const Home = () => {
   // 새로고침 함수 추가
   const handleRefresh = () => {
     if (window.confirm("최근 본 목록을 모두 삭제하시겠습니까?")) {
-      setIsRefreshing(true);
-
       // localStorage에서 데이터 삭제
       localStorage.removeItem("recentItems");
       // 상태 초기화
       setRecentItems([]);
-
-      // 1초 후에 애니메이션 종료
-      setTimeout(() => {
-        setIsRefreshing(false);
-      }, 1000);
     }
   };
 
@@ -300,30 +290,27 @@ const Home = () => {
         >
           <button
             onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
-            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-2 rounded-l-lg shadow-lg transition-all duration-300 "
-            style={{ height: "52px" }}
+            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-4 rounded-l-lg shadow-lg transition-all duration-300"
+            style={{ height: "50px" }}
           >
-            {isRecentBoxOpen ? <GrNext /> : <GrPrevious />}
+            {isRecentBoxOpen ? ">" : "<"}
           </button>
 
-          <div className="bg-white shadow-lg rounded-l-lg w-80">
-            <div className="bg-blue-900 text-white p-3 ">
+          <div className="bg-white shadow-lg rounded-l-lg w-52">
+            <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold">최근 본 목록</h3>
                 <button
                   onClick={handleRefresh}
-                  className={`hover:bg-blue-800 p-1 rounded-full transition-all duration-300 ${
-                    isRefreshing ? "animate-spin" : ""
-                  }`}
+                  className="hover:bg-blue-800 p-1 rounded-full transition-all duration-300"
                   title="목록 삭제"
-                  disabled={isRefreshing}
                 >
                   <BsTrash size={20} />
                 </button>
               </div>
             </div>
 
-            <div className="p-3 max-h-[600px] overflow-y-auto w-full border border-gray-200">
+            <div className="p-3 max-h-[600px] overflow-y-auto">
               {recentItems.length === 0 ? (
                 <p className="text-gray-500 text-center py-4">
                   최근 본 항목이 없습니다
