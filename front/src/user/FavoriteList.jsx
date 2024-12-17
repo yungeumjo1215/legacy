@@ -173,7 +173,7 @@ const Section = ({
       <h2 className="text-xl font-semibold mb-4">
         {title} ({data.length})
       </h2>
-      <div className="relative px-8 h-[300px]">
+      <div className="relative px-8 h-[265px]">
         {data.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <p className="text-center text-gray-500">
