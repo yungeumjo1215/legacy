@@ -5,18 +5,41 @@ import { AiFillStar } from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import default_Img from "../assets/festival.png";
 import PageModal from "./PageModal";
+import axios from "axios";
 
 const FavoriteList = () => {
   const dispatch = useDispatch();
-  const { heritages, festivals } = useSelector((state) => state.favorites);
+  const [favorites, setFavorites] = useState({ heritages: [], festivals: [] });
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [heritagePage, setHeritagePage] = useState(0);
   const [festivalPage, setFestivalPage] = useState(0);
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8000/pgdb/favoritelist",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFavorites({
+          heritages: response.data.heritages || [],
+          festivals: response.data.festivals || [],
+        });
+      } catch (error) {
+        console.error("즐겨찾기 목록 가져오기 실패:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,10 +53,10 @@ const FavoriteList = () => {
   }, []);
 
   const getItemsPerPage = () => {
-    if (windowWidth <= 640) return 1; // 모바일
-    if (windowWidth <= 960) return 2; // 태블릿
-    if (windowWidth <= 1280) return 3; // 작은 데스크톱
-    return 4; // 큰 데스크톱
+    if (windowWidth <= 640) return 1;
+    if (windowWidth <= 960) return 2;
+    if (windowWidth <= 1280) return 3;
+    return 4;
   };
 
   const itemsPerPage = getItemsPerPage();
@@ -43,11 +66,36 @@ const FavoriteList = () => {
     setFestivalPage(0);
   }, [itemsPerPage]);
 
-  const handleRemoveFavorite = (item, type) => {
+  const handleRemoveFavorite = async (item, type) => {
     try {
+      const token = localStorage.getItem("token");
+      const requestData = {
+        id: type === "heritage" ? item.heritageid : item.id,
+        type: type === "heritage" ? "heritage" : "event",
+      };
+
+      await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
+        data: requestData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setFavorites((prev) => ({
+        ...prev,
+        [type === "heritage" ? "heritages" : "festivals"]: prev[
+          type === "heritage" ? "heritages" : "festivals"
+        ].filter((i) =>
+          type === "heritage"
+            ? i.heritageid !== item.heritageid
+            : i.id !== item.id
+        ),
+      }));
+
       dispatch(
         removeFavorite({
-          type: type === "heritage" ? "heritage" : "event", // "festival"을 "event"로 변경
+          type: type === "heritage" ? "heritage" : "event",
           id: type === "heritage" ? item.ccbamnm1 : item.id,
         })
       );
@@ -58,19 +106,13 @@ const FavoriteList = () => {
 
   const handlePageChange = (direction, type) => {
     if (type === "heritage") {
-      const maxPage =
-        Math.ceil(
-          (Array.isArray(heritages) ? heritages.length : 0) / itemsPerPage
-        ) - 1;
+      const maxPage = Math.ceil(favorites.heritages.length / itemsPerPage) - 1;
       const newPage = heritagePage + direction;
       if (newPage >= 0 && newPage <= maxPage) {
         setHeritagePage(newPage);
       }
     } else {
-      const maxPage =
-        Math.ceil(
-          (Array.isArray(festivals) ? festivals.length : 0) / itemsPerPage
-        ) - 1;
+      const maxPage = Math.ceil(favorites.festivals.length / itemsPerPage) - 1;
       const newPage = festivalPage + direction;
       if (newPage >= 0 && newPage <= maxPage) {
         setFestivalPage(newPage);
@@ -82,6 +124,7 @@ const FavoriteList = () => {
     const start = page * itemsPerPage;
     return items.slice(start, start + itemsPerPage);
   };
+
   const onErrorImg = (e) => {
     e.target.src = default_Img;
   };
@@ -91,6 +134,8 @@ const FavoriteList = () => {
     setModalType(type);
     setIsModalOpen(true);
   };
+
+  const { heritages, festivals } = favorites;
 
   return (
     <div className="p-4 pb-12 pt-12">
@@ -113,16 +158,18 @@ const FavoriteList = () => {
                   <button
                     onClick={() => handlePageChange(-1, "heritage")}
                     className="absolute left-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                    disabled={heritagePage === 0}>
+                    disabled={heritagePage === 0}
+                  >
                     <IoIosArrowBack size={24} />
                   </button>
                   <button
                     onClick={() => handlePageChange(1, "heritage")}
-                    className="absolute right-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200 "
+                    className="absolute right-10 top-[30%] -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
                     disabled={
                       heritagePage >=
                       Math.ceil(heritages.length / itemsPerPage) - 1
-                    }>
+                    }
+                  >
                     <IoIosArrowForward size={24} />
                   </button>
                 </>
@@ -133,10 +180,11 @@ const FavoriteList = () => {
                   {getCurrentItems(heritages, heritagePage).map(
                     (heritage, idx) => (
                       <div
-                        key={`${heritage.ccbamnm1}-${idx}`}
+                        key={`${heritage.heritageid}-${idx}`}
                         className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                         style={{ animationDelay: `${idx * 0.1}s` }}
-                        onClick={() => openModal(heritage, "heritage")}>
+                        onClick={() => openModal(heritage, "heritage")}
+                      >
                         <div className="flex flex-col h-full">
                           <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                             <img
@@ -145,14 +193,14 @@ const FavoriteList = () => {
                               className="w-full h-[160px] object-cover transition-transform duration-200 group-hover:scale-[1.08]"
                               onError={onErrorImg}
                             />
-
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleRemoveFavorite(heritage, "heritage");
                               }}
                               className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                              aria-label="즐겨찾기 해제">
+                              aria-label="즐겨찾기 해제"
+                            >
                               <AiFillStar className="text-2xl filter drop-shadow-md" />
                             </button>
                           </div>
@@ -180,7 +228,6 @@ const FavoriteList = () => {
         <h2 className="text-xl font-semibold mb-2">
           ◎ 행사 ({Array.isArray(festivals) ? festivals.length : 0})
         </h2>
-
         {Array.isArray(festivals) && festivals.length === 0 ? (
           <div className="text-center text-gray-500 mt-8 min-h-[400px] flex items-center justify-center">
             즐겨찾기한 행사가 없습니다.
@@ -192,7 +239,8 @@ const FavoriteList = () => {
                 <button
                   onClick={() => handlePageChange(-1, "festival")}
                   className="absolute left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-200"
-                  disabled={festivalPage === 0}>
+                  disabled={festivalPage === 0}
+                >
                   <IoIosArrowBack size={24} />
                 </button>
                 <button
@@ -201,21 +249,23 @@ const FavoriteList = () => {
                   disabled={
                     festivalPage >=
                     Math.ceil(festivals.length / itemsPerPage) - 1
-                  }>
+                  }
+                >
                   <IoIosArrowForward size={24} />
                 </button>
               </>
             )}
 
             <div className="flex justify-center gap-6 overflow-hidden w-full">
-              <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center  w-full">
+              <div className="flex gap-6 transition-transform duration-300 ease-in-out justify-center w-full">
                 {getCurrentItems(festivals, festivalPage).map(
                   (festival, idx) => (
                     <div
-                      key={`${festival.programName}-${idx}`}
+                      key={`${festival.id}-${idx}`}
                       className="bg-white p-4 rounded-lg shadow-xl flex-1 min-w-[250px] max-w-[300px] max-h-[400px] cursor-pointer border border-gray-200 transition-all duration-200 hover:z-20 relative z-10 opacity-0 animate-[slideRight_0.3s_ease-out_forwards] transform-gpu group"
                       style={{ animationDelay: `${idx * 0.1}s` }}
-                      onClick={() => openModal(festival, "festival")}>
+                      onClick={() => openModal(festival, "festival")}
+                    >
                       <div className="flex flex-col h-full">
                         <div className="w-full h-40 mb-4 overflow-hidden rounded-lg relative">
                           <img
@@ -230,7 +280,8 @@ const FavoriteList = () => {
                               handleRemoveFavorite(festival, "festival");
                             }}
                             className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500 transition-colors z-20"
-                            aria-label="즐겨찾기 해제">
+                            aria-label="즐겨찾기 해제"
+                          >
                             <AiFillStar className="text-2xl filter drop-shadow-md" />
                           </button>
                         </div>

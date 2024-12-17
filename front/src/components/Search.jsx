@@ -173,7 +173,7 @@ const SearchPage = () => {
   const isFavorite = (item) => {
     return (
       Array.isArray(heritages) &&
-      heritages.some((heritage) => heritage.ccbamnm1 === item.ccbamnm1)
+      heritages.some((heritage) => heritage.heritageid === item.heritageid)
     );
   };
 
@@ -192,24 +192,44 @@ const SearchPage = () => {
         return;
       }
 
-      const decodedToken = jwtDecode(token);
-      const userEmail = decodedToken.email;
-      const isAlreadySelected = isFavorite(heritage);
-
-      if (!heritage.heritageid) {
-        console.error("Heritage ID is missing:", heritage);
-        setError("문화재 정보가 올바르지 않습니다.");
-        return;
-      }
-
       const requestData = {
-        email: userEmail,
-        heritage_id: Number(heritage.heritageid),
+        id: Number(heritage.heritageid),
+        type: "heritage",
       };
 
-      console.log("Sending request with data:", requestData);
+      const isCurrentlyFavorite = isFavorite(heritage);
 
-      if (isAlreadySelected) {
+      if (!isCurrentlyFavorite) {
+        await axios.post(
+          "http://localhost:8000/pgdb/favoritelist",
+          requestData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        dispatch(
+          addFavorite({
+            type: "heritage",
+            favorites: [
+              {
+                heritageid: heritage.heritageid,
+                id: heritage.ccbamnm1,
+                ccbamnm1: heritage.ccbamnm1,
+                ccbalcad: heritage.ccbalcad,
+                content: heritage.content,
+                imageurl: heritage.imageurl,
+                lat: heritage.lat,
+                lng: heritage.lng,
+                ccceName: heritage.ccceName,
+              },
+            ],
+          })
+        );
+      } else {
         await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
           data: requestData,
           headers: {
@@ -221,43 +241,17 @@ const SearchPage = () => {
         dispatch(
           removeFavorite({
             type: "heritage",
-            id: heritage.ccbamnm1,
+            favoritesToRemove: [
+              {
+                id: heritage.ccbamnm1,
+              },
+            ],
           })
         );
-      } else {
-        const response = await axios.post(
-          "http://localhost:8000/pgdb/favoritelist",
-          requestData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data) {
-          const heritageData = {
-            type: "heritage",
-            heritageid: heritage.heritageid,
-            id: heritage.ccbamnm1,
-            ccbamnm1: heritage.ccbamnm1,
-            ccbalcad: heritage.ccbalcad,
-            content: heritage.content,
-            imageurl: heritage.imageurl,
-            lat: heritage.lat,
-            lng: heritage.lng,
-            ccceName: heritage.ccceName,
-          };
-
-          dispatch(addFavorite(heritageData));
-        }
       }
 
-      handleFavoriteChange(heritage.ccbakdcd, !isAlreadySelected);
-
       setSuccessMessage(
-        isAlreadySelected
+        isCurrentlyFavorite
           ? "즐겨찾기가 해제되었습니다."
           : "즐겨찾기에 추가되었습니다."
       );
@@ -266,16 +260,8 @@ const SearchPage = () => {
         setSuccessMessage("");
       }, 3000);
     } catch (error) {
-      console.error(
-        "즐겨찾기 처리 중 오류 발생:",
-        error.response?.data || error
-      );
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "즐겨찾기 처리 중 오류가 발생했습니다.";
-      setError(errorMessage);
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setError("즐겨찾기 처리 중 오류가 발생했습니다.");
     }
   };
 
