@@ -130,7 +130,7 @@ prompt = PromptTemplate.from_template(
 )
 
 
-llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+llm = ChatOpenAI(model_name="gpt-4o", temperature=1)
 
 
 rag_chain = (
