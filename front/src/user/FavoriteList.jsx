@@ -52,16 +52,24 @@ const FavoriteList = () => {
   const handleRemoveFavorite = async (item, type) => {
     try {
       const token = localStorage.getItem("token");
+
+      // Prepare the DELETE request parameters
       const requestData = {
         id: type === "heritage" ? item.heritageid : item.festivalid,
         type: type === "heritage" ? "heritage" : "event",
       };
 
-      await axios.delete(
-        `http://localhost:8000/pgdb/favoritelist?id=${requestData.id}&type=${requestData.type}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      console.log("Deleting favorite with data:", requestData);
 
+      // Send DELETE request with params
+      await axios.delete("http://localhost:8000/pgdb/favoritelist", {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { id: requestData.id, type: requestData.type }, // Send data in the body
+      });
+
+      console.log("Favorite removed successfully:", item);
+
+      // Update state after successful deletion
       setFavorites((prev) => ({
         ...prev,
         [type === "heritage" ? "heritages" : "festivals"]: prev[
