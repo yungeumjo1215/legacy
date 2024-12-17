@@ -96,7 +96,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
               </p>
               <p>
                 <strong className="MainFont">위치:</strong>{" "}
-                {item.heritageccbalcad}
+                {item.heritageaddress}
               </p>
             </>
           ) : (
