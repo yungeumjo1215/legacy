@@ -14,25 +14,18 @@ export const fetchFavorites = createAsyncThunk(
         },
       });
 
-      console.log("Fetch Response Status:", response.status);
-
       if (!response.ok) {
-        console.error("Fetch failed with response:", response);
         throw new Error("Failed to fetch favorites");
       }
 
       const data = await response.json();
       console.log("Fetched Data:", data);
 
-      // Filter festivals and heritages based on fields
-      const festivals = data.filter(
-        (item) => item.programName && item.location
-      );
-      const heritages = data.filter((item) => item.ccbamnm1 && item.ccbalcad);
+      // 서버 응답이 배열이 아닌 경우 빈 배열로 초기화
+      const festivals = Array.isArray(data) ? data : [];
+      const heritages = []; // heritage 데이터는 현재 사용하지 않음
 
-      console.log("Filtered Festivals:", festivals);
-      console.log("Filtered Heritages:", heritages);
-
+      console.log("Processed Festivals:", festivals);
       return { festivals, heritages };
     } catch (err) {
       console.error("Error in fetchFavorites:", err.message);
@@ -40,6 +33,7 @@ export const fetchFavorites = createAsyncThunk(
     }
   }
 );
+
 // Async thunk to add multiple favorites
 export const addFavorites = createAsyncThunk(
   "favorites/addFavorites",
@@ -131,7 +125,6 @@ const favoriteSlice = createSlice({
       const { type, data } = action.payload;
 
       if (type === "festival") {
-        // festivals 배열에 추가
         const isDuplicate = state.festivals.some(
           (festival) => festival.programName === data.programName
         );
@@ -139,22 +132,7 @@ const favoriteSlice = createSlice({
         if (!isDuplicate) {
           state.festivals.push(data);
         }
-      } else if (
-        type === "heritage" &&
-        Array.isArray(action.payload.favorites)
-      ) {
-        // heritage는 기존 로직 유지
-        state.favoriteHeritages = [
-          ...state.favoriteHeritages,
-          ...action.payload.favorites.filter(
-            (heritage) =>
-              !state.favoriteHeritages.some((item) => item.id === heritage.id)
-          ),
-        ];
       }
-
-      console.log("Updated favoriteFestivals:", state.festivals);
-      console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
 
     removeFavorite(state, action) {
@@ -165,24 +143,10 @@ const favoriteSlice = createSlice({
         state.festivals = state.festivals.filter(
           (festival) => festival.programName !== programName
         );
-      } else if (
-        type === "heritage" &&
-        Array.isArray(action.payload.favoritesToRemove)
-      ) {
-        // heritage는 기존 로직 유지
-        state.favoriteHeritages = state.favoriteHeritages.filter(
-          (heritage) =>
-            !action.payload.favoritesToRemove.some(
-              (item) => item.id === heritage.id
-            )
-        );
       }
-
-      console.log("Updated favoriteFestivals:", state.festivals);
-      console.log("Updated favoriteHeritages:", state.favoriteHeritages);
     },
+
     clearFavorites(state) {
-      console.log("Clearing all favorites...");
       state.festivals = [];
       state.favoriteHeritages = [];
     },
@@ -190,18 +154,15 @@ const favoriteSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFavorites.pending, (state) => {
-        console.log("fetchFavorites: Pending");
         state.status = "loading";
       })
       .addCase(fetchFavorites.fulfilled, (state, action) => {
-        console.log("fetchFavorites: Fulfilled", action.payload);
         const { festivals, heritages } = action.payload;
-        state.festivals = festivals || [];
-        state.favoriteHeritages = heritages || [];
+        state.festivals = festivals;
+        state.favoriteHeritages = heritages;
         state.status = "succeeded";
       })
       .addCase(fetchFavorites.rejected, (state, action) => {
-        console.error("fetchFavorites: Rejected", action.payload);
         state.status = "failed";
         state.error = action.payload || "Failed to fetch favorites.";
       });

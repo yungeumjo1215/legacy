@@ -383,11 +383,10 @@ const EventSchedule = () => {
       try {
         const token = localStorage.getItem("token");
         const isAlreadySelected = isEventStarred(festival.programName);
-        console.log("Current favorites state:", festivals); // 현재 상태 로깅
-        console.log("Is already selected:", isAlreadySelected); // 선택 상태 로깅
 
         if (!isAlreadySelected) {
-          const result = await dispatch(
+          // 즐겨찾기 추가
+          await dispatch(
             addFavorites({
               token,
               favoriteId: festival.festivalid,
@@ -395,28 +394,27 @@ const EventSchedule = () => {
             })
           ).unwrap();
 
-          if (result) {
-            dispatch(
-              addFavorite({
-                type: "festival",
-                data: {
-                  programName: festival.programName,
-                  programContent: festival.programContent,
-                  location: festival.location,
-                  startDate: festival.startDate,
-                  endDate: festival.endDate,
-                  targetAudience: festival.targetAudience,
-                  contact: festival.contact,
-                  image: festival.image,
-                  festivalid: festival.festivalid,
-                },
-              })
-            );
-            console.log("After adding favorite:", festivals); // 추가 후 상태 로깅
-            setSuccessMessage("즐겨찾기에 추가되었습니다.");
-          }
+          // 로컬 상태 업데이트
+          dispatch(
+            addFavorite({
+              type: "festival",
+              data: {
+                programName: festival.programName,
+                programContent: festival.programContent,
+                location: festival.location,
+                startDate: festival.startDate,
+                endDate: festival.endDate,
+                targetAudience: festival.targetAudience,
+                contact: festival.contact,
+                image: festival.image,
+                festivalid: festival.festivalid,
+              },
+            })
+          );
+          setSuccessMessage("즐겨찾기에 추가되었습니다.");
         } else {
-          const result = await dispatch(
+          // 즐겨찾기 제거
+          await dispatch(
             deleteFavorites({
               token,
               favoriteId: festival.festivalid,
@@ -424,20 +422,15 @@ const EventSchedule = () => {
             })
           ).unwrap();
 
-          if (result) {
-            dispatch(
-              removeFavorite({
-                type: "festival",
-                programName: festival.programName,
-              })
-            );
-            setSuccessMessage("즐겨찾기가 해제되었습니다.");
-          }
+          // 로컬 상태 업데이트
+          dispatch(
+            removeFavorite({
+              type: "festival",
+              programName: festival.programName,
+            })
+          );
+          setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
-
-        // 즐겨찾기 목록 새로고침
-        await dispatch(fetchFavorites(token));
-        console.log("After fetching favorites:", festivals); // 새로고침 후 상태 로깅
 
         setTimeout(() => {
           setSuccessMessage("");
@@ -447,7 +440,7 @@ const EventSchedule = () => {
         setError("즐겨찾기 처리 중 오류가 발생했습니다.");
       }
     },
-    [isLoggedIn, dispatch, isEventStarred, festivals]
+    [isLoggedIn, dispatch, isEventStarred]
   );
 
   const handleEventClick = useCallback((event) => {

@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import default_Img from "../assets/festival.png";
 import { useNavigate } from "react-router-dom";
+import {
+  addFavorites,
+  deleteFavorites,
+  addFavorite,
+  removeFavorite,
+} from "../redux/slices/favoriteSlice";
 
 const EventModal = ({ event, onClose }) => {
   const dispatch = useDispatch();
@@ -25,7 +30,7 @@ const EventModal = ({ event, onClose }) => {
     setIsFavorite(favoriteStatus);
   }, [festivals, event?.programName]);
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = async () => {
     if (!isLoggedIn) {
       setAlertMessage(
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -34,31 +39,54 @@ const EventModal = ({ event, onClose }) => {
     }
 
     try {
-      if (isFavorite) {
-        dispatch(
-          removeFavorite({
+      const token = localStorage.getItem("token");
+
+      if (!isFavorite) {
+        // 즐겨찾기 추가
+        await dispatch(
+          addFavorites({
+            token,
+            favoriteId: event.festivalid,
             type: "event",
-            id: event.programName,
           })
-        );
-        setAlertMessage("즐겨찾기가 해제되었습니다.");
-      } else {
+        ).unwrap();
+
+        // 로컬 상태 업데이트
         dispatch(
           addFavorite({
-            type: "event",
-            festivalid: event.festivalid,
-            id: event.programName,
-            programName: event.programName,
-            programContent: event.programContent,
-            location: event.location,
-            startDate: event.startDate,
-            endDate: event.endDate,
-            targetAudience: event.targetAudience,
-            contact: event.contact,
-            imageUrl: event.image,
+            type: "festival",
+            data: {
+              programName: event.programName,
+              programContent: event.programContent,
+              location: event.location,
+              startDate: event.startDate,
+              endDate: event.endDate,
+              targetAudience: event.targetAudience,
+              contact: event.contact,
+              image: event.image,
+              festivalid: event.festivalid,
+            },
           })
         );
         setAlertMessage("즐겨찾기에 추가되었습니다.");
+      } else {
+        // 즐겨찾기 제거
+        await dispatch(
+          deleteFavorites({
+            token,
+            favoriteId: event.festivalid,
+            type: "event",
+          })
+        ).unwrap();
+
+        // 로컬 상태 업데이트
+        dispatch(
+          removeFavorite({
+            type: "festival",
+            programName: event.programName,
+          })
+        );
+        setAlertMessage("즐겨찾기가 해제되었습니다.");
       }
     } catch (error) {
       console.error("즐겨찾기 처리 중 오류 발생:", error);
@@ -87,19 +115,22 @@ const EventModal = ({ event, onClose }) => {
       />
       <div
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                     bg-white rounded-lg shadow-xl z-50 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
+                     bg-white rounded-lg shadow-xl z-50 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
+      >
         <div>
           <div className="flex justify-between items-center mb-[8px]">
             <h2 className="MainFont text-2xl">{event.programName}</h2>
             <div className="flex items-center gap-4">
               <button
                 onClick={handleFavoriteClick}
-                className="text-2xl text-yellow-500 hover:text-yellow-600">
+                className="text-2xl text-yellow-500 hover:text-yellow-600"
+              >
                 {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
               </button>
               <button
                 onClick={onClose}
-                className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer">
+                className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
+              >
                 X
               </button>
             </div>
@@ -155,19 +186,22 @@ const EventModal = ({ event, onClose }) => {
                 <>
                   <button
                     onClick={handleLoginClick}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  >
                     로그인하기
                   </button>
                   <button
                     onClick={closeAlert}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
                     닫기
                   </button>
                 </>
               ) : (
                 <button
                   onClick={closeAlert}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
                   확인
                 </button>
               )}
