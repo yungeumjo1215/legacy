@@ -14,19 +14,15 @@ const FavoriteList = () => {
   const [festivalPage, setFestivalPage] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  // Fetch data on mount
+  // Fetch favorites on mount
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token being sent:", token); // Debugging token
         const response = await axios.get(
           "http://localhost:8000/pgdb/favoritelist",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        console.log("Response Data:", response.data); // Debug the full response
         setFavorites({
           heritages: response.data.heritages || [],
           festivals: response.data.festivals || [],
@@ -38,11 +34,6 @@ const FavoriteList = () => {
     fetchFavorites();
   }, []);
 
-  useEffect(() => {
-    console.log("Favorites State Updated:", favorites); // Log the current state
-  }, [favorites]);
-
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -65,14 +56,11 @@ const FavoriteList = () => {
         id: type === "heritage" ? item.heritageid : item.festivalid,
         type: type === "heritage" ? "heritage" : "event",
       };
-      console.log("Request Data for Deletion:", requestData); // Log deletion payload
 
       await axios.delete(
         `http://localhost:8000/pgdb/favoritelist?id=${requestData.id}&type=${requestData.type}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      console.log("Item removed successfully:", item);
 
       setFavorites((prev) => ({
         ...prev,
@@ -88,10 +76,6 @@ const FavoriteList = () => {
       console.error("Error removing favorite:", error.response || error);
     }
   };
-  console.log("Heritages Data:", favorites.heritages);
-  console.log("Festivals Data:", favorites.festivals);
-  console.log("Current Page:", { heritagePage, festivalPage });
-  console.log("Items Per Page:", itemsPerPage);
 
   const handlePageChange = (direction, type) => {
     if (type === "heritage") {
@@ -173,7 +157,7 @@ const Section = ({
   getCurrentItems,
   onErrorImg,
 }) => {
-  const itemsPerPage = 4; // Customizable
+  const itemsPerPage = 4;
   const maxPage = Math.ceil(data.length / itemsPerPage) - 1;
 
   return (
@@ -202,31 +186,37 @@ const Section = ({
             </>
           )}
           <div className="flex gap-6 justify-center">
-            {getCurrentItems(data, page).map((item, idx) => {
-              console.log("Rendering Item:", item); // Debug each rendered item
-              return (
-                <div
-                  key={idx}
-                  className="relative p-4 bg-white rounded shadow cursor-pointer"
-                  onClick={() => onOpenModal(item, type)}>
-                  <img
-                    src={item.imageurl || default_Img}
-                    alt={
-                      type === "heritage"
-                        ? item.heritagename
-                        : item.festivalname
-                    }
-                    onError={onErrorImg}
-                    className="h-40 w-full object-cover rounded"
-                  />
-                  <h3 className="mt-2 font-semibold">
-                    {type === "heritage"
-                      ? item.heritagename
-                      : item.festivalname}
-                  </h3>
-                </div>
-              );
-            })}
+            {getCurrentItems(data, page).map((item, idx) => (
+              <div
+                key={idx}
+                className="relative p-4 bg-white rounded shadow cursor-pointer"
+                onClick={() => onOpenModal(item, type)}>
+                <img
+                  src={
+                    type === "heritage"
+                      ? item.heritageimageurl || default_Img // Use heritageimageurl if available
+                      : item.festivalimageurl || default_Img // Use festivalimageurl if available
+                  }
+                  alt={
+                    type === "heritage" ? item.heritagename : item.festivalname
+                  }
+                  onError={onErrorImg}
+                  className="h-40 w-full object-cover rounded"
+                />
+                <h3 className="mt-2 font-semibold">
+                  {type === "heritage" ? item.heritagename : item.festivalname}
+                </h3>
+                {/* AiFillStar for favorite removal */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove(item, type);
+                  }}
+                  className="absolute top-2 right-2 text-yellow-400 hover:text-yellow-500">
+                  <AiFillStar className="text-2xl" />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
