@@ -15,7 +15,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     try {
       const token = localStorage.getItem("token");
       const requestData = {
-        id: type === "heritage" ? item.heritageid : item.id,
+        id: type === "heritage" ? item.heritageid : item.festivalid || item.id,
         type: type === "heritage" ? "heritage" : "event",
       };
 
@@ -29,8 +29,8 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
 
       dispatch(
         removeFavorite({
-          type: type === "heritage" ? "heritage" : "event",
-          id: type === "heritage" ? item.ccbamnm1 : item.id,
+          type: type === "heritage" ? "heritage" : "festival",
+          id: type === "heritage" ? item.ccbamnm1 : item.festivalid || item.id,
         })
       );
       onClose();

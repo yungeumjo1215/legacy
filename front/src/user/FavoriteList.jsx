@@ -9,6 +9,7 @@ import axios from "axios";
 
 const FavoriteList = () => {
   const dispatch = useDispatch();
+  const reduxFavorites = useSelector((state) => state.favorites);
   const [favorites, setFavorites] = useState({ heritages: [], festivals: [] });
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
@@ -29,9 +30,11 @@ const FavoriteList = () => {
             },
           }
         );
+
+        const serverData = response.data;
         setFavorites({
-          heritages: response.data.heritages || [],
-          festivals: response.data.festivals || [],
+          heritages: serverData.heritages || [],
+          festivals: serverData.festivals || [],
         });
       } catch (error) {
         console.error("즐겨찾기 목록 가져오기 실패:", error);
@@ -39,7 +42,7 @@ const FavoriteList = () => {
     };
 
     fetchFavorites();
-  }, []);
+  }, [reduxFavorites]);
 
   useEffect(() => {
     const handleResize = () => {
