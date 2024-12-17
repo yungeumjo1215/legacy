@@ -25,10 +25,10 @@ const EventModal = ({ event, onClose }) => {
   useEffect(() => {
     const favoriteStatus =
       Array.isArray(festivals) &&
-      festivals.some((festival) => festival.programName === event?.programName);
+      festivals.some((festival) => festival.festivalid === event?.festivalid);
 
     setIsFavorite(favoriteStatus);
-  }, [festivals, event?.programName]);
+  }, [festivals, event?.festivalid]);
 
   useEffect(() => {
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
@@ -78,6 +78,8 @@ const EventModal = ({ event, onClose }) => {
           addFavorite({
             type: "festival",
             data: {
+              festivalid: event.festivalid,
+              id: event.festivalid,
               programName: event.programName,
               programContent: event.programContent,
               location: event.location,
@@ -86,7 +88,6 @@ const EventModal = ({ event, onClose }) => {
               targetAudience: event.targetAudience,
               contact: event.contact,
               image: event.image,
-              festivalid: event.festivalid,
             },
           })
         );
@@ -105,7 +106,7 @@ const EventModal = ({ event, onClose }) => {
         dispatch(
           removeFavorite({
             type: "festival",
-            programName: event.programName,
+            id: event.festivalid,
           })
         );
         setAlertMessage("즐겨찾기가 해제되었습니다.");
