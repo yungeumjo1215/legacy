@@ -100,71 +100,82 @@ const Map = ({ selectedLocation }) => {
         if (isMounted) {
           setGeocodedHeritageData(geocodedData);
 
-          geocodedData.forEach((heritage, i) => {
-            if (!heritage) return;
+          geocodedData.forEach((heritageGroup, i) => {
+            if (!heritageGroup || heritageGroup.length === 0) return;
 
+            const firstHeritage = heritageGroup[0];
             const marker = new window.google.maps.Marker({
-              position: { lat: heritage.latitude, lng: heritage.longitude },
+              position: {
+                lat: firstHeritage.latitude,
+                lng: firstHeritage.longitude,
+              },
               map,
-              title: heritage.name,
+              title:
+                heritageGroup.length > 1
+                  ? `${firstHeritage.name} 외 ${heritageGroup.length - 1}개`
+                  : firstHeritage.name,
               animation: window.google.maps.Animation.DROP,
             });
 
-            const infoWindowContent = (heritage, i) => `
+            const infoWindowContent = (heritageGroup) => `
               <div style="
                 padding: 0;
                 margin: 0;
                 max-width: 350px;
                 font-family: 'Noto Sans KR', sans-serif;
               ">
-                ${
-                  heritage.imageUrl
-                    ? `
-                  <div style="
-                    width: 100%;
-                    height: 250px;
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-                    border-radius: 8px 8px 0 0;
-                  ">
-                    <img 
-                      src="${heritage.imageUrl}" 
-                      alt="${heritage.name}" 
-                      style="
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        display: block;
-                        margin: 0;
-                        padding: 0;
-                      "
-                    />
+                ${heritageGroup
+                  .map(
+                    (heritage) => `
+                  <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                    ${
+                      heritage.imageUrl
+                        ? `<div style="
+                          width: 100%;
+                          height: 250px;
+                          margin: 0;
+                          padding: 0;
+                          overflow: hidden;
+                          border-radius: 8px 8px 0 0;
+                        ">
+                          <img 
+                            src="${heritage.imageUrl}" 
+                            alt="${heritage.name}" 
+                            style="
+                              width: 100%;
+                              height: 100%;
+                              object-fit: cover;
+                              display: block;
+                              margin: 0;
+                              padding: 0;
+                            "
+                          />
+                        </div>`
+                        : ""
+                    }
+                    <h3 style="
+                      font-size: 18px;
+                      font-weight: bold;
+                      margin: 8px;
+                      color: #121a35;
+                    ">${heritage.name}</h3>
+                    <p style="
+                      font-size: 14px;
+                      line-height: 1.5;
+                      color: #666;
+                      margin: 8px;
+                      max-height: 100px;
+                      overflow-y: auto;
+                    ">${heritage.description}</p>
                   </div>
                 `
-                    : ""
-                }
-                
-                <h3 style="
-                  font-size: 18px;
-                  font-weight: bold;
-                  margin: 8px;
-                  color: #121a35;
-                ">${heritage.name}</h3>
-                
-                <p style="
-                  font-size: 14px;
-                  line-height: 1.5;
-                  color: #666;
-                  margin: 8px;
-                  max-height: 100px;
-                  overflow-y: auto;
-                ">${heritage.description}</p>
+                  )
+                  .join("")}
               </div>
             `;
 
             const infoWindow = new window.google.maps.InfoWindow({
-              content: infoWindowContent(heritage),
+              content: infoWindowContent(heritageGroup),
               maxWidth: 350,
             });
 
@@ -238,21 +249,29 @@ const Map = ({ selectedLocation }) => {
     };
 
     const geocodeHeritageData = async (heritageData) => {
-      const geocodedData = heritageData.map((heritage) => {
-        // 데이터베이스의 lat, lng 값이 있는 경우 직접 사용
+      // Map 대신 일반 객체 사용
+      const locationGroups = {};
+
+      heritageData.forEach((heritage) => {
         if (heritage.lat && heritage.lng) {
-          return {
+          const locationKey = `${heritage.lat},${heritage.lng}`;
+
+          if (!locationGroups[locationKey]) {
+            locationGroups[locationKey] = [];
+          }
+
+          locationGroups[locationKey].push({
             name: heritage.ccbamnm1,
             description: heritage.ccbalcad,
             latitude: parseFloat(heritage.lat),
             longitude: parseFloat(heritage.lng),
             imageUrl: heritage.imageurl,
-          };
+          });
         }
-        return null;
       });
 
-      return geocodedData.filter((data) => data !== null);
+      // 객체의 값들만 배열로 변환
+      return Object.values(locationGroups);
     };
 
     loadGoogleMapsScript();
