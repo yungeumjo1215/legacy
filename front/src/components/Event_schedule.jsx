@@ -399,6 +399,8 @@ const EventSchedule = () => {
             addFavorite({
               type: "festival",
               data: {
+                festivalid: festival.festivalid,
+                id: festival.festivalid,
                 programName: festival.programName,
                 programContent: festival.programContent,
                 location: festival.location,
@@ -407,7 +409,6 @@ const EventSchedule = () => {
                 targetAudience: festival.targetAudience,
                 contact: festival.contact,
                 image: festival.image,
-                festivalid: festival.festivalid,
               },
             })
           );
@@ -426,7 +427,7 @@ const EventSchedule = () => {
           dispatch(
             removeFavorite({
               type: "festival",
-              programName: festival.programName,
+              id: festival.festivalid,
             })
           );
           setSuccessMessage("즐겨찾기가 해제되었습니다.");
