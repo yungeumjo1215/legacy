@@ -33,6 +33,7 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14;
   const [refresh, setRefresh] = useState(0);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -203,14 +204,14 @@ const SearchPage = () => {
 
   const handleStarClick = async (heritage) => {
     if (!isLoggedIn) {
-      setError("로그인이 필요한 서비스입니다.");
+      setAlertMessage(
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
+      );
       return;
     }
 
     const token = localStorage.getItem("token");
-    const isCurrentlyFavorite = favorites.heritages.some(
-      (h) => h.heritageid === heritage.heritageid
-    );
+    const isCurrentlyFavorite = isFavorite(heritage);
 
     try {
       if (!isCurrentlyFavorite) {
@@ -220,28 +221,30 @@ const SearchPage = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(addFavorite({ type: "heritage", data: heritage }));
+        setAlertMessage("즐겨찾기에 추가되었습니다.");
       } else {
         await axios.delete("http://localhost:8000/pgdb/favoritelist", {
           headers: { Authorization: `Bearer ${token}` },
           data: { id: heritage.heritageid, type: "heritage" },
         });
         dispatch(removeFavorite({ type: "heritage", id: heritage.heritageid }));
+        setAlertMessage("즐겨찾기가 해제되었습니다.");
       }
 
-      fetchFavorites();
+      await fetchFavorites();
     } catch (error) {
-      console.error("Error handling favorite:", error);
-      setError("즐겨찾기 처리 중 오류가 발생했습니다.");
+      console.error("즐겨찾기 처리 중 오류 발생:", error);
+      setAlertMessage("즐겨찾기 처리 중 오류가 발생했습니다.");
     }
   };
 
-  const closeError = () => {
-    setError("");
+  const closeAlert = () => {
+    setAlertMessage("");
   };
 
   const handleLoginClick = () => {
     navigate("/login");
-    closeError();
+    closeAlert();
   };
 
   const handleCloseModal = () => {
@@ -325,7 +328,7 @@ const SearchPage = () => {
             className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
           />
           <button
-            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white inline-block hover:animate-[push_0.3s_linear_1] hover:bg-blue-700"
+            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:animate-[push_0.3s_linear_1] hover:bg-blue-700"
             onClick={handleSearch}
             aria-label="검색하기"
           >
@@ -444,11 +447,11 @@ const SearchPage = () => {
         <Map selectedLocation={selectedLocation} />
       </div>
 
-      {error && (
+      {alertMessage && (
         <>
           <div
             className="fixed inset-0 bg-black/50 z-[9999]"
-            onClick={closeError}
+            onClick={closeAlert}
           />
           <div
             className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
@@ -459,23 +462,35 @@ const SearchPage = () => {
             role="alert"
           >
             <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
-              {error}
+              {alertMessage}
             </p>
             <div className="mt-4 md:mt-6 flex gap-2 md:gap-2.5">
-              <button
-                onClick={handleLoginClick}
-                className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                         cursor-pointer hover:bg-blue-700 transition-colors"
-              >
-                로그인하기
-              </button>
-              <button
-                onClick={closeError}
-                className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                         cursor-pointer hover:bg-gray-600 transition-colors"
-              >
-                닫기
-              </button>
+              {alertMessage.includes("로그인이 필요한 서비스입니다") ? (
+                <>
+                  <button
+                    onClick={handleLoginClick}
+                    className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                             cursor-pointer hover:bg-blue-700 transition-colors"
+                  >
+                    로그인하기
+                  </button>
+                  <button
+                    onClick={closeAlert}
+                    className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                             cursor-pointer hover:bg-gray-600 transition-colors"
+                  >
+                    닫기
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={closeAlert}
+                  className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
+                           cursor-pointer hover:bg-blue-700 transition-colors"
+                >
+                  확인
+                </button>
+              )}
             </div>
           </div>
         </>
