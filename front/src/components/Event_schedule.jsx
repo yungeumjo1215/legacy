@@ -384,59 +384,31 @@ const EventSchedule = () => {
       try {
         const token = localStorage.getItem("token");
         const isAlreadySelected = isEventStarred(festival.programName);
-        console.log("Attempting to update favorite status:", {
-          festival,
-          isAlreadySelected,
-        }); // 디버깅용
 
         if (!isAlreadySelected) {
-          // 즐겨찾기 추가
-          const addResult = await dispatch(
+          await dispatch(
             addFavorites({
               token,
               favoriteId: festival.festivalid,
               type: "event",
             })
           ).unwrap();
-          console.log("Add result:", addResult); // 디버깅용
-
-          // 로컬 상태 업데이트
-          dispatch(
-            addFavorite({
-              programName: festival.programName,
-              festivalid: festival.festivalid,
-              type: "event",
-            })
-          );
-
-          // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
-          await dispatch(fetchFavorites(token));
 
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         } else {
-          // 즐겨찾기 제거
-          const deleteResult = await dispatch(
+          await dispatch(
             deleteFavorites({
               token,
               favoriteId: festival.festivalid,
               type: "event",
             })
           ).unwrap();
-          console.log("Delete result:", deleteResult); // 디버깅용
-
-          // 로컬 상태 업데이트
-          dispatch(
-            removeFavorite({
-              programName: festival.programName,
-              festivalid: festival.festivalid,
-            })
-          );
-
-          // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
-          await dispatch(fetchFavorites(token));
 
           setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
+
+        // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
+        await dispatch(fetchFavorites(token));
 
         setTimeout(() => {
           setSuccessMessage("");
@@ -561,11 +533,6 @@ const EventSchedule = () => {
       setSelectedEvent(event);
     }
   }, [location.state]);
-
-  // festivals 상태 디버깅을 위한 useEffect 추가
-  useEffect(() => {
-    // console.log("Festivals updated:", festivals);
-  }, [festivals]);
 
   // 로그인 상태가 변경되거나 컴포넌트가 마운트될 때 즐겨찾기 목록을 가져옵니다
   useEffect(() => {
