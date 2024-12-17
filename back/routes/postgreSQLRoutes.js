@@ -105,7 +105,8 @@ router.get("/favoritelist", async (req, res) => {
     // Query to join favoritelist with festivallist and heritagelist
     const query = `
 SELECT 
-  token,
+  a.uuid AS user_id,
+  a.email AS user_email,
   fav.id AS favoriteid,
   fav.type,
 
@@ -125,20 +126,25 @@ SELECT
   hl.ccbamnm1 AS heritagename,
   hl.ccbalcad AS heritageaddress,
   hl.content AS heritagecontent,
-  hl.imageurl AS heritageimageurl
+  hl.imageurl AS heritageimageurl,
+  hl.lat AS heritagelatitude,
+  hl.lng AS heritagelongitude
 
 FROM favoritelist AS fav
+INNER JOIN accounts AS a ON fav.token = a.email
 LEFT JOIN festivallist AS fl ON fav.f_id = fl.festivalid
 LEFT JOIN heritagelist AS hl ON fav.h_id = hl.heritageid
-WHERE fav.token = $1;
+WHERE a.email = $1;
     `;
 
+    // Execute the query using the email as a parameter
     const result = await pool.query(query, [email]);
 
     // Split the results into festivals and heritages
     const festivals = result.rows.filter((row) => row.type === "event");
     const heritages = result.rows.filter((row) => row.type === "heritage");
 
+    // Send the response with separated data
     res.status(200).json({ festivals, heritages });
   } catch (error) {
     console.error("Error fetching favorites with details:", error.message);
@@ -146,7 +152,6 @@ WHERE fav.token = $1;
   }
 });
 
-// POST: Add Favorite Festivals and Heritages
 // POST: Add Favorite Festivals and Heritages
 router.post("/favoritelist", async (req, res) => {
   const { id, type } = req.body; // Extract ID and type
