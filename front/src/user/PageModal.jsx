@@ -103,7 +103,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
             <>
               <p>
                 <strong className="MainFont">장소:</strong>{" "}
-                {item.festivalccbalcad}
+                {item.festivallocation}
               </p>
               <p>
                 <strong className="MainFont">기간:</strong>{" "}
