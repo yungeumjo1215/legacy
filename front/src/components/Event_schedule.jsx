@@ -79,7 +79,8 @@ const SearchBar = memo(({ value, onChange }) => (
   <div className="flex justify-center w-full">
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="flex w-full sm:w-auto md:w-[400px]">
+      className="flex w-full sm:w-auto md:w-[400px]"
+    >
       <input
         type="text"
         placeholder="행사명을 입력해주세요"
@@ -89,7 +90,8 @@ const SearchBar = memo(({ value, onChange }) => (
       />
       <button
         type="submit"
-        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0">
+        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0 hover:bg-blue-700"
+      >
         <span className="relative z-10">검색</span>
       </button>
     </form>
@@ -112,7 +114,8 @@ const EventItem = memo(
             tabIndex={0}
             aria-label={`${event.programName} 즐겨찾기 ${
               isStarred ? "제거" : "추가"
-            }`}>
+            }`}
+          >
             <TiStarFullOutline className="text-2xl sm:text-3xl" />
           </button>
 
@@ -131,7 +134,8 @@ const EventItem = memo(
                           shadow-sm hover:shadow-md
                           text-center text-nowrap
                           font-bold"
-                onClick={() => onEventClick(event)}>
+                onClick={() => onEventClick(event)}
+              >
                 더보기
               </button>
             </div>
@@ -472,7 +476,8 @@ const EventSchedule = () => {
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+          >
             이전
           </button>
         )}
@@ -485,7 +490,8 @@ const EventSchedule = () => {
               currentPage === number
                 ? "bg-blue-800 text-white"
                 : "bg-gray-200 hover:bg-gray-300"
-            }`}>
+            }`}
+          >
             {number}
           </button>
         ))}
@@ -493,7 +499,8 @@ const EventSchedule = () => {
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+          >
             다음
           </button>
         )}
@@ -529,7 +536,8 @@ const EventSchedule = () => {
           <div className="xl:flex xl:flex-row flex-col justify-between items-start gap-6">
             <div
               className="xl:w-1/2 w-full flex flex-wrap justify-center sm:justify-start items-center 
-                          sm:ml-4 gap-2 sm:gap-4 xl:mt-[6.25rem] mt-4">
+                          sm:ml-4 gap-2 sm:gap-4 xl:mt-[6.25rem] mt-4"
+            >
               <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 ">
                 {REGIONS.map((region) => (
                   <button
@@ -540,7 +548,8 @@ const EventSchedule = () => {
                         selectedRegion === region.id
                           ? "bg-blue-800 text-white"
                           : "bg-gray-100 text-black hover:bg-gray-200"
-                      }`}>
+                      }`}
+                  >
                     {region.name}
                   </button>
                 ))}
@@ -601,7 +610,8 @@ const EventSchedule = () => {
                            w-[90%] md:w-[400px] max-w-[400px]
                            h-[180px] md:h-[200px] 
                            flex flex-col justify-center items-center text-center"
-                role="alert">
+                role="alert"
+              >
                 <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
                   {error}
                 </p>
@@ -609,13 +619,15 @@ const EventSchedule = () => {
                   <button
                     onClick={handleLoginClick}
                     className="bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                             cursor-pointer hover:bg-blue-700 transition-colors">
+                             cursor-pointer hover:bg-blue-700 transition-colors"
+                  >
                     로그인하기
                   </button>
                   <button
                     onClick={closeError}
                     className="bg-gray-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                             cursor-pointer hover:bg-gray-600 transition-colors">
+                             cursor-pointer hover:bg-gray-600 transition-colors"
+                  >
                     닫기
                   </button>
                 </div>
@@ -635,14 +647,16 @@ const EventSchedule = () => {
                            w-[90%] md:w-[400px] max-w-[400px]
                            h-[150px] md:h-[170px] 
                            flex flex-col justify-center items-center text-center"
-                role="alert">
+                role="alert"
+              >
                 <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
                   {successMessage}
                 </p>
                 <button
                   onClick={closeSuccessMessage}
                   className="mt-4 md:mt-6 bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-sm md:text-base
-                           cursor-pointer hover:bg-blue-700 transition-colors">
+                           cursor-pointer hover:bg-blue-700 transition-colors"
+                >
                   확인
                 </button>
               </div>
@@ -657,7 +671,8 @@ const EventSchedule = () => {
                     <li
                       key={`${festival.programName}-${index}`}
                       className="my-3 md:my-5 flex items-center opacity-0 animate-[slideDown_0.3s_ease-out_forwards]"
-                      style={{ animationDelay: `${index * 0.05}s` }}>
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                    >
                       <div className="border p-4 rounded-lg transition-colors w-full">
                         <div className="flex items-start">
                           <button
@@ -675,7 +690,8 @@ const EventSchedule = () => {
                               isEventStarred(festival.programName)
                                 ? "제거"
                                 : "추가"
-                            }`}>
+                            }`}
+                          >
                             <TiStarFullOutline className="text-2xl sm:text-3xl" />
                           </button>
 
@@ -694,7 +710,8 @@ const EventSchedule = () => {
                                           shadow-sm hover:shadow-md
                                           text-center text-nowrap
                                           font-bold"
-                                onClick={() => handleEventClick(festival)}>
+                                onClick={() => handleEventClick(festival)}
+                              >
                                 더보기
                               </button>
                             </div>
@@ -765,7 +782,7 @@ const EventSchedule = () => {
                     </li>
                   ))
                 ) : (
-                  <p className="text-center text-gray-500 py-8">
+                  <p className="text-center text-gray-500 py-8 text-xl">
                     해당 날짜에 예정된 행사가 없습니다.
                   </p>
                 )}
@@ -777,7 +794,8 @@ const EventSchedule = () => {
             <button
               onClick={scrollToTop}
               className="fixed bottom-8 right-8 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all duration-300 ease-in-out"
-              aria-label="맨 위로 가기">
+              aria-label="맨 위로 가기"
+            >
               <IoIosArrowUp size={24} />
             </button>
           )}
