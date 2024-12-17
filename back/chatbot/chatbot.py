@@ -54,7 +54,7 @@ except Exception as e:
 
 # 문서가 비어있는지 확인
 if not documents:
-    print("문서를 가져오지 못했습니다. 프로그램을 종료합니다.")
+    # print("문서를 가져오지 못했습니다. 프로그램을 종료합니다.")
     sys.exit(1)
 
 
@@ -66,7 +66,7 @@ splits = text_splitter.split_documents(documents)
 
 
 if not splits:
-    print("분할된 문서가 없습니다. 프로그램을 종료합니다.")
+    # print("분할된 문서가 없습니다. 프로그램을 종료합니다.")
     sys.exit(1)
 
 
@@ -83,7 +83,7 @@ if os.path.exists(cache_file):
     )
     # print(f"캐시된 벡터 저장소 로드 완료: {time.time() - load_start:.2f}초")
 else:
-    print("새로운 벡터 저장소를 생성합니다.")
+    # print("새로운 벡터 저장소를 생성합니다.")
     create_start = time.time()
     vectorstore = FAISS.from_documents(
         documents=splits,
