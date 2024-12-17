@@ -15,22 +15,21 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     try {
       const token = localStorage.getItem("token");
       const requestData = {
-        id: type === "heritage" ? item.heritageid : item.festivalid || item.id,
-        type: type === "heritage" ? "heritage" : "event",
+        id: type === "heritage" ? item.heritageid : item.festivalid,
+        type: type === "heritage" ? "heritage" : "festival",
       };
 
       await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
-        data: requestData,
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
+        data: requestData,
       });
 
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "festival",
-          id: type === "heritage" ? item.ccbamnm1 : item.festivalid || item.id,
+          id: type === "heritage" ? item.heritageid : item.festivalid,
         })
       );
       onClose();
@@ -49,7 +48,7 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         {/* 헤더 */}
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-xl font-bold">
-            {type === "heritage" ? item.ccbamnm1 : item.programName}
+            {type === "heritage" ? item.heritagename : item.festivalname}
           </h2>
           <div className="flex gap-2">
             <button
@@ -72,9 +71,11 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         <div className="p-4 border-b">
           <img
             src={
-              type === "heritage" ? item.imageurl : item.imageUrl || default_Img
+              type === "heritage"
+                ? item.heritageimageurl || default_Img
+                : item.festivalimageurl || default_Img
             }
-            alt={type === "heritage" ? item.ccbamnm1 : item.programName}
+            alt={type === "heritage" ? item.heritagename : item.festivalname}
             className="w-full h-[300px] object-contain bg-gray-100 rounded-lg"
             onError={onErrorImg}
           />
@@ -85,12 +86,12 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
           {type === "heritage" ? (
             <>
               <div>
-                <span className="font-semibold text-gray-700">시대</span>
-                <p className="mt-1 text-gray-600">{item.cccename}</p>
-              </div>
-              <div>
                 <span className="font-semibold text-gray-700">위치</span>
                 <p className="mt-1 text-gray-600">{item.ccbalcad}</p>
+              </div>
+              <div>
+                <span className="font-semibold text-gray-700">설명</span>
+                <p className="mt-1 text-gray-600">{item.content}</p>
               </div>
             </>
           ) : (
