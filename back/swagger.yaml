@@ -1,120 +1,117 @@
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.yaml'); // Swagger 파일 경로
+# const swaggerUi = require('swagger-ui-express');
+# const swaggerDocument = require('./swagger.yaml'); // Swagger 파일 경로
 
-const express = require('express');
-const app = express();
+# const express = require('express');
+# const app = express();
 
+# openapi: 3.0.0
+# info:
+#   title: Event and Heritage Management API
+#   description: API documentation for managing accounts, events, festivals, and favorites.
+#   version: 1.0.0
+# servers:
+#   - url: http://localhost:5000/api
+#     description: Local development server
 
+# paths:
+#   /create:
+#     post:
+#       summary: Create a new account
+#       responses:
+#         "201":
+#           description: Account created successfully
+#         "400":
+#           description: Bad request
 
+#   /delete/{uuid}:
+#     delete:
+#       summary: Delete an account by UUID
+#       parameters:
+#         - name: uuid
+#           in: path
+#           required: true
+#           schema:
+#             type: string
+#       responses:
+#         "200":
+#           description: Account deleted successfully
+#         "404":
+#           description: Account not found
 
-openapi: 3.0.0
-info:
-  title: Event and Heritage Management API
-  description: API documentation for managing accounts, events, festivals, and favorites.
-  version: 1.0.0
-servers:
-  - url: http://localhost:5000/api
-    description: Local development server
+#   /login:
+#     post:
+#       summary: User login
+#       responses:
+#         "200":
+#           description: Login successful
+#         "401":
+#           description: Unauthorized
 
-paths:
-  /create:
-    post:
-      summary: Create a new account
-      responses:
-        "201":
-          description: Account created successfully
-        "400":
-          description: Bad request
+#   /logout:
+#     post:
+#       summary: User logout
+#       responses:
+#         "200":
+#           description: Logout successful
 
-  /delete/{uuid}:
-    delete:
-      summary: Delete an account by UUID
-      parameters:
-        - name: uuid
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Account deleted successfully
-        "404":
-          description: Account not found
+#   /permissions/{uuid}:
+#     put:
+#       summary: Update user permissions
+#       parameters:
+#         - name: uuid
+#           in: path
+#           required: true
+#           schema:
+#             type: string
+#       responses:
+#         "200":
+#           description: Permissions updated
+#         "400":
+#           description: Bad request
 
-  /login:
-    post:
-      summary: User login
-      responses:
-        "200":
-          description: Login successful
-        "401":
-          description: Unauthorized
+#   /info:
+#     get:
+#       summary: Get account info
+#       responses:
+#         "200":
+#           description: Account info retrieved
+#         "404":
+#           description: Account not found
 
-  /logout:
-    post:
-      summary: User logout
-      responses:
-        "200":
-          description: Logout successful
+#   /events:
+#     get:
+#       summary: Get all events
+#       responses:
+#         "200":
+#           description: List of all events
 
-  /permissions/{uuid}:
-    put:
-      summary: Update user permissions
-      parameters:
-        - name: uuid
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Permissions updated
-        "400":
-          description: Bad request
+#   /heritage:
+#     get:
+#       summary: Get all heritage sites
+#       responses:
+#         "200":
+#           description: List of heritage sites
 
-  /info:
-    get:
-      summary: Get account info
-      responses:
-        "200":
-          description: Account info retrieved
-        "404":
-          description: Account not found
+#   /festivals:
+#     get:
+#       summary: Get all festivals
+#       responses:
+#         "200":
+#           description: List of festivals
 
-  /events:
-    get:
-      summary: Get all events
-      responses:
-        "200":
-          description: List of all events
-
-  /heritage:
-    get:
-      summary: Get all heritage sites
-      responses:
-        "200":
-          description: List of heritage sites
-
-  /festivals:
-    get:
-      summary: Get all festivals
-      responses:
-        "200":
-          description: List of festivals
-
-  /favoritelist:
-    get:
-      summary: Get user's favorite list
-      responses:
-        "200":
-          description: List of favorite items
-    post:
-      summary: Add an item to favorites
-      responses:
-        "201":
-          description: Item added to favorites
-    delete:
-      summary: Remove an item from favorites
-      responses:
-        "200":
-          description: Item removed from favorites
+#   /favoritelist:
+#     get:
+#       summary: Get user's favorite list
+#       responses:
+#         "200":
+#           description: List of favorite items
+#     post:
+#       summary: Add an item to favorites
+#       responses:
+#         "201":
+#           description: Item added to favorites
+#     delete:
+#       summary: Remove an item from favorites
+#       responses:
+#         "200":
+#           description: Item removed from favorites
