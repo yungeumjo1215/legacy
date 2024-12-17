@@ -173,61 +173,75 @@ const Section = ({
       <h2 className="text-xl font-semibold mb-4">
         {title} ({data.length})
       </h2>
-      {data.length === 0 ? (
-        <p className="text-center text-gray-500">즐겨찾기한 항목이 없습니다.</p>
-      ) : (
-        <div className="relative px-8">
-          {data.length > itemsPerPage && (
-            <>
-              <button
-                onClick={() => onPageChange(-1, type)}
-                disabled={page === 0}
-                className="absolute left-10 top-1/2 -translate-y-1/2 z-10">
-                <IoIosArrowBack size={24} />
-              </button>
-              <button
-                onClick={() => onPageChange(1, type)}
-                disabled={page >= maxPage}
-                className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
-                <IoIosArrowForward size={24} />
-              </button>
-            </>
-          )}
-          <div className="flex gap-6 justify-center">
-            {getCurrentItems(data, page).map((item, idx) => (
-              <div
-                key={idx}
-                className="relative p-4 bg-white rounded shadow cursor-pointer"
-                onClick={() => onOpenModal(item, type)}>
-                <img
-                  src={
-                    type === "heritage"
-                      ? item.heritageimageurl || default_Img // Use heritageimageurl if available
-                      : item.festivalimageurl || default_Img // Use festivalimageurl if available
-                  }
-                  alt={
-                    type === "heritage" ? item.heritagename : item.festivalname
-                  }
-                  onError={onErrorImg}
-                  className="h-40 w-full object-cover rounded"
-                />
-                <h3 className="mt-2 font-semibold">
-                  {type === "heritage" ? item.heritagename : item.festivalname}
-                </h3>
-                {/* AiFillStar for favorite removal */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemove(item, type);
-                  }}
-                  className="absolute top-2 right-2 text-yellow-400 hover:text-yellow-500">
-                  <AiFillStar className="text-2xl" />
-                </button>
-              </div>
-            ))}
+      <div className="relative px-8 h-[260px]">
+        {data.length === 0 ? (
+          <div className="h-full flex items-center justify-center">
+            <p className="text-center text-gray-500">
+              즐겨찾기한 항목이 없습니다.
+            </p>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            {data.length > itemsPerPage && (
+              <>
+                <button
+                  onClick={() => onPageChange(-1, type)}
+                  disabled={page === 0}
+                  className="absolute left-10 top-1/2 -translate-y-1/2 z-10"
+                >
+                  <IoIosArrowBack size={24} />
+                </button>
+                <button
+                  onClick={() => onPageChange(1, type)}
+                  disabled={page >= maxPage}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 z-10"
+                >
+                  <IoIosArrowForward size={24} />
+                </button>
+              </>
+            )}
+            <div className="flex gap-6 justify-center h-full items-center">
+              {getCurrentItems(data, page).map((item, idx) => (
+                <div
+                  key={idx}
+                  className="relative p-4 bg-white rounded shadow cursor-pointer"
+                  onClick={() => onOpenModal(item, type)}
+                >
+                  <img
+                    src={
+                      type === "heritage"
+                        ? item.heritageimageurl || default_Img // Use heritageimageurl if available
+                        : item.festivalimageurl || default_Img // Use festivalimageurl if available
+                    }
+                    alt={
+                      type === "heritage"
+                        ? item.heritagename
+                        : item.festivalname
+                    }
+                    onError={onErrorImg}
+                    className="h-40 w-full object-cover rounded"
+                  />
+                  <h3 className="mt-2 font-semibold">
+                    {type === "heritage"
+                      ? item.heritagename
+                      : item.festivalname}
+                  </h3>
+                  {/* AiFillStar for favorite removal */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemove(item, type);
+                    }}
+                    className="absolute top-2 right-2 text-yellow-400 hover:text-yellow-500"
+                  >
+                    <AiFillStar className="text-2xl" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
