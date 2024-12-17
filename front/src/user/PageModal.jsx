@@ -1,12 +1,13 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { removeFavorite } from "../redux/slices/favoriteSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFavorite, addFavorites } from "../redux/slices/favoriteSlice";
 import { AiFillStar } from "react-icons/ai";
 import default_Img from "../assets/festival.png";
 import axios from "axios";
 
-const PageModal = ({ isOpen, onClose, item, type }) => {
+const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
   const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites);
 
   if (!isOpen || !item) return null;
 
@@ -14,27 +15,62 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     e.stopPropagation();
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        alert("로그인이 필요한 서비스입니다.");
+        return;
+      }
+
       const requestData = {
         id: type === "heritage" ? item.heritageid : item.festivalid,
         type: type === "heritage" ? "heritage" : "festival",
       };
 
-      await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
+      console.log("요청 데이터:", requestData);
+
+      const response = await axios({
+        method: "delete",
+        url: "http://localhost:8000/pgdb/favoritelist",
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         data: requestData,
       });
 
-      dispatch(
-        removeFavorite({
-          type: type === "heritage" ? "heritage" : "festival",
-          id: type === "heritage" ? item.heritageid : item.festivalid,
-        })
-      );
-      onClose();
+      console.log("서버 응답:", response.data);
+
+      if (response.data) {
+        dispatch(
+          removeFavorite({
+            type: type,
+            id: type === "heritage" ? item.heritageid : item.festivalid,
+          })
+        );
+
+        if (onUpdate) {
+          onUpdate();
+        }
+
+        alert("즐겨찾기가 성공적으로 제거되었습니다.");
+        onClose();
+      }
     } catch (error) {
       console.error("즐겨찾기 제거 중 오류 발생:", error);
+      if (error.response) {
+        console.error("에러 상세:", error.response.data);
+        console.error("에러 상태:", error.response.status);
+        alert(
+          `즐겨찾기 해제 실패: ${
+            error.response.data.message || "서버 오류가 발생했습니다."
+          }`
+        );
+      } else if (error.request) {
+        console.error("서버 응답 없음:", error.request);
+        alert("서버에서 응답이 없습니다. 네트워크 연결을 확인해주세요.");
+      } else {
+        console.error("에러 메시지:", error.message);
+        alert("요청 설정 중 오류가 발생했습니다.");
+      }
     }
   };
 

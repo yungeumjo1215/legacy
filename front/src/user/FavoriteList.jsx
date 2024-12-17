@@ -13,6 +13,7 @@ const FavoriteList = () => {
   const [heritagePage, setHeritagePage] = useState(0);
   const [festivalPage, setFestivalPage] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [refresh, setRefresh] = useState(false);
 
   // Fetch favorites on mount
   useEffect(() => {
@@ -114,6 +115,10 @@ const FavoriteList = () => {
 
   const { heritages, festivals } = favorites;
 
+  const handleUpdate = () => {
+    setRefresh(!refresh);
+  };
+
   return (
     <div className="p-4 pb-12 pt-12">
       <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
@@ -149,6 +154,7 @@ const FavoriteList = () => {
         onClose={() => setIsModalOpen(false)}
         item={selectedItem}
         type={modalType}
+        onUpdate={handleUpdate}
       />
     </div>
   );
