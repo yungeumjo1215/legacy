@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { AiFillStar } from "react-icons/ai";
 import { removeFavorite } from "../redux/slices/favoriteSlice";
+import { AiFillStar } from "react-icons/ai";
 import default_Img from "../assets/festival.png";
 import axios from "axios";
 
@@ -15,22 +15,21 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     try {
       const token = localStorage.getItem("token");
       const requestData = {
-        id: type === "heritage" ? item.heritageid : item.festivalid || item.id,
-        type: type === "heritage" ? "heritage" : "event",
+        id: type === "heritage" ? item.heritageid : item.festivalid,
+        type: type === "heritage" ? "heritage" : "festival",
       };
 
       await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
-        data: requestData,
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
+        data: requestData,
       });
 
       dispatch(
         removeFavorite({
           type: type === "heritage" ? "heritage" : "festival",
-          id: type === "heritage" ? item.ccbamnm1 : item.festivalid || item.id,
+          id: type === "heritage" ? item.heritageid : item.festivalid,
         })
       );
       onClose();
@@ -39,76 +38,81 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
     }
   };
 
-  const onErrorImg = (e) => {
+  const handleImageError = (e) => {
     e.target.src = default_Img;
+    e.target.alt = "이미지를 불러올 수 없습니다";
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full mx-4">
-        {/* 헤더 */}
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-bold">
-            {type === "heritage" ? item.ccbamnm1 : item.programName}
+    <div
+      className="fixed inset-0 w-full h-full bg-black/50 z-[9999] flex justify-center items-center"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-white text-black p-8 rounded-lg z-[10000] w-[90%] max-w-[800px] max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-[28px] m-0 MainFont break-words flex-1 pr-5">
+            {type === "heritage" ? item.heritagename : item.festivalname}
           </h2>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-4">
             <button
               onClick={handleRemoveFavorite}
-              className="text-yellow-400 hover:text-yellow-500"
-              aria-label="즐겨찾기 해제"
+              className="text-2xl text-yellow-500 hover:text-yellow-600"
             >
-              <AiFillStar className="text-2xl" />
+              <AiFillStar />
             </button>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
             >
-              ✕
+              X
             </button>
           </div>
         </div>
 
-        {/* 이미지 */}
-        <div className="p-4 border-b">
-          <img
-            src={
-              type === "heritage" ? item.imageurl : item.imageUrl || default_Img
-            }
-            alt={type === "heritage" ? item.ccbamnm1 : item.programName}
-            className="w-full h-[300px] object-contain bg-gray-100 rounded-lg"
-            onError={onErrorImg}
-          />
-        </div>
+        <img
+          src={
+            type === "heritage"
+              ? item.heritageimageurl || default_Img
+              : item.festivalimageurl || default_Img
+          }
+          alt={type === "heritage" ? item.heritagename : item.festivalname}
+          onError={handleImageError}
+          className="w-full rounded-lg mb-5 max-h-[350px] object-contain"
+        />
 
-        {/* 상세 정보 */}
-        <div className="p-4 space-y-4">
+        <p className="SubFont text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed whitespace-pre-line">
+          {type === "heritage" ? item.heritagecontent : item.festivalcontent}
+        </p>
+
+        <div className="SubFont text-base mb-2.5 flex flex-col gap-2.5">
           {type === "heritage" ? (
             <>
-              <div>
-                <span className="font-semibold text-gray-700">시대</span>
-                <p className="mt-1 text-gray-600">{item.cccename}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700">위치</span>
-                <p className="mt-1 text-gray-600">{item.ccbalcad}</p>
-              </div>
+              <p>
+                <strong className="MainFont">시대:</strong>{" "}
+                {item.heritagecccename}
+              </p>
+              <p>
+                <strong className="MainFont">위치:</strong>{" "}
+                {item.heritageccbalcad}
+              </p>
             </>
           ) : (
             <>
-              <div>
-                <span className="font-semibold text-gray-700">장소</span>
-                <p className="mt-1 text-gray-600">{item.location}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700">기간</span>
-                <p className="mt-1 text-gray-600">
-                  {item.startDate} ~ {item.endDate}
-                </p>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-700">문의</span>
-                <p className="mt-1 text-gray-600">{item.contact}</p>
-              </div>
+              <p>
+                <strong className="MainFont">장소:</strong>{" "}
+                {item.festivallocation}
+              </p>
+              <p>
+                <strong className="MainFont">기간:</strong>{" "}
+                {item.festivalstartdate} ~ {item.festivalenddate}
+              </p>
+              <p>
+                <strong className="MainFont">문의:</strong>{" "}
+                {item.festivalcontact}
+              </p>
             </>
           )}
         </div>
