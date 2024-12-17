@@ -232,64 +232,27 @@ const Map = ({ selectedLocation }) => {
         return response.data;
       } catch (error) {
         console.error("유적지 데이터를 가져오는 중 오류 발생:", error);
-        setError("유적지 데이터를 불러오는데 실패했��니다");
+        setError("유적지 데이터를 불러오는데 실패했습니다");
         return [];
       }
     };
 
     const geocodeHeritageData = async (heritageData) => {
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API;
+      const geocodedData = heritageData.map((heritage) => {
+        // 데이터베이스의 lat, lng 값이 있는 경우 직접 사용
+        if (heritage.lat && heritage.lng) {
+          return {
+            name: heritage.ccbamnm1,
+            description: heritage.ccbalcad,
+            latitude: parseFloat(heritage.lat),
+            longitude: parseFloat(heritage.lng),
+            imageUrl: heritage.imageurl,
+          };
+        }
+        return null;
+      });
 
-      const geocodedData = await Promise.all(
-        heritageData.map(async (heritage) => {
-          const cacheKey = heritage.ccbalcad;
-
-          // 캐시된 결과가 있으면 사용
-          if (geocodeCache.current.has(cacheKey)) {
-            return geocodeCache.current.get(cacheKey);
-          }
-
-          try {
-            const response = await axios.get(
-              `https://maps.googleapis.com/maps/api/geocode/json`,
-              {
-                params: {
-                  address: heritage.ccbalcad,
-                  key: apiKey,
-                },
-              }
-            );
-
-            if (response.data.status === "OK") {
-              const location = response.data.results[0].geometry.location;
-              const result = {
-                name: heritage.ccbamnm1,
-                description: heritage.ccbalcad,
-                latitude: location.lat,
-                longitude: location.lng,
-                imageUrl: heritage.imageurl,
-              };
-
-              // 결과 캐싱
-              geocodeCache.current.set(cacheKey, result);
-              return result;
-            } else {
-              console.error(
-                `Geocoding 실패: ${heritage.ccbalcad} - ${response.data.status}`
-              );
-              return null;
-            }
-          } catch (error) {
-            console.error(
-              `Geocoding 요청 중 오류 발생: ${heritage.ccbalcad}`,
-              error
-            );
-            return null;
-          }
-        })
-      );
-
-      return geocodedData.filter((data, i) => data !== null);
+      return geocodedData.filter((data) => data !== null);
     };
 
     loadGoogleMapsScript();
