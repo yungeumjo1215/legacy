@@ -22,7 +22,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
 
       const requestData = {
         id: type === "heritage" ? item.heritageid : item.festivalid,
-        type: type === "heritage" ? "heritage" : "festival",
+        type: type === "heritage" ? "heritage" : "event",
       };
 
       console.log("요청 데이터:", requestData);
@@ -81,12 +81,10 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
   return (
     <div
       className="fixed inset-0 w-full h-full bg-black/50 z-[9999] flex justify-center items-center"
-      onClick={onClose}
-    >
+      onClick={onClose}>
       <div
         className="relative bg-white text-black p-8 rounded-lg z-[10000] w-[90%] max-w-[800px] max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
+        onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-[28px] m-0 MainFont break-words flex-1 pr-5">
             {type === "heritage" ? item.heritagename : item.festivalname}
@@ -94,14 +92,12 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
           <div className="flex items-center gap-4">
             <button
               onClick={handleRemoveFavorite}
-              className="text-2xl text-yellow-500 hover:text-yellow-600"
-            >
+              className="text-2xl text-yellow-500 hover:text-yellow-600">
               <AiFillStar />
             </button>
             <button
               onClick={onClose}
-              className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
-            >
+              className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer">
               X
             </button>
           </div>
