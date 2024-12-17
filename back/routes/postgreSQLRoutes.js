@@ -126,6 +126,7 @@ SELECT
   hl.ccbamnm1 AS heritagename,
   hl.ccbalcad AS heritageaddress,
   hl.content AS heritagecontent,
+  hl.cccename AS heritagecccename,
   hl.imageurl AS heritageimageurl,
   hl.lat AS heritagelatitude,
   hl.lng AS heritagelongitude
