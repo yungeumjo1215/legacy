@@ -84,30 +84,34 @@ const PageModal = ({ isOpen, onClose, item, type }) => {
         />
 
         <p className="SubFont text-lg mb-5 box-border border border-[#7d7576] rounded-lg p-2.5 leading-relaxed whitespace-pre-line">
-          {type === "heritage" ? item.content : item.festivalcontent}
+          {type === "heritage" ? item.heritagecontent : item.festivalcontent}
         </p>
 
         <div className="SubFont text-base mb-2.5 flex flex-col gap-2.5">
           {type === "heritage" ? (
             <>
               <p>
-                <strong className="MainFont">시대:</strong> {item.cccename}
+                <strong className="MainFont">시대:</strong>{" "}
+                {item.heritagecccename}
               </p>
               <p>
-                <strong className="MainFont">위치:</strong> {item.location}
+                <strong className="MainFont">위치:</strong>{" "}
+                {item.heritageccbalcad}
               </p>
             </>
           ) : (
             <>
               <p>
-                <strong className="MainFont">장소:</strong> {item.location}
+                <strong className="MainFont">장소:</strong>{" "}
+                {item.festivalccbalcad}
               </p>
               <p>
-                <strong className="MainFont">기간:</strong> {item.startdate} ~{" "}
-                {item.enddate}
+                <strong className="MainFont">기간:</strong>{" "}
+                {item.festivalstartdate} ~ {item.festivalenddate}
               </p>
               <p>
-                <strong className="MainFont">문의:</strong> {item.contact}
+                <strong className="MainFont">문의:</strong>{" "}
+                {item.festivalcontact}
               </p>
             </>
           )}
