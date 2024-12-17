@@ -5,7 +5,7 @@ export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async (token, { rejectWithValue }) => {
     try {
-      console.log("Fetching favorites with token:", token);
+      // console.log("Fetching favorites with token:", token);
 
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "GET",
@@ -22,7 +22,7 @@ export const fetchFavorites = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log("Raw server response:", data);
+      // console.log("Raw server response:", data);
 
       if (!data) {
         console.error("No data received from server");
@@ -32,7 +32,7 @@ export const fetchFavorites = createAsyncThunk(
       // 서버 응답에서 festivals 배열 추출
       const festivals = data.festivals
         ? data.festivals.map((festival) => {
-            console.log("Processing festival item:", festival);
+            // console.log("Processing festival item:", festival);
             return {
               ...festival,
               festivalid: festival.festivalid,
@@ -49,7 +49,7 @@ export const fetchFavorites = createAsyncThunk(
           })
         : [];
 
-      console.log("Processed festivals:", festivals);
+      // console.log("Processed festivals:", festivals);
       const heritages = data.heritages || [];
 
       return { festivals, heritages };
@@ -200,11 +200,11 @@ const favoriteSlice = createSlice({
     builder
       .addCase(fetchFavorites.pending, (state) => {
         state.status = "loading";
-        console.log("Fetching favorites...");
+        // console.log("Fetching favorites...");
       })
       .addCase(fetchFavorites.fulfilled, (state, action) => {
-        console.log("Previous state:", state.festivals);
-        console.log("Action payload received:", action.payload);
+        // console.log("Previous state:", state.festivals);
+        // console.log("Action payload received:", action.payload);
 
         if (action.payload && action.payload.festivals) {
           state.festivals = action.payload.festivals.map((festival) => ({
@@ -225,7 +225,7 @@ const favoriteSlice = createSlice({
         state.favoriteHeritages = action.payload?.heritages || [];
         state.status = "succeeded";
 
-        console.log("Updated state:", state.festivals);
+        // console.log("Updated state:", state.festivals);
       })
       .addCase(fetchFavorites.rejected, (state, action) => {
         state.status = "failed";

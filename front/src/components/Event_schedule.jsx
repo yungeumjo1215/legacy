@@ -243,7 +243,7 @@ const EventSchedule = () => {
 
   const isEventStarred = useCallback(
     (programName) => {
-      console.log("Current festivals:", festivals); // 디버깅을 위한 로그
+      // console.log("Current festivals:", festivals); // 디버깅을 위한 로그
       return (
         Array.isArray(festivals) &&
         festivals.some((festival) => festival.programName === programName)
@@ -564,7 +564,7 @@ const EventSchedule = () => {
 
   // festivals 상태 디버깅을 위한 useEffect 추가
   useEffect(() => {
-    console.log("Festivals updated:", festivals);
+    // console.log("Festivals updated:", festivals);
   }, [festivals]);
 
   // 로그인 상태가 변경되거나 컴포넌트가 마운트될 때 즐겨찾기 목록을 가져옵니다
@@ -572,13 +572,13 @@ const EventSchedule = () => {
     if (isLoggedIn) {
       const token = localStorage.getItem("token");
       if (token) {
-        console.log("Fetching favorites..."); // 디버깅용
+        // console.log("Fetching favorites..."); // 디버깅용
         dispatch(fetchFavorites(token))
           .then(() => {
-            console.log("Favorites fetched successfully"); // 디버깅용
+            // console.log("Favorites fetched successfully"); // 디버깅용
           })
           .catch((error) => {
-            console.error("Error fetching favorites:", error); // 디버깅용
+            // console.error("Error fetching favorites:", error); // 디버깅용
           });
       }
     }
