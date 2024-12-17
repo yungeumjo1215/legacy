@@ -126,22 +126,37 @@ const favoriteSlice = createSlice({
 
       if (type === "festival") {
         const isDuplicate = state.festivals.some(
-          (festival) => festival.programName === data.programName
+          (festival) => festival.festivalid === data.festivalid
         );
 
         if (!isDuplicate) {
-          state.festivals.push(data);
+          const formattedFestival = {
+            ...data,
+            festivalid: data.festivalid || data.id, // festivalid 또는 id 사용
+            id: data.festivalid || data.id,
+            imageUrl: data.image || data.imageUrl, // image 또는 imageUrl 사용
+            programName: data.programName,
+            location: data.location,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            contact: data.contact,
+          };
+          state.festivals.push(formattedFestival);
         }
       }
     },
 
     removeFavorite(state, action) {
       console.log("removeFavorite Action:", action.payload);
-      const { type, programName } = action.payload;
+      const { type, id } = action.payload;
 
       if (type === "festival") {
         state.festivals = state.festivals.filter(
-          (festival) => festival.programName !== programName
+          (festival) => festival.festivalid !== id
+        );
+      } else if (type === "heritage") {
+        state.favoriteHeritages = state.favoriteHeritages.filter(
+          (heritage) => heritage.heritageid !== id
         );
       }
     },
