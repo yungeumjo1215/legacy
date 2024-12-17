@@ -328,7 +328,7 @@ const SearchPage = () => {
             className="w-full p-2 rounded border border-[#77767c] text-sm md:text-base"
           />
           <button
-            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white inline-block hover:animate-[push_0.3s_linear_1] hover:bg-blue-700"
+            className="h-[40px] md:h-[45px] p-3 md:p-5 rounded border border-[#77767c] ml-2 flex items-center justify-center MainColor text-white hover:animate-[push_0.3s_linear_1] hover:bg-blue-700"
             onClick={handleSearch}
             aria-label="검색하기"
           >
