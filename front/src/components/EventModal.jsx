@@ -30,6 +30,28 @@ const EventModal = ({ event, onClose }) => {
     setIsFavorite(favoriteStatus);
   }, [festivals, event?.programName]);
 
+  useEffect(() => {
+    const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
+
+    const newItem = {
+      id: `event-${event.programName}`, // 고유 ID 생성
+      type: "event",
+      title: event.programName,
+      imageUrl: event.image,
+      begin_de: event.startDate,
+      location: event.location,
+      content: event.programContent,
+    };
+
+    // 동일한 ID를 가진 항목이 있는지 확인하고 필터링
+    const filteredItems = recentItems.filter((item) => item.id !== newItem.id);
+
+    // 새 항목을 배열 앞에 추가하고 최대 5개까지만 유지
+    const updatedItems = [newItem, ...filteredItems].slice(0, 5);
+
+    localStorage.setItem("recentItems", JSON.stringify(updatedItems));
+  }, [event]);
+
   const handleFavoriteClick = async () => {
     if (!isLoggedIn) {
       setAlertMessage(
