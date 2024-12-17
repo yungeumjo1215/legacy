@@ -8,11 +8,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
+import { jwtDecode } from "jwt-decode";
 
 const SearchPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn, userId } = useSelector((state) => state.auth);
   const { heritages } = useSelector((state) => state.favorites);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -177,7 +178,6 @@ const SearchPage = () => {
   };
 
   const handleStarClick = async (heritage) => {
-    console.log("Star Click Heritage Data:", heritage);
     if (!isLoggedIn) {
       setError(
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
@@ -185,10 +185,39 @@ const SearchPage = () => {
       return;
     }
 
-    const isAlreadySelected = isFavorite(heritage);
-
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("로그인이 필요한 서비스입니다.");
+        return;
+      }
+
+      const decodedToken = jwtDecode(token);
+      const userEmail = decodedToken.email;
+      const isAlreadySelected = isFavorite(heritage);
+
+      if (!heritage.heritageid) {
+        console.error("Heritage ID is missing:", heritage);
+        setError("문화재 정보가 올바르지 않습니다.");
+        return;
+      }
+
+      const requestData = {
+        email: userEmail,
+        heritage_id: Number(heritage.heritageid),
+      };
+
+      console.log("Sending request with data:", requestData);
+
       if (isAlreadySelected) {
+        await axios.delete(`http://localhost:8000/pgdb/favoritelist`, {
+          data: requestData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         dispatch(
           removeFavorite({
             type: "heritage",
@@ -196,20 +225,33 @@ const SearchPage = () => {
           })
         );
       } else {
-        const heritageData = {
-          type: "heritage",
-          heritageid: heritage.heritageid,
-          id: heritage.ccbamnm1,
-          ccbamnm1: heritage.ccbamnm1,
-          ccbalcad: heritage.ccbalcad,
-          content: heritage.content,
-          imageurl: heritage.imageurl,
-          lat: heritage.lat,
-          lng: heritage.lng,
-          ccceName: heritage.ccceName,
-        };
+        const response = await axios.post(
+          "http://localhost:8000/pgdb/favoritelist",
+          requestData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        dispatch(addFavorite(heritageData));
+        if (response.data) {
+          const heritageData = {
+            type: "heritage",
+            heritageid: heritage.heritageid,
+            id: heritage.ccbamnm1,
+            ccbamnm1: heritage.ccbamnm1,
+            ccbalcad: heritage.ccbalcad,
+            content: heritage.content,
+            imageurl: heritage.imageurl,
+            lat: heritage.lat,
+            lng: heritage.lng,
+            ccceName: heritage.ccceName,
+          };
+
+          dispatch(addFavorite(heritageData));
+        }
       }
 
       handleFavoriteChange(heritage.ccbakdcd, !isAlreadySelected);
@@ -224,8 +266,16 @@ const SearchPage = () => {
         setSuccessMessage("");
       }, 3000);
     } catch (error) {
-      console.error("즐겨찾기 처리 중 오류 발생:", error);
-      setError("즐겨찾기 처리 중 오류가 발생했습니다.");
+      console.error(
+        "즐겨찾기 처리 중 오류 발생:",
+        error.response?.data || error
+      );
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "즐겨찾기 처리 중 오류가 발생했습니다.";
+      setError(errorMessage);
     }
   };
 
