@@ -9,11 +9,12 @@ import "react-toastify/dist/ReactToastify.css";
 import EventModal from "./EventModal";
 import "../components/EventSchedule.css";
 import {
-  addFavorite,
-  removeFavorite,
   addFavorites,
   deleteFavorites,
   fetchFavorites,
+  addToList,
+  removeFromList,
+  setFavorites,
 } from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
 import { IoIosArrowUp } from "react-icons/io";
@@ -243,10 +244,13 @@ const EventSchedule = () => {
 
   const isEventStarred = useCallback(
     (programName) => {
-      // console.log("Current festivals:", festivals); // 디버깅을 위한 로그
       return (
         Array.isArray(festivals) &&
-        festivals.some((festival) => festival.programName === programName)
+        festivals.some(
+          (festival) =>
+            festival.festivalname === programName ||
+            festival.programName === programName
+        )
       );
     },
     [festivals]
@@ -392,7 +396,22 @@ const EventSchedule = () => {
               favoriteId: festival.festivalid,
               type: "event",
             })
-          ).unwrap();
+          );
+
+          dispatch(
+            addToList({
+              festivalid: festival.festivalid,
+              festivalname: festival.programName, // festivalname으로 저장
+              programName: festival.programName,
+              programContent: festival.programContent,
+              startDate: festival.startDate,
+              endDate: festival.endDate,
+              location: festival.location,
+              contact: festival.contact,
+              image: festival.image,
+              targetAudience: festival.targetAudience,
+            })
+          );
 
           setSuccessMessage("즐겨찾기에 추가되었습니다.");
         } else {
@@ -402,13 +421,17 @@ const EventSchedule = () => {
               favoriteId: festival.festivalid,
               type: "event",
             })
-          ).unwrap();
+          );
 
+          dispatch(removeFromList(festival.festivalid));
           setSuccessMessage("즐겨찾기가 해제되었습니다.");
         }
 
-        // 서버에서 최신 즐겨찾기 목록을 다시 가져옵니다
-        await dispatch(fetchFavorites(token));
+        // 즐겨찾기 목록 새로고침
+        const response = await dispatch(fetchFavorites(token));
+        if (response.payload) {
+          dispatch(setFavorites(response.payload));
+        }
 
         setTimeout(() => {
           setSuccessMessage("");
@@ -536,20 +559,19 @@ const EventSchedule = () => {
 
   // 로그인 상태가 변경되거나 컴포넌트가 마운트될 때 즐겨찾기 목록을 가져옵니다
   useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        // console.log("Fetching favorites..."); // 디버깅용
-        dispatch(fetchFavorites(token))
-          .then(() => {
-            // console.log("Favorites fetched successfully"); // 디버깅용
-          })
-          .catch((error) => {
-            // console.error("Error fetching favorites:", error); // 디버깅용
-          });
-      }
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(fetchFavorites(token))
+        .then((response) => {
+          if (response.payload) {
+            dispatch(setFavorites(response.payload));
+          }
+        })
+        .catch((error) => {
+          console.error("즐겨찾기 목록 가져오기 실패:", error);
+        });
     }
-  }, [isLoggedIn, dispatch]);
+  }, [dispatch]);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 pt-16">

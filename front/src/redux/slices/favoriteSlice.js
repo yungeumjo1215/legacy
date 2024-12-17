@@ -178,10 +178,24 @@ const favoriteSlice = createSlice({
         state.festivals = state.festivals.filter((f) => f.festivalid !== id);
       }
     },
+
+    addToList: (state, action) => {
+      state.festivals.push(action.payload);
+    },
+    removeFromList: (state, action) => {
+      state.festivals = state.festivals.filter(
+        (festival) => festival.festivalid !== action.payload
+      );
+    },
   },
 });
 
-export const { setFavorites, addFavorite, removeFavorite } =
-  favoriteSlice.actions;
+export const {
+  setFavorites,
+  addFavorite,
+  removeFavorite,
+  addToList,
+  removeFromList,
+} = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;
