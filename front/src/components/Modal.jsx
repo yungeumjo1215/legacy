@@ -3,61 +3,50 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Modal = ({ item, onClose, onFavoriteChange }) => {
   const dispatch = useDispatch();
-  const { heritages } = useSelector((state) => state.favorites);
+  const favorites = useSelector((state) => state.favorites);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = useState("");
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  useEffect(() => {
-    const favoriteStatus =
-      Array.isArray(heritages) &&
-      heritages.some((heritage) => heritage.ccbamnm1 === item?.ccbamnm1);
-    setIsFavorite(favoriteStatus);
-  }, [heritages, item?.ccbamnm1]);
+  const isFavorite = favorites.heritages.some(
+    (h) => h.heritageid === item.heritageid
+  );
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = async () => {
     if (!isLoggedIn) {
-      setAlertMessage(
-        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?"
-      );
+      setAlertMessage("로그인이 필요한 서비스입니다.");
       return;
     }
 
     try {
-      if (isFavorite) {
-        dispatch(
-          removeFavorite({
-            type: "heritage",
-            id: item.ccbamnm1,
-          })
+      const token = localStorage.getItem("token");
+
+      if (!isFavorite) {
+        await axios.post(
+          "http://localhost:8000/pgdb/favoritelist",
+          { id: item.heritageid, type: "heritage" },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
+        dispatch(addFavorite({ type: "heritage", data: item }));
       } else {
-        dispatch(
-          addFavorite({
-            type: "heritage",
-            id: item.ccbamnm1,
-            ccbamnm1: item.ccbamnm1,
-            lat: item.lat,
-            lng: item.lng,
-            content: item.content,
-            imageurl: item.imageurl,
-            ccbakdcd: item.ccbakdcd,
-            cccename: item.cccename,
-          })
-        );
+        await axios.delete("http://localhost:8000/pgdb/favoritelist", {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { id: item.heritageid, type: "heritage" },
+        });
+        dispatch(removeFavorite({ type: "heritage", id: item.heritageid }));
+      }
+
+      if (onFavoriteChange) {
+        onFavoriteChange(item.heritageid, !isFavorite);
       }
 
       setAlertMessage(
         isFavorite ? "즐겨찾기가 해제되었습니다." : "즐겨찾기에 추가되었습니다."
       );
-
-      if (onFavoriteChange) {
-        onFavoriteChange(item.ccbakdcd, !isFavorite);
-      }
     } catch (error) {
       console.error("즐겨찾기 처리 중 오류 발생:", error);
       setAlertMessage("즐겨찾기 처리 중 오류가 발생했습니다.");

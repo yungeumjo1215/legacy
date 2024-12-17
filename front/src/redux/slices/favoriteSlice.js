@@ -145,97 +145,43 @@ const favoriteSlice = createSlice({
   name: "favorites",
   initialState: {
     festivals: [],
-    favoriteHeritages: [],
+    heritages: [],
     status: "idle",
     error: null,
   },
   reducers: {
+    // 즐겨찾기 상태 초기화 액션
+    setFavorites(state, action) {
+      const { heritages, festivals } = action.payload;
+      state.heritages = heritages || [];
+      state.festivals = festivals || [];
+    },
+
     addFavorite(state, action) {
-      console.log("addFavorite Action:", action.payload);
       const { type, data } = action.payload;
-
-      if (type === "festival") {
-        const isDuplicate = state.festivals.some(
-          (festival) => festival.festivalid === data.festivalid
-        );
-
-        if (!isDuplicate) {
-          const formattedFestival = {
-            ...data,
-            festivalid: data.festivalid || data.id,
-            id: data.festivalid || data.id,
-            imageUrl: data.image || data.imageUrl,
-            programName: data.programName,
-            location: data.location,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            contact: data.contact,
-          };
-          state.festivals.push(formattedFestival);
+      if (type === "heritage") {
+        if (!state.heritages.some((h) => h.heritageid === data.heritageid)) {
+          state.heritages.push(data);
+        }
+      } else if (type === "festival") {
+        if (!state.festivals.some((f) => f.festivalid === data.festivalid)) {
+          state.festivals.push(data);
         }
       }
     },
 
     removeFavorite(state, action) {
-      console.log("removeFavorite Action:", action.payload);
       const { type, id } = action.payload;
-
-      if (type === "festival") {
-        state.festivals = state.festivals.filter(
-          (festival) => festival.festivalid !== id
-        );
-      } else if (type === "heritage") {
-        state.favoriteHeritages = state.favoriteHeritages.filter(
-          (heritage) => heritage.heritageid !== id
-        );
+      if (type === "heritage") {
+        state.heritages = state.heritages.filter((h) => h.heritageid !== id);
+      } else if (type === "festival") {
+        state.festivals = state.festivals.filter((f) => f.festivalid !== id);
       }
     },
-
-    clearFavorites(state) {
-      state.festivals = [];
-      state.favoriteHeritages = [];
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchFavorites.pending, (state) => {
-        state.status = "loading";
-        // console.log("Fetching favorites...");
-      })
-      .addCase(fetchFavorites.fulfilled, (state, action) => {
-        // console.log("Previous state:", state.festivals);
-        // console.log("Action payload received:", action.payload);
-
-        if (action.payload && action.payload.festivals) {
-          state.festivals = action.payload.festivals.map((festival) => ({
-            ...festival,
-            festivalid: festival.festivalid || festival.id,
-            id: festival.festivalid || festival.id,
-            imageUrl: festival.image || festival.imageUrl,
-            programName: festival.programName,
-            location: festival.location,
-            startDate: festival.startDate,
-            endDate: festival.endDate,
-            contact: festival.contact,
-          }));
-        } else {
-          state.festivals = [];
-        }
-
-        state.favoriteHeritages = action.payload?.heritages || [];
-        state.status = "succeeded";
-
-        // console.log("Updated state:", state.festivals);
-      })
-      .addCase(fetchFavorites.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload || "Failed to fetch favorites.";
-        console.error("Fetch favorites failed:", action.payload);
-      });
   },
 });
 
-export const { addFavorite, removeFavorite, clearFavorites } =
+export const { setFavorites, addFavorite, removeFavorite } =
   favoriteSlice.actions;
 
 export default favoriteSlice.reducer;
