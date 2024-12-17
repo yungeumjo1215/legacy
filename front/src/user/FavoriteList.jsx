@@ -173,7 +173,7 @@ const Section = ({
       <h2 className="text-xl font-semibold mb-4">
         {title} ({data.length})
       </h2>
-      <div className="relative px-8 h-[260px]">
+      <div className="relative px-8 h-[300px]">
         {data.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <p className="text-center text-gray-500">
@@ -204,14 +204,14 @@ const Section = ({
               {getCurrentItems(data, page).map((item, idx) => (
                 <div
                   key={idx}
-                  className="relative p-4 bg-white rounded shadow cursor-pointer"
+                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[250px]"
                   onClick={() => onOpenModal(item, type)}
                 >
                   <img
                     src={
                       type === "heritage"
-                        ? item.heritageimageurl || default_Img // Use heritageimageurl if available
-                        : item.festivalimageurl || default_Img // Use festivalimageurl if available
+                        ? item.heritageimageurl || default_Img
+                        : item.festivalimageurl || default_Img
                     }
                     alt={
                       type === "heritage"
@@ -219,9 +219,9 @@ const Section = ({
                         : item.festivalname
                     }
                     onError={onErrorImg}
-                    className="h-40 w-full object-cover rounded"
+                    className="h-[180px] w-[220px] object-cover rounded"
                   />
-                  <h3 className="mt-2 font-semibold">
+                  <h3 className="mt-2 font-semibold truncate">
                     {type === "heritage"
                       ? item.heritagename
                       : item.festivalname}
