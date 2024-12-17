@@ -105,6 +105,7 @@ router.get("/favoritelist", async (req, res) => {
     // Query to join favoritelist with festivallist and heritagelist
     const query = `
 SELECT 
+  token,
   fav.id AS favoriteid,
   fav.type,
 
