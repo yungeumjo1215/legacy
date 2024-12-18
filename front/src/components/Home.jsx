@@ -16,7 +16,7 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { BsChatDotsFill, BsTrash } from "react-icons/bs";
+import { BsChatDotsFill } from "react-icons/bs";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -29,8 +29,6 @@ const Home = () => {
   const nextRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [recentItems, setRecentItems] = useState([]);
-  const [isRecentBoxOpen, setIsRecentBoxOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEvent());
@@ -59,34 +57,6 @@ const Home = () => {
       top: 0,
       behavior: "smooth",
     });
-  };
-
-  // 최근 본 항목 불러오기
-  useEffect(() => {
-    const items = JSON.parse(localStorage.getItem("recentItems")) || [];
-    setRecentItems(items);
-  }, []);
-
-  // 새로고침 함수 추가
-  const handleRefresh = () => {
-    if (window.confirm("최근 본 목록을 모두 삭제하시겠습니까?")) {
-      // localStorage에서 데이터 삭제
-      localStorage.removeItem("recentItems");
-      // 상태 초기화
-      setRecentItems([]);
-    }
-  };
-
-  // 개별 항목 삭제 함수 추가
-  const handleDeleteItem = (itemId) => {
-    if (window.confirm("이 항목을 삭제하시겠습니까?")) {
-      // 현재 항목 필터링하여 제거
-      const updatedItems = recentItems.filter((item) => item.id !== itemId);
-      // localStorage 업데이트
-      localStorage.setItem("recentItems", JSON.stringify(updatedItems));
-      // 상태 업데이트
-      setRecentItems(updatedItems);
-    }
   };
 
   if (loading)
@@ -282,115 +252,6 @@ const Home = () => {
           <IoIosArrowUp size={24} />
         </button>
       )}
-      <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
-        <div
-          className={`relative transition-transform duration-300 ${
-            isRecentBoxOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <button
-            onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
-            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-4 rounded-l-lg shadow-lg transition-all duration-300"
-            style={{ height: "50px" }}
-          >
-            {isRecentBoxOpen ? ">" : "<"}
-          </button>
-
-          <div className="bg-white shadow-lg rounded-l-lg w-52">
-            <div className="bg-blue-900 text-white p-3 rounded-tl-lg">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold">최근 본 목록</h3>
-                <button
-                  onClick={handleRefresh}
-                  className="hover:bg-blue-800 p-1 rounded-full transition-all duration-300"
-                  title="목록 삭제"
-                >
-                  <BsTrash size={20} />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-3 max-h-[600px] overflow-y-auto">
-              {recentItems.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
-                  최근 본 항목이 없습니다
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {recentItems.map((item, index) => (
-                    <li
-                      key={index}
-                      className="border-b pb-2 last:border-b-0 relative"
-                    >
-                      <Link
-                        to={
-                          item.type === "heritage"
-                            ? `/search`
-                            : `/event_schedule`
-                        }
-                        state={{
-                          selectedEvent: {
-                            id: item.id,
-                            type: item.type,
-                            title: item.title,
-                            imageUrl: item.imageUrl || item.imageurl,
-                            location: item.location,
-                            content: item.content,
-                            begin_de: item.begin_de,
-                            ccbamnm1: item.title,
-                            ccbalcad: item.location,
-                            imageurl: item.imageUrl || item.imageurl,
-                            programName: item.title,
-                            programContent: item.content,
-                            startDate: item.begin_de,
-                            image: item.imageUrl || item.imageurl,
-                          },
-                        }}
-                        className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded pr-10"
-                      >
-                        <div className="w-16 h-16 flex-shrink-0">
-                          {item.imageUrl || item.imageurl ? (
-                            <img
-                              src={item.imageUrl || item.imageurl}
-                              alt={item.title}
-                              className="w-full h-full object-cover rounded"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 rounded flex items-center justify-center">
-                              <span className="text-gray-400">No Image</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-sm truncate">
-                            {item.title}
-                          </h4>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {item.location || item.begin_de}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {item.type === "heritage" ? "문화재" : "행사"}
-                          </p>
-                        </div>
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors"
-                        title="항목 삭제"
-                      >
-                        <BsTrash
-                          size={16}
-                          className="text-gray-500 hover:text-red-500"
-                        />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
       {/* 챗봇 버튼 추가 */}
       <Link
         to="/chatbot"
