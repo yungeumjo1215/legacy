@@ -8,7 +8,6 @@ import { deleteRequest, postRequest } from "../../utils/requestMethods";
 
 const postItemFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (postData) => {
-    // console.log(postData);
     const options = {
       body: JSON.stringify(postData), // 표준 json 문자열로 변환
     };
@@ -23,7 +22,6 @@ export const fetchPostItemData = postItemFetchThunk(
 
 const deleteItemFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (id) => {
-    // console.log(apiURL, id);
     const options = {
       method: "DELETE",
     };

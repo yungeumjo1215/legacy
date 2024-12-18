@@ -95,6 +95,12 @@ const Map = ({ selectedLocation }) => {
 
         mapInstanceRef.current = map;
 
+        // 지도 클릭 이벤트 리스너 추가
+        map.addListener("click", () => {
+          // 모든 InfoWindow 닫기
+          infoWindows.forEach((window) => window.close());
+        });
+
         const heritageData = await fetchGetHeritageData();
         const geocodedData = await geocodeHeritageData(heritageData);
 
