@@ -38,6 +38,7 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    console.log(swiperInstance);
     if (swiperInstance?.navigation && prevRef.current && nextRef.current) {
       swiperInstance.navigation.init();
       swiperInstance.navigation.update();
@@ -169,6 +170,7 @@ const Home = () => {
             autoplay={{
               delay: 2000,
               disableOnInteraction: false,
+              enabled: true, // 자동 재생 활성화
             }}
             breakpoints={{
               // 320px 이상일 때
