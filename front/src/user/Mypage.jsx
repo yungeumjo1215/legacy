@@ -12,6 +12,7 @@ const Mypage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,7 +72,11 @@ const Mypage = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] w-full bg-gradient-to-tr from-blue-100 via-white to-white mt-16">
+    <div
+      className={`min-h-[calc(100vh-64px)] w-full bg-gradient-to-tr from-blue-100 via-white to-white mt-16 ${
+        isModalOpen ? "opacity-50" : ""
+      }`}
+    >
       <div className="flex w-full p-4 gap-4">
         {/* 사이드바 */}
         <div

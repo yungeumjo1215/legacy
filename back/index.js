@@ -10,7 +10,7 @@ const {
   insertFavoriteHeritages,
   deleteFavoriteFestivals,
   deleteFavoriteHeritages,
-} = require("./controller/favoriteController");
+} = require("./controller/tokenController");
 const path = require("path");
 const spawn = require("child_process").spawn;
 
