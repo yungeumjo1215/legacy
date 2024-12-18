@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import markerIcon from "../../assets/Icon-Location.png";
 
 const Map = ({ selectedLocation }) => {
   const mapRef = useRef(null);
@@ -115,6 +116,12 @@ const Map = ({ selectedLocation }) => {
                   ? `${firstHeritage.name} 외 ${heritageGroup.length - 1}개`
                   : firstHeritage.name,
               animation: window.google.maps.Animation.DROP,
+              icon: {
+                url: markerIcon,
+                scaledSize: new window.google.maps.Size(50, 50), // 아이콘 크기 조절
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(16, 32),
+              },
             });
 
             const infoWindowContent = (heritageGroup) => `
