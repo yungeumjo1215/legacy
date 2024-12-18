@@ -4,13 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-// const {
-//   executeTransaction,
-//   insertFavoriteFestivals,
-//   insertFavoriteHeritages,
-//   deleteFavoriteFestivals,
-//   deleteFavoriteHeritages,
-// } = require("./controller/tokenController");
+
 const path = require("path");
 const spawn = require("child_process").spawn;
 
@@ -18,7 +12,6 @@ const spawn = require("child_process").spawn;
 const accountRoutes = require("./routes/accountRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-// const festivalRoutes = require("./routes/kgfestivalRoutes");
 
 // Swagger 설정
 const swaggerUi = require("swagger-ui-express");
@@ -61,7 +54,6 @@ app.get("/", (req, res) => {
 app.post("/chat", async (req, res) => {
   try {
     const { question } = req.body;
-    console.log("받은 질문:", question); // 디버깅용
 
     // Python 스크립트 실행
     const pythonProcess = spawn("python", ["chatbot/chatbot.py", question]);
@@ -98,78 +90,6 @@ app.use("/api/account", accountRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
-
-// app.post("/api/store-favoritesPGDB", (req, res) => {
-//   const {
-//     favoriteFestivals,
-//     favoriteHeritages,
-//     festivalsToDelete,
-//     heritagesToDelete,
-//   } = req.body;
-//   const token = req.headers.token;
-
-//   // Log incoming request for debugging
-//   console.log("Received token:", token);
-//   console.log("Received body:", req.body);
-
-//   // Validate token
-//   if (!token) {
-//     return res.status(400).json({ message: "Token is required." });
-//   }
-
-//   // Validate body structure
-//   if (!Array.isArray(favoriteFestivals) || !Array.isArray(favoriteHeritages)) {
-//     return res
-//       .status(400)
-//       .json({ message: "Invalid data format for favorites." });
-//   }
-
-//   if (!Array.isArray(festivalsToDelete) || !Array.isArray(heritagesToDelete)) {
-//     return res
-//       .status(400)
-//       .json({ message: "Invalid data format for deletions." });
-//   }
-
-//   executeTransaction(async (pool) => {
-//     const promises = [];
-
-//     // Handle additions
-//     if (favoriteFestivals.length > 0) {
-//       console.log("Adding favorite festivals:", favoriteFestivals);
-//       promises.push(insertFavoriteFestivals(pool, token, favoriteFestivals));
-//     }
-
-//     if (favoriteHeritages.length > 0) {
-//       console.log("Adding favorite heritages:", favoriteHeritages);
-//       promises.push(insertFavoriteHeritages(pool, token, favoriteHeritages));
-//     }
-
-//     // Handle deletions
-//     if (festivalsToDelete.length > 0) {
-//       console.log("Deleting festivals:", festivalsToDelete);
-//       promises.push(deleteFavoriteFestivals(pool, token, festivalsToDelete));
-//     }
-
-//     if (heritagesToDelete.length > 0) {
-//       console.log("Deleting heritages:", heritagesToDelete);
-//       promises.push(deleteFavoriteHeritages(pool, token, heritagesToDelete));
-//     }
-
-//     await Promise.all(promises);
-//   })
-//     .then(() =>
-//       res.status(200).json({
-//         message: "Data successfully stored and updated in PostgreSQL.",
-//       })
-//     )
-//     .catch((error) => {
-//       console.error("Error processing data:", error.message);
-//       res.status(500).json({
-//         message: "Error storing or updating data in PostgreSQL.",
-//         error: error.message,
-//       });
-//     });
-// });
 
 // 에러 핸들링 미들웨어
 app.use((err, req, res, next) => {
