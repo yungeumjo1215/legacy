@@ -226,7 +226,7 @@ const Section = ({
               {getCurrentItems(data, page).map((item, idx) => (
                 <div
                   key={`${page}-${idx}`}
-                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[250px] animate-slide-from-left"
+                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[280px] animate-slide-from-left border border-gray-200"
                   style={{
                     animationDelay: `${idx * 150}ms`,
                     opacity: 0,
@@ -234,7 +234,7 @@ const Section = ({
                   }}
                   onClick={() => onOpenModal(item, type)}
                 >
-                  <div className="relative">
+                  <div className="relative overflow-hidden rounded">
                     <img
                       src={
                         type === "heritage"
@@ -247,7 +247,7 @@ const Section = ({
                           : item.festivalname
                       }
                       onError={onErrorImg}
-                      className="h-[180px] w-[220px] object-cover rounded"
+                      className="h-[180px] w-[250px] object-cover transition-transform duration-300 hover:scale-110"
                     />
                     <button
                       onClick={(e) => {
@@ -259,11 +259,18 @@ const Section = ({
                       <AiFillStar className="text-2xl" />
                     </button>
                   </div>
-                  <h3 className="mt-2 font-semibold truncate">
-                    {type === "heritage"
-                      ? item.heritagename
-                      : item.festivalname}
-                  </h3>
+                  <div className="mt-2">
+                    <h3 className="font-semibold truncate">
+                      {type === "heritage"
+                        ? item.heritagename
+                        : item.festivalname}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-2 truncate">
+                      {type === "heritage"
+                        ? item.heritageaddress || "주소 정보 없음"
+                        : item.festivaladdress || "주소 정보 없음"}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
