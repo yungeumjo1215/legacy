@@ -49,4 +49,3 @@ export default syncLocalStorageMiddleware;
 
 // Call functions
 syncLocalStorageMiddleware();
-// sendDataToPostgreSQL();
