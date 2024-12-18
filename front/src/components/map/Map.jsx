@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import markerIcon from "../../assets/Location.png";
+import markerIcon from "../../assets/Location_icon.gif";
 
 const Map = ({ selectedLocation }) => {
   const mapRef = useRef(null);
