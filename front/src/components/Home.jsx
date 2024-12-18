@@ -158,8 +158,8 @@ const Home = () => {
             }}
             pagination={{
               clickable: true,
-              dynamicBullets: true,
-              dynamicMainBullets: 10,
+              // dynamicBullets: true, (갯수제한)
+              // dynamicMainBullets: 10,  (갯수제한)
               el: ".pagination-bullets",
               bulletClass: "swiper-pagination-bullet",
               bulletActiveClass: "swiper-pagination-bullet-active",
