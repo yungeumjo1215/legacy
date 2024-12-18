@@ -4,13 +4,13 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const {
-  executeTransaction,
-  insertFavoriteFestivals,
-  insertFavoriteHeritages,
-  deleteFavoriteFestivals,
-  deleteFavoriteHeritages,
-} = require("./controller/tokenController");
+// const {
+//   executeTransaction,
+//   insertFavoriteFestivals,
+//   insertFavoriteHeritages,
+//   deleteFavoriteFestivals,
+//   deleteFavoriteHeritages,
+// } = require("./controller/tokenController");
 const path = require("path");
 const spawn = require("child_process").spawn;
 
@@ -96,77 +96,77 @@ app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
 
-app.post("/api/store-favoritesPGDB", (req, res) => {
-  const {
-    favoriteFestivals,
-    favoriteHeritages,
-    festivalsToDelete,
-    heritagesToDelete,
-  } = req.body;
-  const token = req.headers.token;
+// app.post("/api/store-favoritesPGDB", (req, res) => {
+//   const {
+//     favoriteFestivals,
+//     favoriteHeritages,
+//     festivalsToDelete,
+//     heritagesToDelete,
+//   } = req.body;
+//   const token = req.headers.token;
 
-  // Log incoming request for debugging
-  console.log("Received token:", token);
-  console.log("Received body:", req.body);
+//   // Log incoming request for debugging
+//   console.log("Received token:", token);
+//   console.log("Received body:", req.body);
 
-  // Validate token
-  if (!token) {
-    return res.status(400).json({ message: "Token is required." });
-  }
+//   // Validate token
+//   if (!token) {
+//     return res.status(400).json({ message: "Token is required." });
+//   }
 
-  // Validate body structure
-  if (!Array.isArray(favoriteFestivals) || !Array.isArray(favoriteHeritages)) {
-    return res
-      .status(400)
-      .json({ message: "Invalid data format for favorites." });
-  }
+//   // Validate body structure
+//   if (!Array.isArray(favoriteFestivals) || !Array.isArray(favoriteHeritages)) {
+//     return res
+//       .status(400)
+//       .json({ message: "Invalid data format for favorites." });
+//   }
 
-  if (!Array.isArray(festivalsToDelete) || !Array.isArray(heritagesToDelete)) {
-    return res
-      .status(400)
-      .json({ message: "Invalid data format for deletions." });
-  }
+//   if (!Array.isArray(festivalsToDelete) || !Array.isArray(heritagesToDelete)) {
+//     return res
+//       .status(400)
+//       .json({ message: "Invalid data format for deletions." });
+//   }
 
-  executeTransaction(async (pool) => {
-    const promises = [];
+//   executeTransaction(async (pool) => {
+//     const promises = [];
 
-    // Handle additions
-    if (favoriteFestivals.length > 0) {
-      console.log("Adding favorite festivals:", favoriteFestivals);
-      promises.push(insertFavoriteFestivals(pool, token, favoriteFestivals));
-    }
+//     // Handle additions
+//     if (favoriteFestivals.length > 0) {
+//       console.log("Adding favorite festivals:", favoriteFestivals);
+//       promises.push(insertFavoriteFestivals(pool, token, favoriteFestivals));
+//     }
 
-    if (favoriteHeritages.length > 0) {
-      console.log("Adding favorite heritages:", favoriteHeritages);
-      promises.push(insertFavoriteHeritages(pool, token, favoriteHeritages));
-    }
+//     if (favoriteHeritages.length > 0) {
+//       console.log("Adding favorite heritages:", favoriteHeritages);
+//       promises.push(insertFavoriteHeritages(pool, token, favoriteHeritages));
+//     }
 
-    // Handle deletions
-    if (festivalsToDelete.length > 0) {
-      console.log("Deleting festivals:", festivalsToDelete);
-      promises.push(deleteFavoriteFestivals(pool, token, festivalsToDelete));
-    }
+//     // Handle deletions
+//     if (festivalsToDelete.length > 0) {
+//       console.log("Deleting festivals:", festivalsToDelete);
+//       promises.push(deleteFavoriteFestivals(pool, token, festivalsToDelete));
+//     }
 
-    if (heritagesToDelete.length > 0) {
-      console.log("Deleting heritages:", heritagesToDelete);
-      promises.push(deleteFavoriteHeritages(pool, token, heritagesToDelete));
-    }
+//     if (heritagesToDelete.length > 0) {
+//       console.log("Deleting heritages:", heritagesToDelete);
+//       promises.push(deleteFavoriteHeritages(pool, token, heritagesToDelete));
+//     }
 
-    await Promise.all(promises);
-  })
-    .then(() =>
-      res.status(200).json({
-        message: "Data successfully stored and updated in PostgreSQL.",
-      })
-    )
-    .catch((error) => {
-      console.error("Error processing data:", error.message);
-      res.status(500).json({
-        message: "Error storing or updating data in PostgreSQL.",
-        error: error.message,
-      });
-    });
-});
+//     await Promise.all(promises);
+//   })
+//     .then(() =>
+//       res.status(200).json({
+//         message: "Data successfully stored and updated in PostgreSQL.",
+//       })
+//     )
+//     .catch((error) => {
+//       console.error("Error processing data:", error.message);
+//       res.status(500).json({
+//         message: "Error storing or updating data in PostgreSQL.",
+//         error: error.message,
+//       });
+//     });
+// });
 
 // 에러 핸들링 미들웨어
 app.use((err, req, res, next) => {
