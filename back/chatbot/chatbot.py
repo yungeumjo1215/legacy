@@ -29,7 +29,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 # 현재 스크립트의 디렉토리를 기준으로 절대 경로 설정
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)  # 상위 디렉토리
-data_path = os.path.join(parent_dir, 'back', '../data.txt') 
+# data_path = os.path.join(parent_dir, 'back', '../data.txt') 
 
 
 # print(parent_dir)
