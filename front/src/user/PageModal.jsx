@@ -96,7 +96,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
         onClick={onClose}
       >
         <div
-          className="relative bg-white text-black p-8 rounded-lg w-[90%] max-w-[800px] max-h-[80vh] overflow-y-auto"
+          className="relative bg-white text-black p-5 rounded-lg w-[90%] max-w-[800px] max-h-[80vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center mb-5">
@@ -112,7 +112,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
               </button>
               <button
                 onClick={onClose}
-                className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer hover:bg-blue-700"
+                className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
               >
                 X
               </button>
