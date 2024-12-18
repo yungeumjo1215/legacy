@@ -112,7 +112,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
               </button>
               <button
                 onClick={onClose}
-                className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer"
+                className="bg-blue-800 text-white px-4 py-1 border-none text-[25px] rounded cursor-pointer hover:bg-blue-700"
               >
                 X
               </button>
