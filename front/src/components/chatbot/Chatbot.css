@@ -7,6 +7,9 @@
   left: 0;
   background-color: rgb(249 250 251) !important;
   z-index: 40;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .react-chatbot-kit-chat-container {
@@ -116,25 +119,22 @@
   width: 60%;
   min-width: 320px;
   max-width: 1200px;
-  height: 90vh;
-  margin: 5vh auto;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  height: calc(100vh - 110px);
+  margin-top: 85px;
   position: relative;
-  overflow: hidden;
-  padding: 20px 20px 0;
   background-color: #fff;
-  z-index: 50;
   border: 1px solid #eaeaea;
   border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-container {
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 입력창 컨테이너 내부 정렬 조정 */
@@ -237,9 +237,19 @@
 
 @media screen and (max-width: 768px) {
   .chat-wrapper {
-    width: 85%;
-    height: 85vh;
-    margin: 7.5vh auto;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .react-chatbot-kit-chat-message-container {
+    padding: 15px;
+  }
+
+  .react-chatbot-kit-chat-input-container {
+    padding: 10px !important;
   }
 
   .react-chatbot-kit-chat-input-container {
@@ -286,8 +296,7 @@
   }
 
   .react-chatbot-kit-chat-message-container {
-    padding: 15px;
-    height: calc(100% - 90px) !important;
+    padding: 10px;
   }
 
   .react-chatbot-kit-chat-bot-message,
