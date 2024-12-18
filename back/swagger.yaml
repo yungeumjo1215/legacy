@@ -1,117 +1,171 @@
-# const swaggerUi = require('swagger-ui-express');
-# const swaggerDocument = require('./swagger.yaml'); // Swagger 파일 경로
+openapi: 3.0.0
+info:
+  title: Event and Heritage Management API
+  description: API documentation for managing accounts, login logs, favorites, festivals, and heritage data.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
 
-# const express = require('express');
-# const app = express();
+paths:
+  /accounts:
+    get:
+      summary: Get all accounts
+      responses:
+        "200":
+          description: List of accounts
+    post:
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "201":
+          description: Account created
+    put:
+      summary: Update account permissions
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permissions"
+      responses:
+        "200":
+          description: Permissions updated
+    delete:
+      summary: Delete an account
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Account deleted
 
-# openapi: 3.0.0
-# info:
-#   title: Event and Heritage Management API
-#   description: API documentation for managing accounts, events, festivals, and favorites.
-#   version: 1.0.0
-# servers:
-#   - url: http://localhost:5000/api
-#     description: Local development server
+  /login-log:
+    get:
+      summary: Get all login logs
+      responses:
+        "200":
+          description: List of login logs
+    post:
+      summary: Add a login log entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginLog"
+      responses:
+        "201":
+          description: Login log created
 
-# paths:
-#   /create:
-#     post:
-#       summary: Create a new account
-#       responses:
-#         "201":
-#           description: Account created successfully
-#         "400":
-#           description: Bad request
+  /favoritelist:
+    get:
+      summary: Get all favorite items
+      responses:
+        "200":
+          description: List of favorite items
+    post:
+      summary: Add a favorite item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Favorite"
+      responses:
+        "201":
+          description: Favorite added
+    delete:
+      summary: Remove a favorite item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Favorite"
+      responses:
+        "200":
+          description: Favorite removed
 
-#   /delete/{uuid}:
-#     delete:
-#       summary: Delete an account by UUID
-#       parameters:
-#         - name: uuid
-#           in: path
-#           required: true
-#           schema:
-#             type: string
-#       responses:
-#         "200":
-#           description: Account deleted successfully
-#         "404":
-#           description: Account not found
+  /heritagelist:
+    get:
+      summary: Get heritage list
+      responses:
+        "200":
+          description: List of heritage items
 
-#   /login:
-#     post:
-#       summary: User login
-#       responses:
-#         "200":
-#           description: Login successful
-#         "401":
-#           description: Unauthorized
+  /festivallist:
+    get:
+      summary: Get festival list
+      responses:
+        "200":
+          description: List of festival items
 
-#   /logout:
-#     post:
-#       summary: User logout
-#       responses:
-#         "200":
-#           description: Logout successful
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        is_admin:
+          type: boolean
 
-#   /permissions/{uuid}:
-#     put:
-#       summary: Update user permissions
-#       parameters:
-#         - name: uuid
-#           in: path
-#           required: true
-#           schema:
-#             type: string
-#       responses:
-#         "200":
-#           description: Permissions updated
-#         "400":
-#           description: Bad request
+    LoginLog:
+      type: object
+      properties:
+        admin_uuid:
+          type: string
+          format: uuid
+        client_uuid:
+          type: string
+          format: uuid
+        action:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
 
-#   /info:
-#     get:
-#       summary: Get account info
-#       responses:
-#         "200":
-#           description: Account info retrieved
-#         "404":
-#           description: Account not found
+    Favorite:
+      type: object
+      properties:
+        token:
+          type: string
+        f_id:
+          type: integer
+        h_id:
+          type: integer
+        type:
+          type: string
 
-#   /events:
-#     get:
-#       summary: Get all events
-#       responses:
-#         "200":
-#           description: List of all events
-
-#   /heritage:
-#     get:
-#       summary: Get all heritage sites
-#       responses:
-#         "200":
-#           description: List of heritage sites
-
-#   /festivals:
-#     get:
-#       summary: Get all festivals
-#       responses:
-#         "200":
-#           description: List of festivals
-
-#   /favoritelist:
-#     get:
-#       summary: Get user's favorite list
-#       responses:
-#         "200":
-#           description: List of favorite items
-#     post:
-#       summary: Add an item to favorites
-#       responses:
-#         "201":
-#           description: Item added to favorites
-#     delete:
-#       summary: Remove an item from favorites
-#       responses:
-#         "200":
-#           description: Item removed from favorites
+    Permissions:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
