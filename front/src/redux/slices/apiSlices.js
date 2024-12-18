@@ -55,28 +55,15 @@ const apiSlice = createSlice({
     // getItemsData: null,
     deleteItemData: null,
     postItemData: null,
-    // updateItemData: null,
-    // updateCompletedData: null,
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchGetItemsData.fulfilled, handleFulfilled("getItemsData"))
-      // .addCase(fetchGetItemsData.rejected, handleRejected)
 
       .addCase(fetchDeleteItemData.fulfilled, handleFulfilled("deleteItemData"))
       .addCase(fetchDeleteItemData.rejected, handleRejected)
 
       .addCase(fetchPostItemData.fulfilled, handleFulfilled("postItemData"))
       .addCase(fetchPostItemData.rejected, handleRejected);
-
-    // .addCase(fetchUpdateItemData.fulfilled, handleFulfilled("updateItemData"))
-    // .addCase(fetchUpdateItemData.rejected, handleRejected)
-
-    // .addCase(
-    //   fetchUpdateCompletedData.fulfilled,
-    //   handleFulfilled("updateCompletedData")
-    // )
-    // .addCase(fetchUpdateCompletedData.rejected, handleRejected);
   },
 }); // slice 객체 저장
 

@@ -1,12 +1,5 @@
 const express = require("express");
 const pool = require("../database/database");
-// const {
-//   executeTransaction,
-//   insertFavoriteFestivals,
-//   insertFavoriteHeritages,
-//   deleteFavoriteFestivals,
-//   deleteFavoriteHeritages,
-// } = require("../controller/favoriteController");
 const router = express.Router();
 const jwt = require("jsonwebtoken"); // Use jwt for decoding
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
@@ -75,25 +68,6 @@ router.get("/festivals", async (req, res) => {
   }
 });
 
-// router.get("/favoritelist", async (req, res) => {
-//   try {
-//     // Query all records from the favoritelist table
-//     const result = await pool.query(`SELECT * FROM favoritelist;`);
-
-//     // Filter festivals and heritages based on fields
-//     const festivals = result.rows.filter(
-//       (row) => row.programName && row.location
-//     );
-//     const heritages = result.rows.filter((row) => row.ccbamnm1 && row.ccbalcad);
-
-//     // Respond with the filtered data
-//     res.json({ festivals, heritages });
-//   } catch (error) {
-//     console.error("Error fetching favorites:", error.message);
-//     res.status(500).json({ message: "Server error while fetching favorites." });
-//   }
-// });
-
 router.get("/favoritelist", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // Extract token
   if (!token) {
@@ -154,26 +128,6 @@ WHERE a.email = $1;
     res.status(500).json({ message: "Server error while fetching favorites." });
   }
 });
-// Fetch all heritages sorted by ccbaasno
-// router.get("/favoritelist/sorted", async (req, res) => {
-//   try {
-//     // Query to select all heritages and sort by ccbaasno
-//     const query = `
-//       SELECT *
-//       FROM heritagelist
-//       ORDER BY ccbaasno ASC;
-//     `;
-
-//     // Execute the query
-//     const result = await pool.query(query);
-
-//     // Send the response with sorted data
-//     res.status(200).json({ heritages: result.rows });
-//   } catch (error) {
-//     console.error("Error fetching sorted heritages:", error.message);
-//     res.status(500).json({ message: "Server error while fetching heritages." });
-//   }
-// });
 
 // POST: Add Favorite Festivals and Heritages
 router.post("/favoritelist", async (req, res) => {
