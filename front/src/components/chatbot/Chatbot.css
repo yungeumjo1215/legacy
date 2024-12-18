@@ -236,12 +236,37 @@
 }
 
 @media screen and (max-width: 768px) {
+  .back {
+    padding-top: 0;
+  }
+
   .chat-wrapper {
     width: 100%;
     height: 100vh;
     margin: 0;
     border: none;
     border-radius: 0;
+  }
+
+  .react-chatbot-kit-chat-message-container {
+    padding-top: 60px !important;
+    /* 스크롤바 숨기기 */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
+  .react-chatbot-kit-chat-message-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .react-chatbot-kit-chat-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background: white;
   }
 
   .react-chatbot-kit-chat-message-container {
