@@ -10,7 +10,7 @@ import {
   removeFavorite,
 } from "../redux/slices/favoriteSlice";
 
-const EventModal = ({ event, onClose }) => {
+const EventModal = ({ event, onClose, hideStarButton }) => {
   const dispatch = useDispatch();
   const { festivals } = useSelector((state) => state.favorites);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -144,12 +144,14 @@ const EventModal = ({ event, onClose }) => {
           <div className="flex justify-between items-center mb-[8px]">
             <h2 className="MainFont text-2xl">{event.programName}</h2>
             <div className="flex items-center gap-4">
-              <button
-                onClick={handleFavoriteClick}
-                className="text-2xl text-yellow-500 hover:text-yellow-600"
-              >
-                {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
-              </button>
+              {!hideStarButton && (
+                <button
+                  onClick={handleFavoriteClick}
+                  className="text-2xl text-yellow-500 hover:text-yellow-600"
+                >
+                  {isFavorite ? <AiFillStar /> : <AiOutlineStar />}
+                </button>
+              )}
               <button
                 onClick={onClose}
                 className="bg-blue-800 text-white px-4 py-1 border-none text-[20px] rounded cursor-pointer"
