@@ -92,9 +92,9 @@ app.post("/chat", async (req, res) => {
 
 // API 라우트
 // app.use("/festival", festivalRoutes);
-app.use("/pgdb", pgdbRoutes);
-app.use("/event", eventRoutes);
-app.use("/account", accountRoutes);
+app.use("/api/pgdb", pgdbRoutes);
+app.use("/api/event", eventRoutes);
+app.use("/api/account", accountRoutes);
 
 // app.post("/api/store-favoritesPGDB", (req, res) => {
 //   const {
