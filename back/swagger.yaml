@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Event and Heritage Management API
-  description: API documentation for managing accounts, events, festivals, and favorites.
+  description: API documentation for managing accounts, login logs, favorites, festivals, and heritage data.
   version: 1.0.0
 servers:
   - url: http://localhost:5000/api
@@ -56,29 +56,27 @@ paths:
         "200":
           description: Account deleted
 
-  /login:
+  /login-log:
+    get:
+      summary: Get all login logs
+      responses:
+        "200":
+          description: List of login logs
     post:
-      summary: Log in a user
+      summary: Add a login log entry
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Login"
+              $ref: "#/components/schemas/LoginLog"
       responses:
-        "200":
-          description: Login successful
-
-  /logout:
-    post:
-      summary: Log out a user
-      responses:
-        "200":
-          description: Logout successful
+        "201":
+          description: Login log created
 
   /favoritelist:
     get:
-      summary: Get favorite items
+      summary: Get all favorite items
       responses:
         "200":
           description: List of favorite items
@@ -95,23 +93,29 @@ paths:
           description: Favorite added
     delete:
       summary: Remove a favorite item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Favorite"
       responses:
         "200":
           description: Favorite removed
 
-  /heritage:
+  /heritagelist:
     get:
-      summary: Get heritage information
+      summary: Get heritage list
       responses:
         "200":
-          description: Heritage data
+          description: List of heritage items
 
-  /festivals:
+  /festivallist:
     get:
-      summary: Get festival information
+      summary: Get festival list
       responses:
         "200":
-          description: Festival data
+          description: List of festival items
 
 components:
   schemas:
@@ -133,19 +137,20 @@ components:
         is_admin:
           type: boolean
 
-    Login:
+    LoginLog:
       type: object
       properties:
-        email:
+        admin_uuid:
           type: string
-        password:
+          format: uuid
+        client_uuid:
           type: string
-
-    Permissions:
-      type: object
-      properties:
-        is_admin:
-          type: boolean
+          format: uuid
+        action:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
 
     Favorite:
       type: object
@@ -158,3 +163,9 @@ components:
           type: integer
         type:
           type: string
+
+    Permissions:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
