@@ -8,7 +8,6 @@ import Login from "./user/Login";
 import Mypage from "./user/Mypage";
 import Signup from "./user/Signup";
 import Event from "./components/Event";
-import LocalStorageViewer from "./components/Localstorageviewer";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "./redux/slices/authSlice";
@@ -42,7 +41,6 @@ const App = () => {
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/event" element={<Event />} />
-          <Route path="/local" element={<LocalStorageViewer />} />
           <Route path="/sample" element={<Sample />} />
         </Routes>
 
