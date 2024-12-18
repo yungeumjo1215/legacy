@@ -140,7 +140,7 @@ const FavoriteList = () => {
 
         {/* 문화재 섹션 */}
         <Section
-          title="문화재"
+          title="◎ 문화재"
           data={heritages}
           page={heritagePage}
           onPageChange={handlePageChange}
@@ -153,7 +153,7 @@ const FavoriteList = () => {
 
         {/* 행사 섹션 */}
         <Section
-          title="행사"
+          title="◎ 행사"
           data={festivals}
           page={festivalPage}
           onPageChange={handlePageChange}
