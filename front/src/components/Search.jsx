@@ -32,7 +32,6 @@ const SearchPage = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14;
-  const [refresh, setRefresh] = useState(0);
   const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
