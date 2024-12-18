@@ -1,171 +1,345 @@
 openapi: 3.0.0
 info:
-  title: Event and Heritage Management API
-  description: API documentation for managing accounts, login logs, favorites, festivals, and heritage data.
+  title: 문화재/축제 API
+  description: 문화재 정보, 축제 정보, 계정 관리를 위한 API 문서
   version: 1.0.0
+
 servers:
-  - url: http://localhost:8000/api
-    description: Local development server
+  - url: http://localhost:8000
+    description: 개발 서버
 
 paths:
+  /api/account/create:
+    post:
+      summary: 계정 생성
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 사용자 이메일
+                password:
+                  type: string
+                  description: 사용자 비밀번호
+                name:
+                  type: string
+                  description: 사용자 이름
+      responses:
+        "201":
+          description: 계정 생성 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account created successfully"
+        "400":
+          description: 잘못된 요청
+        "409":
+          description: 이미 존재하는 이메일
+
+  /api/account/login:
+    post:
+      summary: 로그인
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 사용자 이메일
+                password:
+                  type: string
+                  description: 사용자 비밀번호
+      responses:
+        "200":
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT 토큰
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      name:
+                        type: string
+        "401":
+          description: 인증 실패
+        "500":
+          description: 서버 오류
+
   /accounts:
     get:
-      summary: Get all accounts
+      summary: 계정 목록 조회
       responses:
         "200":
-          description: List of accounts
-    post:
-      summary: Create a new account
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Account"
-      responses:
-        "201":
-          description: Account created
-    put:
-      summary: Update account permissions
-      parameters:
-        - name: uuid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Permissions"
-      responses:
-        "200":
-          description: Permissions updated
-    delete:
-      summary: Delete an account
-      parameters:
-        - name: uuid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Account deleted
+          description: 계정 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                    email:
+                      type: string
+                    username:
+                      type: string
+        "500":
+          description: 서버 오류
 
-  /login-log:
+  /heritage:
     get:
-      summary: Get all login logs
+      summary: 문화재 목록 조회
       responses:
         "200":
-          description: List of login logs
-    post:
-      summary: Add a login log entry
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginLog"
+          description: 문화재 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    heritageid:
+                      type: string
+                    ccbaasno:
+                      type: string
+                    ccbamnm1:
+                      type: string
+                    ccbalcad:
+                      type: string
+                    content:
+                      type: string
+                    imageurl:
+                      type: string
+        "500":
+          description: 서버 오류
+
+  /festivals:
+    get:
+      summary: 축제 목록 조회
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: 조회할 연도
+        - in: query
+          name: month
+          schema:
+            type: integer
+          description: 조회할 월
       responses:
-        "201":
-          description: Login log created
+        "200":
+          description: 축제 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: integer
+                  month:
+                    type: integer
+                  transformedResults:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        festivalid:
+                          type: array
+                          items:
+                            type: string
+                        programName:
+                          type: array
+                          items:
+                            type: string
+                        programContent:
+                          type: array
+                          items:
+                            type: string
+                        startDate:
+                          type: array
+                          items:
+                            type: string
+                        endDate:
+                          type: array
+                          items:
+                            type: string
+                        location:
+                          type: array
+                          items:
+                            type: string
+                        contact:
+                          type: array
+                          items:
+                            type: string
+                        sido:
+                          type: array
+                          items:
+                            type: string
+                        targetAudience:
+                          type: array
+                          items:
+                            type: string
+                        imageUrl:
+                          type: array
+                          items:
+                            type: string
+        "500":
+          description: 서버 오류
 
   /favoritelist:
     get:
-      summary: Get all favorite items
+      summary: 즐겨찾기 목록 조회
+      security:
+        - bearerAuth: []
       responses:
         "200":
-          description: List of favorite items
+          description: 즐겨찾기 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  festivals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user_id:
+                          type: string
+                        user_email:
+                          type: string
+                        favoriteid:
+                          type: string
+                        type:
+                          type: string
+                        festivalid:
+                          type: string
+                        festivalname:
+                          type: string
+                        festivalcontent:
+                          type: string
+                        festivallocation:
+                          type: string
+                        festivalstartdate:
+                          type: string
+                        festivalenddate:
+                          type: string
+                        festivaltargetaudience:
+                          type: string
+                        festivalcontact:
+                          type: string
+                        festivalimageurl:
+                          type: string
+                  heritages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user_id:
+                          type: string
+                        user_email:
+                          type: string
+                        favoriteid:
+                          type: string
+                        type:
+                          type: string
+                        heritageid:
+                          type: string
+                        heritagename:
+                          type: string
+                        heritageaddress:
+                          type: string
+                        heritagecontent:
+                          type: string
+                        heritagecccename:
+                          type: string
+                        heritageimageurl:
+                          type: string
+                        heritagelatitude:
+                          type: string
+                        heritagelongitude:
+                          type: string
+        "401":
+          description: 인증 실패
+        "500":
+          description: 서버 오류
+
     post:
-      summary: Add a favorite item
+      summary: 즐겨찾기 추가
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Favorite"
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum: [event, heritage]
       responses:
         "201":
-          description: Favorite added
+          description: 즐겨찾기 추가 성공
+        "400":
+          description: 잘못된 요청
+        "401":
+          description: 인증 실패
+        "500":
+          description: 서버 오류
+
     delete:
-      summary: Remove a favorite item
+      summary: 즐겨찾기 삭제
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Favorite"
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum: [event, heritage]
       responses:
         "200":
-          description: Favorite removed
-
-  /heritagelist:
-    get:
-      summary: Get heritage list
-      responses:
-        "200":
-          description: List of heritage items
-
-  /festivallist:
-    get:
-      summary: Get festival list
-      responses:
-        "200":
-          description: List of festival items
+          description: 즐겨찾기 삭제 성공
+        "400":
+          description: 잘못된 요청
+        "401":
+          description: 인증 실패
+        "500":
+          description: 서버 오류
 
 components:
-  schemas:
-    Account:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        email:
-          type: string
-        username:
-          type: string
-        password:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        is_admin:
-          type: boolean
-
-    LoginLog:
-      type: object
-      properties:
-        admin_uuid:
-          type: string
-          format: uuid
-        client_uuid:
-          type: string
-          format: uuid
-        action:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-
-    Favorite:
-      type: object
-      properties:
-        token:
-          type: string
-        f_id:
-          type: integer
-        h_id:
-          type: integer
-        type:
-          type: string
-
-    Permissions:
-      type: object
-      properties:
-        is_admin:
-          type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
