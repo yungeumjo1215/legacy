@@ -290,8 +290,8 @@ const Home = () => {
         >
           <button
             onClick={() => setIsRecentBoxOpen(!isRecentBoxOpen)}
-            className="absolute -left-8 top-0 bg-blue-900 hover:bg-blue-700 text-white px-2 py-4 rounded-l-lg shadow-lg transition-all duration-300"
-            style={{ height: "50px" }}
+            className="absolute -left-8 top-1/2 -translate-y-1/2 bg-blue-900 hover:bg-blue-700 text-white px-2 rounded-l-lg shadow-lg transition-all duration-300 flex items-center justify-center"
+            style={{ height: "50px", width: "32px" }}
           >
             {isRecentBoxOpen ? ">" : "<"}
           </button>
