@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import a0 from "../assets/a0.mp4";
 import b1 from "../assets/b1.mp4";
 import "./ImageSlider.css";
@@ -22,7 +22,6 @@ import EventModal from "./EventModal";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { festivalList } = useSelector((state) => state.festival);
 
   const prevRef = useRef(null);
