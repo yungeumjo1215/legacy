@@ -209,14 +209,14 @@ const Section = ({
                 <button
                   onClick={() => onPageChange(-1, type)}
                   disabled={page === 0}
-                  className="absolute left-10 top-1/2 -translate-y-1/2 z-10"
+                  className="absolute left-10 top-1/2 -translate-y-1/2 z-10 border rounded-full p-2 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
                 >
                   <IoIosArrowBack size={24} />
                 </button>
                 <button
                   onClick={() => onPageChange(1, type)}
                   disabled={page >= maxPage}
-                  className="absolute right-10 top-1/2 -translate-y-1/2 z-10"
+                  className="absolute right-10 top-1/2 -translate-y-1/2 z-10 border rounded-full p-2 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
                 >
                   <IoIosArrowForward size={24} />
                 </button>
@@ -226,7 +226,7 @@ const Section = ({
               {getCurrentItems(data, page).map((item, idx) => (
                 <div
                   key={`${page}-${idx}`}
-                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[280px] animate-slide-from-left border border-gray-200"
+                  className="relative p-4 bg-white rounded-lg shadow cursor-pointer w-[280px] animate-slide-from-left border border-gray-200"
                   style={{
                     animationDelay: `${idx * 150}ms`,
                     opacity: 0,
@@ -265,10 +265,10 @@ const Section = ({
                         ? item.heritagename
                         : item.festivalname}
                     </h3>
-                    <p className="text-sm text-gray-600 mt-2 truncate">
+                    <p className="text-sm text-gray-600 mt-3 truncate">
                       {type === "heritage"
                         ? item.heritageaddress || "주소 정보 없음"
-                        : item.festivaladdress || "주소 정보 없음"}
+                        : item.festivallocation || "주소 정보 없음"}
                     </p>
                   </div>
                 </div>
