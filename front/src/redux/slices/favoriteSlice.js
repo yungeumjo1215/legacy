@@ -5,8 +5,6 @@ export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async (token, { rejectWithValue }) => {
     try {
-      // console.log("Fetching favorites with token:", token);
-
       const response = await fetch("http://localhost:8000/pgdb/favoritelist", {
         method: "GET",
         headers: {
@@ -17,48 +15,36 @@ export const fetchFavorites = createAsyncThunk(
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error("Server response error:", errorData);
         throw new Error(`Failed to fetch favorites: ${response.status}`);
       }
 
       const data = await response.json();
-      // console.log("Raw server response:", data);
 
       if (!data) {
-        console.error("No data received from server");
         return { festivals: [], heritages: [] };
       }
 
       // 서버 응답에서 festivals 배열 추출
       const festivals = data.festivals
-        ? data.festivals.map((festival) => {
-            // console.log("Processing festival item:", festival);
-            return {
-              ...festival,
-              festivalid: festival.festivalid,
-              id: festival.festivalid,
-              imageUrl: festival.festivalimageurl,
-              programName: festival.festivalname,
-              location: festival.festivallocation,
-              startDate: festival.festivalstartdate,
-              endDate: festival.festivalenddate,
-              contact: festival.festivalcontact,
-              programContent: festival.festivalcontent,
-              targetAudience: festival.festivaltargetaudience,
-            };
-          })
+        ? data.festivals.map((festival) => ({
+            ...festival,
+            festivalid: festival.festivalid,
+            id: festival.festivalid,
+            imageUrl: festival.festivalimageurl,
+            programName: festival.festivalname,
+            location: festival.festivallocation,
+            startDate: festival.festivalstartdate,
+            endDate: festival.festivalenddate,
+            contact: festival.festivalcontact,
+            programContent: festival.festivalcontent,
+            targetAudience: festival.festivaltargetaudience,
+          }))
         : [];
 
-      // console.log("Processed festivals:", festivals);
       const heritages = data.heritages || [];
 
       return { festivals, heritages };
     } catch (err) {
-      console.error("Error in fetchFavorites:", err);
-      console.error("Error details:", {
-        message: err.message,
-        stack: err.stack,
-      });
       return rejectWithValue(err.message);
     }
   }
