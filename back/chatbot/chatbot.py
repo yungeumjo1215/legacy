@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langchain import hub
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -41,14 +41,27 @@ cache_dir = os.path.join(parent_dir, 'back', 'vector_cache')
 cache_file = os.path.join(cache_dir, 'index.faiss')
 
 
-loader = TextLoader(data_path, encoding='utf-8')
+# 데이터 디렉토리 경로 설정
+data_dir = os.path.join(parent_dir, 'chatbotdata')  # 실제 데이터 파일이 있는 디렉토리로 수정
 
+# 디렉토리 존재 여부 확인
+if not os.path.exists(data_dir):
+    print(f"데이터 디렉토리를 찾을 수 없습니다: {data_dir}")
+    sys.exit(1)
 
 try:
+    loader = DirectoryLoader(
+        data_dir,
+        glob="*.txt",
+        loader_cls=TextLoader,
+        loader_kwargs={'encoding': 'utf-8'}
+    )
     documents = loader.load()
-    # print(f"문서 로딩 완료: {time.time() - start_time:.2f}초")
+    if not documents:
+        print("문서를 찾을 수 없습니다.")
+        sys.exit(1)
 except Exception as e:
-    # print(f"문서 로딩 중 오류 발생: {str(e)}")
+    print(f"데이터 로딩 중 오류 발생: {str(e)}")
     sys.exit(1)
 
 
@@ -119,15 +132,14 @@ prompt = PromptTemplate.from_template(
 
 다음 규칙을 반드시 따라주세요:
 - 주어진 정보에 있는 정보만 사용하여 답변하세요
-- 검색어와 일치하지 않더라도 유사한 문화재와 행사가 있다면 반드시 언급해 주세요
-- 찾은 정보가 불완전하더라도 가능한 한 관련된 정보를 제공하세요
+- 없는정보에 대해서는 언급하지 말아주세요
 - 찾은 정보에 대해 다음 순서로 구조화하여 답변하세요:
-  1. 문화재 이름
-  2. 문화재 장소
-  3. 문화재 정보
-  4. 행사 이름
-  5. 행사 장소
-  6. 행사 정보
+  문화재 이름
+  문화재 장소
+  문화재 정보
+  행사 이름
+  행사 장소
+  행사 정보
 
 
 
