@@ -308,7 +308,6 @@ const getUserInfo = async (req, res) => {
       // Return user info even if fetching favorites fails
     }
 
-    console.log("Sending user info:", userInfo); // Debugging log
     res.status(200).json(userInfo);
   } catch (error) {
     console.error("Error in getUserInfo:", error);

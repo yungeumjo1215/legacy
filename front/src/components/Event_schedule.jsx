@@ -598,6 +598,7 @@ const EventSchedule = () => {
                            h-[150px] md:h-[170px] 
                            flex flex-col justify-center items-center text-center"
                 role="alert"
+                onClick={(e) => e.stopPropagation()}
               >
                 <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
                   {successMessage}

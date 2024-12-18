@@ -8,9 +8,20 @@ servers:
   - url: http://localhost:8000
     description: 개발 서버
 
+# 태그 정의 추가
+tags:
+  - name: account
+    description: 계정 관리 관련 API
+  - name: inquiry
+    description: 문화재 및 축제 조회 관련 API
+  - name: favorite
+    description: 즐겨찾기 관련 API
+
 paths:
-  /api/account/create:
+  /account/create:
     post:
+      tags:
+        - account
       summary: 계정 생성
       requestBody:
         required: true
@@ -44,8 +55,10 @@ paths:
         "409":
           description: 이미 존재하는 이메일
 
-  /api/account/login:
+  /account/login:
     post:
+      tags:
+        - account
       summary: 로그인
       requestBody:
         required: true
@@ -83,8 +96,10 @@ paths:
         "500":
           description: 서버 오류
 
-  /accounts:
+  /pgdb/accounts:
     get:
+      tags:
+        - account
       summary: 계정 목록 조회
       responses:
         "200":
@@ -105,8 +120,10 @@ paths:
         "500":
           description: 서버 오류
 
-  /heritage:
+  /pgdb/heritage:
     get:
+      tags:
+        - inquiry
       summary: 문화재 목록 조회
       responses:
         "200":
@@ -133,8 +150,10 @@ paths:
         "500":
           description: 서버 오류
 
-  /festivals:
+  /pgdb/festivals:
     get:
+      tags:
+        - inquiry
       summary: 축제 목록 조회
       parameters:
         - in: query
@@ -207,8 +226,10 @@ paths:
         "500":
           description: 서버 오류
 
-  /favoritelist:
+  /pgdb/favoritelist:
     get:
+      tags:
+        - favorite
       summary: 즐겨찾기 목록 조회
       security:
         - bearerAuth: []
@@ -286,6 +307,8 @@ paths:
           description: 서버 오류
 
     post:
+      tags:
+        - favorite
       summary: 즐겨찾기 추가
       security:
         - bearerAuth: []
@@ -312,6 +335,8 @@ paths:
           description: 서버 오류
 
     delete:
+      tags:
+        - favorite
       summary: 즐겨찾기 삭제
       security:
         - bearerAuth: []

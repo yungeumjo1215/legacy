@@ -201,8 +201,14 @@ const EventModal = ({ event, onClose, hideStarButton }) => {
       </div>
 
       {alertMessage && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
-          <div className="bg-[#e2e2e2] rounded-lg p-6 max-w-sm w-full mx-4 h-[180px] md:h-[200px] flex flex-col justify-center items-center">
+        <div
+          className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center"
+          onClick={closeAlert}
+        >
+          <div
+            className="bg-[#e2e2e2] rounded-lg p-6 max-w-sm w-full mx-4 h-[180px] md:h-[200px] flex flex-col justify-center items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
             <p className="text-center text-lg mb-4 whitespace-pre-wrap">
               {alertMessage}
             </p>

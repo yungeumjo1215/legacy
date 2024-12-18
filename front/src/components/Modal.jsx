@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../redux/slices/favoriteSlice";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -123,12 +123,16 @@ const Modal = ({ item, onClose, onFavoriteChange }) => {
         </div>
 
         {alertMessage && (
-          <div className="fixed inset-0 bg-black/50 z-[10001] flex items-center justify-center">
+          <div
+            className="fixed inset-0 bg-black/50 z-[10001] flex items-center justify-center"
+            onClick={closeAlert}
+          >
             <div
               className="bg-[#e2e2e2] text-black p-4 md:p-5 rounded-lg 
-                           w-[90%] md:w-[400px] max-w-[400px]
-                           h-[180px] md:h-[200px] 
-                           flex flex-col justify-center items-center text-center"
+                    w-[90%] md:w-[400px] max-w-[400px]
+                    h-[180px] md:h-[200px] 
+                    flex flex-col justify-center items-center text-center"
+              onClick={(e) => e.stopPropagation()}
             >
               <p className="font-bold text-base md:text-lg whitespace-pre-wrap mt-4 md:mt-5">
                 {alertMessage}
