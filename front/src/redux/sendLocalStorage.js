@@ -15,38 +15,37 @@ const syncLocalStorageMiddleware = (store) => (next) => (action) => {
 
 export default syncLocalStorageMiddleware;
 
-function sendDataToPostgreSQL() {
-  const token = localStorage.getItem("token"); // Assume token is stored in localStorage
+// function sendDataToPostgreSQL() {
+//   const token = localStorage.getItem("token"); // Assume token is stored in localStorage
 
-  if (!token) {
-    console.error("Token is missing. Cannot send data.");
-    return;
-  }
+//   if (!token) {
+//     console.error("Token is missing. Cannot send data.");
+//     return;
+//   }
 
-  // Debugging: Log the token being sent to the backend
-  console.log("Token being sent to the backend:", token);
+//   // Debugging: Log the token being sent to the backend
+//   console.log("Token being sent to the backend:", token);
 
-  // Send only the token to the backend
-  fetch("http://localhost:8000/pgdb/favoritelist", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Pass token in Authorization header
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.message) {
-        console.log("Token successfully sent to PostgreSQL:", data.message);
-      } else {
-        console.error("Error sending token:", data.error || data);
-      }
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-    });
-}
+//   // Send only the token to the backend
+//   fetch("http://localhost:8000/pgdb/favoritelist", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`, // Pass token in Authorization header
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (data.message) {
+//         console.log("Token successfully sent to PostgreSQL:", data.message);
+//       } else {
+//         console.error("Error sending token:", data.error || data);
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Fetch error:", error);
+//     });
+// }
 
 // Call functions
 syncLocalStorageMiddleware();
-sendDataToPostgreSQL();

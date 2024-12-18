@@ -10,7 +10,7 @@ const {
   insertFavoriteHeritages,
   deleteFavoriteFestivals,
   deleteFavoriteHeritages,
-} = require("./controller/favoriteController");
+} = require("./controller/tokenController");
 const path = require("path");
 const spawn = require("child_process").spawn;
 
@@ -18,7 +18,7 @@ const spawn = require("child_process").spawn;
 const accountRoutes = require("./routes/accountRoutes");
 const pgdbRoutes = require("./routes/postgreSQLRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-const festivalRoutes = require("./routes/kgfestivalRoutes");
+// const festivalRoutes = require("./routes/kgfestivalRoutes");
 
 // Swagger 설정
 const swaggerUi = require("swagger-ui-express");
@@ -91,7 +91,7 @@ app.post("/chat", async (req, res) => {
 });
 
 // API 라우트
-app.use("/festival", festivalRoutes);
+// app.use("/festival", festivalRoutes);
 app.use("/pgdb", pgdbRoutes);
 app.use("/event", eventRoutes);
 app.use("/account", accountRoutes);
