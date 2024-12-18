@@ -5,6 +5,19 @@ import default_Img from "../assets/festival.png";
 import PageModal from "./PageModal";
 import axios from "axios";
 
+const styles = `
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+`;
+
 const FavoriteList = () => {
   const [favorites, setFavorites] = useState({ heritages: [], festivals: [] });
   const [selectedItem, setSelectedItem] = useState(null);
@@ -120,43 +133,46 @@ const FavoriteList = () => {
   };
 
   return (
-    <div className="p-4 pb-12 pt-12">
-      <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
+    <>
+      <style>{styles}</style>
+      <div className="p-4 pb-12 pt-12">
+        <h1 className="text-2xl font-semibold mb-10 -mt-6">나의 즐겨찾기</h1>
 
-      {/* 문화재 섹션 */}
-      <Section
-        title="문화재"
-        data={heritages}
-        page={heritagePage}
-        onPageChange={handlePageChange}
-        type="heritage"
-        onOpenModal={openModal}
-        onRemove={handleRemoveFavorite}
-        getCurrentItems={getCurrentItems}
-        onErrorImg={onErrorImg}
-      />
+        {/* 문화재 섹션 */}
+        <Section
+          title="문화재"
+          data={heritages}
+          page={heritagePage}
+          onPageChange={handlePageChange}
+          type="heritage"
+          onOpenModal={openModal}
+          onRemove={handleRemoveFavorite}
+          getCurrentItems={getCurrentItems}
+          onErrorImg={onErrorImg}
+        />
 
-      {/* 행사 섹션 */}
-      <Section
-        title="행사"
-        data={festivals}
-        page={festivalPage}
-        onPageChange={handlePageChange}
-        type="festival"
-        onOpenModal={openModal}
-        onRemove={handleRemoveFavorite}
-        getCurrentItems={getCurrentItems}
-        onErrorImg={onErrorImg}
-      />
+        {/* 행사 섹션 */}
+        <Section
+          title="행사"
+          data={festivals}
+          page={festivalPage}
+          onPageChange={handlePageChange}
+          type="festival"
+          onOpenModal={openModal}
+          onRemove={handleRemoveFavorite}
+          getCurrentItems={getCurrentItems}
+          onErrorImg={onErrorImg}
+        />
 
-      <PageModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        item={selectedItem}
-        type={modalType}
-        onUpdate={handleUpdate}
-      />
-    </div>
+        <PageModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          item={selectedItem}
+          type={modalType}
+          onUpdate={handleUpdate}
+        />
+      </div>
+    </>
   );
 };
 
@@ -209,39 +225,45 @@ const Section = ({
             <div className="flex gap-6 justify-center h-full items-center">
               {getCurrentItems(data, page).map((item, idx) => (
                 <div
-                  key={idx}
-                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[250px]"
+                  key={`${page}-${idx}`}
+                  className="relative p-4 bg-white rounded shadow cursor-pointer w-[250px] animate-slide-from-left"
+                  style={{
+                    animationDelay: `${idx * 150}ms`,
+                    opacity: 0,
+                    animation: `slideIn 0.5s ease-out ${idx * 150}ms forwards`,
+                  }}
                   onClick={() => onOpenModal(item, type)}
                 >
-                  <img
-                    src={
-                      type === "heritage"
-                        ? item.heritageimageurl || default_Img
-                        : item.festivalimageurl || default_Img
-                    }
-                    alt={
-                      type === "heritage"
-                        ? item.heritagename
-                        : item.festivalname
-                    }
-                    onError={onErrorImg}
-                    className="h-[180px] w-[220px] object-cover rounded"
-                  />
+                  <div className="relative">
+                    <img
+                      src={
+                        type === "heritage"
+                          ? item.heritageimageurl || default_Img
+                          : item.festivalimageurl || default_Img
+                      }
+                      alt={
+                        type === "heritage"
+                          ? item.heritagename
+                          : item.festivalname
+                      }
+                      onError={onErrorImg}
+                      className="h-[180px] w-[220px] object-cover rounded"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemove(item, type);
+                      }}
+                      className="absolute bottom-2 left-2 text-yellow-400 hover:text-yellow-500"
+                    >
+                      <AiFillStar className="text-2xl" />
+                    </button>
+                  </div>
                   <h3 className="mt-2 font-semibold truncate">
                     {type === "heritage"
                       ? item.heritagename
                       : item.festivalname}
                   </h3>
-                  {/* AiFillStar for favorite removal */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemove(item, type);
-                    }}
-                    className="absolute top-2 right-2 text-yellow-400 hover:text-yellow-500"
-                  >
-                    <AiFillStar className="text-2xl" />
-                  </button>
                 </div>
               ))}
             </div>
