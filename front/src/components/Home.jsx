@@ -18,7 +18,7 @@ import {
 } from "react-icons/io";
 import { BsChatDotsFill } from "react-icons/bs";
 import default_Img from "../assets/festival.png";
-import EventModal from "./EventModal";
+import EventModal from "./events/EventModal";
 
 const Home = () => {
   const dispatch = useDispatch();

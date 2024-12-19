@@ -4,6 +4,11 @@ import {
   LUNAR_HOLIDAY_MAP,
 } from "../constants/holidayConstants";
 
+// 날짜 관련 유틸리티 함수
+// - 날짜 파싱 및 포맷팅
+// - 공휴일 확인
+// - 캘린더 타일 스타일링
+
 export const parseYYYYMMDD = (dateArr) => {
   if (!dateArr || !dateArr[0] || dateArr[0].length !== 8) return null;
 

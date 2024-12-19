@@ -1,5 +1,10 @@
 import { formatDateString } from "./dateUtils";
 
+// 데이터 포맷팅 유틸리티 함수
+// - 텍스트 길이 제한
+// - 축제 데이터 정규화
+// - 배열 데이터 처리
+
 export const formatValue = (value) => {
   if (value === "N/A") return "모두";
   if (typeof value === "string" && value.length > 20) {

@@ -1,3 +1,6 @@
+// - REGIONS: 전국 지역 정보 (시도별)
+// - SOLAR_HOLIDAYS: 양력 공휴일 목록
+// - LUNAR_HOLIDAY_MAP: 연도별 음력 공휴일 날짜 매핑
 export const REGIONS = [
   { id: "all", name: "전체", sido: null },
   { id: "seoul", name: "서울", sido: "서울특별시" },

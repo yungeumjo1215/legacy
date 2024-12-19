@@ -1,5 +1,9 @@
 import { parseYYYYMMDD } from "../utils/dateUtils";
 
+// 축제 데이터 필터링 관련 함수
+// - matchesRegionFilter: 선택된 지역에 따른 축제 필터링
+// - filterFestivals: 날짜, 검색어, 지역에 따른 축제 목록 필터링
+
 export const matchesRegionFilter = (sido, selectedRegion) => {
   if (selectedRegion === "all") return true;
   if (!sido) return false;

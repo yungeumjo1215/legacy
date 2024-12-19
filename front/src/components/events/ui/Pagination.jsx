@@ -1,5 +1,8 @@
 import React from "react";
 
+// 페이지네이션 UI 컴포넌트
+// - 이전/다음 페이지 이동
+// - 페이지 번호 표시 및 이동
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="flex justify-center items-center mt-6 gap-2">

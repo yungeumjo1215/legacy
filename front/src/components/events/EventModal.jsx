@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import default_Img from "../assets/festival.png";
+import default_Img from "../../assets/festival.png";
 import { useNavigate } from "react-router-dom";
 import {
   addFavorites,
   deleteFavorites,
   addFavorite,
   removeFavorite,
-} from "../redux/slices/favoriteSlice";
+} from "../../redux/slices/favoriteSlice";
 
 const EventModal = ({ event, onClose, hideStarButton }) => {
   const dispatch = useDispatch();

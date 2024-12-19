@@ -6,8 +6,8 @@ import { TiStarFullOutline } from "react-icons/ti";
 import { fetchFestivalData } from "../redux/slices/festivalDetailSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import EventModal from "./EventModal";
-import "../components/EventSchedule.css";
+import EventModal from "../components/events/EventModal";
+import "../components/events/EventSchedule.css";
 import {
   addFavorites,
   deleteFavorites,
@@ -110,7 +110,7 @@ const EventSchedule = () => {
           dispatch(
             addToList({
               festivalid: festival.festivalid,
-              festivalname: festival.programName, // festivalname으로 저장
+              festivalname: festival.programName,
               programName: festival.programName,
               programContent: festival.programContent,
               startDate: festival.startDate,

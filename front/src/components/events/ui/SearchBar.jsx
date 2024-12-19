@@ -1,5 +1,8 @@
 import React, { memo } from "react";
 
+// 검색바 UI 컴포넌트
+// - 행사명 검색 입력 폼
+// - 검색 버튼 포함
 const SearchBar = memo(({ value, onChange }) => (
   <div className="flex justify-center w-full">
     <form
