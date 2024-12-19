@@ -25,9 +25,7 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
         type: type === "heritage" ? "heritage" : "event",
       };
 
-      console.log("요청 데이터:", requestData);
-
-      const response = await axios({
+      await axios({
         method: "delete",
         url: "http://localhost:8000/pgdb/favoritelist",
         headers: {
@@ -37,22 +35,20 @@ const PageModal = ({ isOpen, onClose, item, type, onUpdate }) => {
         data: requestData,
       });
 
-      console.log("서버 응답:", response.data);
+      dispatch(
+        removeFavorite({
+          type: type,
+          id: type === "heritage" ? item.heritageid : item.festivalid,
+        })
+      );
 
-      if (response.data) {
-        dispatch(
-          removeFavorite({
-            type: type,
-            id: type === "heritage" ? item.heritageid : item.festivalid,
-          })
-        );
+      onClose();
 
+      setTimeout(() => {
         if (onUpdate) {
-          onUpdate();
+          onUpdate(type);
         }
-
-        onClose();
-      }
+      }, 100);
     } catch (error) {
       console.error("즐겨찾기 제거 중 오류 발생:", error);
       if (error.response) {

@@ -137,8 +137,41 @@ const FavoriteList = () => {
 
   const { heritages, festivals } = favorites;
 
-  const handleUpdate = () => {
-    setRefresh(!refresh);
+  const handleUpdate = async (type) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:8000/pgdb/favoritelist",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const updatedData = {
+        heritages: response.data.heritages || [],
+        festivals: response.data.festivals || [],
+      };
+
+      // 페이지 상태 업데이트
+      if (type === "heritage") {
+        const maxPage = Math.ceil(
+          updatedData.heritages.length / getItemsPerPage()
+        );
+        setHeritagePage((current) =>
+          current >= maxPage ? maxPage - 1 : current
+        );
+      } else {
+        const maxPage = Math.ceil(
+          updatedData.festivals.length / getItemsPerPage()
+        );
+        setFestivalPage((current) =>
+          current >= maxPage ? maxPage - 1 : current
+        );
+      }
+
+      // favorites 상태 업데이트
+      setFavorites(updatedData);
+    } catch (error) {
+      console.error("Failed to fetch favorites:", error.response || error);
+    }
   };
 
   return (
