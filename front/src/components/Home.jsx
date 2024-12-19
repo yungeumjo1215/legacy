@@ -146,7 +146,7 @@ const Home = () => {
             <span className="text-center SubFont">상세페이지</span>
           </Link>
         </div>
-        <div className="w-full h-[800px] max-w-[1600px] mx-auto px-4">
+        <div className="w-full h-[600px] max-w-[1600px] mx-auto px-4">
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={20}
@@ -200,9 +200,9 @@ const Home = () => {
               <SwiperSlide key={festival.festivalid}>
                 <div
                   onClick={() => handleEventClick(festival)}
-                  className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                  className="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer border border-gray-200"
                 >
-                  <div className="relative h-[500px]">
+                  <div className="relative h-[300px]">
                     {festival.image ? (
                       <img
                         src={festival.image}
