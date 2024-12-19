@@ -210,14 +210,10 @@ const EventSchedule = () => {
   };
 
   const isEventStarred = useCallback(
-    (programName) => {
+    (festivalId) => {
       return (
         Array.isArray(festivals) &&
-        festivals.some(
-          (festival) =>
-            festival.festivalname === programName ||
-            festival.programName === programName
-        )
+        festivals.some((festival) => festival.festivalid === festivalId)
       );
     },
     [festivals]
@@ -354,7 +350,7 @@ const EventSchedule = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const isAlreadySelected = isEventStarred(festival.programName);
+        const isAlreadySelected = isEventStarred(festival.festivalid);
 
         if (!isAlreadySelected) {
           await dispatch(
@@ -418,7 +414,7 @@ const EventSchedule = () => {
     const recentItems = JSON.parse(localStorage.getItem("recentItems")) || [];
 
     const newItem = {
-      id: `event-${event.programName}`, // 고유 ID 생성
+      id: `event-${event.festivalid}`, // 고유 ID 생성
       type: "event",
       title: event.programName,
       imageUrl: event.image,
@@ -698,13 +694,13 @@ const EventSchedule = () => {
                               handleStarClick(festival);
                             }}
                             className={`star-button mr-2 sm:mr-3 ${
-                              isEventStarred(festival.programName)
+                              isEventStarred(festival.festivalid)
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
                             tabIndex={0}
                             aria-label={`${festival.programName} 즐겨찾기 ${
-                              isEventStarred(festival.programName)
+                              isEventStarred(festival.festivalid)
                                 ? "제거"
                                 : "추가"
                             }`}
