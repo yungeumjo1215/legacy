@@ -66,33 +66,42 @@ const FavoriteList = () => {
   const handleRemoveFavorite = async (item, type) => {
     try {
       const token = localStorage.getItem("token");
-
-      // Prepare the DELETE request parameters
       const requestData = {
         id: type === "heritage" ? item.heritageid : item.festivalid,
         type: type === "heritage" ? "heritage" : "event",
       };
 
-      console.log("Deleting favorite with data:", requestData);
-
-      // Send DELETE request with params
       await axios.delete("http://localhost:8000/pgdb/favoritelist", {
         headers: { Authorization: `Bearer ${token}` },
-        data: { id: requestData.id, type: requestData.type }, // Send data in the body
+        data: { id: requestData.id, type: requestData.type },
       });
 
-      console.log("Favorite removed successfully:", item);
+      // 업데이트된 아이템 리스트 생성
+      const updatedItems = favorites[
+        type === "heritage" ? "heritages" : "festivals"
+      ].filter((i) =>
+        type === "heritage"
+          ? i.heritageid !== item.heritageid
+          : i.festivalid !== item.festivalid
+      );
 
-      // Update state after successful deletion
+      // 페이지 상태 업데이트
+      if (type === "heritage") {
+        const maxPage = Math.ceil(updatedItems.length / getItemsPerPage());
+        setHeritagePage((current) =>
+          current >= maxPage ? maxPage - 1 : current
+        );
+      } else {
+        const maxPage = Math.ceil(updatedItems.length / getItemsPerPage());
+        setFestivalPage((current) =>
+          current >= maxPage ? maxPage - 1 : current
+        );
+      }
+
+      // 현재 페이지와 아이템 수를 기반으로 페이지 조정
       setFavorites((prev) => ({
         ...prev,
-        [type === "heritage" ? "heritages" : "festivals"]: prev[
-          type === "heritage" ? "heritages" : "festivals"
-        ].filter((i) =>
-          type === "heritage"
-            ? i.heritageid !== item.heritageid
-            : i.festivalid !== item.festivalid
-        ),
+        [type === "heritage" ? "heritages" : "festivals"]: updatedItems,
       }));
     } catch (error) {
       console.error("Error removing favorite:", error.response || error);
