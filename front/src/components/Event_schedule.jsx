@@ -18,6 +18,8 @@ import {
 } from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
 import { IoIosArrowUp } from "react-icons/io";
+import moment from "moment";
+import solarLunar from "solarlunar";
 
 const REGIONS = [
   { id: "all", name: "전체", sido: null },
@@ -104,6 +106,69 @@ const SearchBar = memo(({ value, onChange }) => (
     </form>
   </div>
 ));
+
+// 양력 공휴일 (매년 고정)
+const SOLAR_HOLIDAYS = {
+  "0101": "신정",
+  "0301": "삼일절",
+  "0505": "어린이날",
+  "0606": "현충일",
+  "0815": "광복절",
+  1003: "개천절",
+  1009: "한글날",
+  1225: "크리스마스",
+};
+
+// 연도별 음력 공휴일 데이터
+const LUNAR_HOLIDAY_MAP = {
+  2024: {
+    설날: ["0209", "0210", "0211"],
+    부처님오신날: ["0515"],
+    추석: ["0916", "0917", "0918"],
+  },
+  2025: {
+    설날: ["0128", "0129", "0130"],
+    부처님오신날: ["0505"],
+    추석: ["1005", "1006", "1007"],
+  },
+  2026: {
+    설날: ["0217", "0218", "0219"],
+    부처님오신날: ["0524"],
+    추석: ["0925", "0926", "0927"],
+  },
+};
+
+const getHolidays = (year) => {
+  const holidays = { ...SOLAR_HOLIDAYS };
+
+  // 해당 연도의 음력 공휴일 데이터가 있으면 추가
+  if (LUNAR_HOLIDAY_MAP[year]) {
+    Object.entries(LUNAR_HOLIDAY_MAP[year]).forEach(([name, dates]) => {
+      dates.forEach((date) => {
+        const month = date.substring(0, 2);
+        const day = date.substring(2);
+        holidays[`${month}${day}`] = name;
+      });
+    });
+  }
+
+  return holidays;
+};
+
+const tileClassName = ({ date, view }) => {
+  if (view === "month") {
+    const formattedDate = moment(date).format("MMDD");
+    const year = date.getFullYear();
+    const holidays = getHolidays(year);
+    const day = date.getDay();
+    const isWeekend = day === 0; // 일요일
+
+    if (holidays[formattedDate] || isWeekend) {
+      return "holiday-date";
+    }
+  }
+  return "";
+};
 
 const EventSchedule = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -511,6 +576,7 @@ const EventSchedule = () => {
                 value={date}
                 className="w-full rounded-lg shadow-sm calendar-custom"
                 locale="ko-KR"
+                tileClassName={tileClassName}
               />
             </div>
           </div>

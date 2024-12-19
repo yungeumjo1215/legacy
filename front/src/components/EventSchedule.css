@@ -103,3 +103,26 @@
   background: rgb(30 64 175 / var(--tw-bg-opacity, 1)) !important;
   color: white !important;
 }
+
+/* 공휴일 스타일 */
+.holiday-date {
+  color: #e54d42 !important;
+  font-weight: bold !important;
+}
+
+.holiday-date abbr {
+  color: #e54d42 !important;
+  font-weight: bold !important;
+}
+
+/* 선택된 상태에서도 빨간색 유지 */
+.react-calendar__tile--active.holiday-date,
+.react-calendar__tile--active.holiday-date abbr {
+  color: #e54d42 !important;
+}
+
+/* hover 상태에서도 빨간색 유지 */
+.react-calendar__tile:enabled:hover.holiday-date,
+.react-calendar__tile:enabled:hover.holiday-date abbr {
+  color: #e54d42 !important;
+}
