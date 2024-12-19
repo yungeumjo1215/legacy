@@ -17,161 +17,21 @@ import {
   setFavorites,
 } from "../redux/slices/favoriteSlice";
 import default_Img from "../assets/festival.png";
-import { IoIosArrowUp } from "react-icons/io";
-import moment from "moment";
-import solarLunar from "solarlunar";
 
-const REGIONS = [
-  { id: "all", name: "전체", sido: null },
-  { id: "seoul", name: "서울", sido: "서울특별시" },
-  { id: "incheon", name: "인천", sido: "인천광역시" },
-  { id: "busan", name: "부산", sido: "부산광역시" },
-  { id: "ulsan", name: "울산", sido: "울산광역시" },
-  { id: "gyeonggi", name: "경기도", sido: "경기도" },
-  { id: "gangwon", name: "강원도", sido: "강원도" },
-  { id: "chungcheong", name: "충청도", sido: ["충청북도", "충청남도"] },
-  { id: "gyeongsang", name: "경상도", sido: ["경상북도", "경상남도"] },
-  { id: "jeolla", name: "전라도", sido: ["전라북도", "전라남도"] },
-  { id: "jeju", name: "제주도", sido: "제주특별자치도" },
-];
-const formatValue = (value) => {
-  if (value === "N/A") return "모두";
-  if (typeof value === "string" && value.length > 20) {
-    return value.substring(0, 20) + "...";
-  }
-  return value;
-};
-
-const formatDateString = (dateArr) => {
-  if (!dateArr || !dateArr[0]) return null;
-
-  const dateStr = dateArr[0];
-  const year = dateStr.substring(0, 4);
-  const month = dateStr.substring(4, 6);
-  const day = dateStr.substring(6, 8);
-
-  try {
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  } catch (error) {
-    console.error("Date formatting error:", error);
-    return dateStr;
-  }
-};
-
-const onErrorImg = (e) => {
-  e.target.src = default_Img;
-};
-
-const parseYYYYMMDD = (dateArr) => {
-  if (!dateArr || !dateArr[0] || dateArr[0].length !== 8) return null;
-
-  try {
-    const dateStr = dateArr[0];
-    const year = parseInt(dateStr.substring(0, 4));
-    const month = parseInt(dateStr.substring(4, 6)) - 1;
-    const day = parseInt(dateStr.substring(6, 8));
-
-    const date = new Date(year, month, day);
-    return isNaN(date.getTime()) ? null : date;
-  } catch (error) {
-    console.error("날짜 파싱 오류:", error);
-    return null;
-  }
-};
-
-const SearchBar = memo(({ value, onChange }) => (
-  <div className="flex justify-center w-full">
-    <form
-      onSubmit={(e) => e.preventDefault()}
-      className="flex w-full sm:w-auto md:w-[400px]"
-    >
-      <input
-        type="text"
-        placeholder="행사명을 입력해주세요"
-        value={value}
-        onChange={onChange}
-        className="Event-sc rounded-s-[5px] flex-1 p-2"
-      />
-      <button
-        type="submit"
-        className="relative border MainColor text-white rounded-e-[5px] px-4 whitespace-nowrap group inline-block hover:animate-[push_0.3s_linear_1] active:translate-y-0 hover:bg-blue-700"
-      >
-        <span className="relative z-10">검색</span>
-      </button>
-    </form>
-  </div>
-));
-
-// 양력 공휴일 (매년 고정)
-const SOLAR_HOLIDAYS = {
-  "0101": "신정",
-  "0301": "삼일절",
-  "0505": "어린이날",
-  "0606": "현충일",
-  "0815": "광복절",
-  1003: "개천절",
-  1009: "한글날",
-  1225: "크리스마스",
-};
-
-// 연도별 음력 공휴일 데이터
-const LUNAR_HOLIDAY_MAP = {
-  2024: {
-    설날: ["0209", "0210", "0211"],
-    부처님오신날: ["0515"],
-    추석: ["0916", "0917", "0918"],
-  },
-  2025: {
-    설날: ["0128", "0129", "0130"],
-    부처님오신날: ["0505"],
-    추석: ["1005", "1006", "1007"],
-  },
-  2026: {
-    설날: ["0217", "0218", "0219"],
-    부처님오신날: ["0524"],
-    추석: ["0925", "0926", "0927"],
-  },
-};
-
-const getHolidays = (year) => {
-  const holidays = { ...SOLAR_HOLIDAYS };
-
-  // 해당 연도의 음력 공휴일 데이터가 있으면 추가
-  if (LUNAR_HOLIDAY_MAP[year]) {
-    Object.entries(LUNAR_HOLIDAY_MAP[year]).forEach(([name, dates]) => {
-      dates.forEach((date) => {
-        const month = date.substring(0, 2);
-        const day = date.substring(2);
-        holidays[`${month}${day}`] = name;
-      });
-    });
-  }
-
-  return holidays;
-};
-
-const tileClassName = ({ date, view }) => {
-  if (view === "month") {
-    const formattedDate = moment(date).format("MMDD");
-    const year = date.getFullYear();
-    const holidays = getHolidays(year);
-    const day = date.getDay();
-    const isWeekend = day === 0; // 일요일
-
-    if (holidays[formattedDate] || isWeekend) {
-      return "holiday-date";
-    }
-  }
-  return "";
-};
+// 새로운 import 경로들
+import { REGIONS } from "./events/constants/holidayConstants";
+import { filterFestivals } from "./events/filters/festivalFilters";
+import {
+  formatValue,
+  tileClassName,
+  formatFestivalData,
+  handleImageError,
+} from "./events/utils/utilsExport";
+import SearchBar from "./events/ui/SearchBar";
+import ScrollToTop from "./events/ui/ScrollToTop";
+import Pagination from "./events/ui/Pagination";
 
 const EventSchedule = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -192,23 +52,6 @@ const EventSchedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300); //300px 이상 스크롤 시 맨 위로 가기 버튼 표시
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  //맨 위로 스크롤하는 함수
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const isEventStarred = useCallback(
     (festivalId) => {
       return (
@@ -226,109 +69,12 @@ const EventSchedule = () => {
   }, [date, dispatch]);
 
   const filteredFestivals = useMemo(() => {
-    if (!Array.isArray(festivalList)) return [];
-
-    return festivalList.filter((festival) => {
-      try {
-        const startDate = parseYYYYMMDD(festival.startDate);
-        const endDate = parseYYYYMMDD(festival.endDate);
-        if (!startDate || !endDate) return false;
-
-        const currentDate = new Date(date);
-        currentDate.setHours(0, 0, 0, 0);
-
-        const matchesDate = currentDate >= startDate && currentDate <= endDate;
-        const matchesSearch = festival.programName?.[0]
-          ?.toString()
-          .toLowerCase()
-          .includes(search.toLowerCase());
-
-        let matchesRegion = selectedRegion === "all";
-
-        if (!matchesRegion && festival.sido) {
-          let regionSido;
-          if (Array.isArray(festival.sido)) {
-            regionSido = festival.sido[0]?.toLowerCase() || "";
-          } else if (typeof festival.sido === "string") {
-            regionSido = festival.sido.toLowerCase();
-          } else {
-            regionSido = "";
-          }
-
-          switch (selectedRegion) {
-            case "seoul":
-              matchesRegion = /서울|seoul/i.test(regionSido);
-              break;
-            case "incheon":
-              matchesRegion = /인천|incheon/i.test(regionSido);
-              break;
-            case "gyeonggi":
-              matchesRegion = /경기|gyeonggi/i.test(regionSido);
-              break;
-            case "gangwon":
-              matchesRegion = /강원|gangwon/i.test(regionSido);
-              break;
-            case "jeolla":
-              matchesRegion = /전라|전북|전남|광주|jeolla|gwangju/i.test(
-                regionSido
-              );
-              break;
-            case "chungcheong":
-              matchesRegion = /충청|충북|충남|대전|chungcheong|daejeon/i.test(
-                regionSido
-              );
-              break;
-            case "gyeongsang":
-              matchesRegion = /경상|경북|경남|대구|gyeongsang|daegu/i.test(
-                regionSido
-              );
-              break;
-            case "busan":
-              matchesRegion = /부산|busan/i.test(regionSido);
-              break;
-            case "ulsan":
-              matchesRegion = /울산|ulsan/i.test(regionSido);
-              break;
-            case "jeju":
-              matchesRegion = /제주|jeju/i.test(regionSido);
-              break;
-            default:
-              matchesRegion = false;
-          }
-        }
-
-        return matchesDate && matchesSearch && matchesRegion;
-      } catch (error) {
-        console.error("Festival filtering error:", error, festival);
-        return false;
-      }
-    });
+    return filterFestivals(festivalList, date, search, selectedRegion);
   }, [festivalList, date, search, selectedRegion]);
 
   const formattedFestivals = useMemo(() => {
-    return filteredFestivals.map((festival) => ({
-      programName: Array.isArray(festival.programName)
-        ? festival.programName[0]
-        : festival.programName,
-      festivalid: Array.isArray(festival.festivalid)
-        ? festival.festivalid[0]
-        : festival.festivalid,
-      programContent: Array.isArray(festival.programContent)
-        ? festival.programContent[0]
-        : festival.programContent,
-      startDate: formatDateString(festival.startDate),
-      endDate: formatDateString(festival.endDate),
-      location: Array.isArray(festival.location)
-        ? festival.location[0]
-        : festival.location,
-      contact: Array.isArray(festival.contact)
-        ? festival.contact[0]
-        : festival.contact,
-      image: Array.isArray(festival.image) ? festival.image[0] : festival.image,
-      targetAudience: Array.isArray(festival.targetAudience)
-        ? festival.targetAudience[0]
-        : festival.targetAudience,
-    }));
+    if (!Array.isArray(filteredFestivals)) return [];
+    return filteredFestivals.map((festival) => formatFestivalData(festival));
   }, [filteredFestivals]);
 
   const handleSearchChange = useCallback((e) => {
@@ -455,53 +201,6 @@ const EventSchedule = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(formattedFestivals.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  const Pagination = () => {
-    return (
-      <div className="flex justify-center items-center mt-6 gap-2">
-        {currentPage > 1 && (
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-          >
-            이전
-          </button>
-        )}
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-          <button
-            key={number}
-            onClick={() => handlePageChange(number)}
-            className={`px-3 py-1 rounded ${
-              currentPage === number
-                ? "bg-blue-800 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-
-        {currentPage < totalPages && (
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-          >
-            다음
-          </button>
-        )}
-      </div>
-    );
-  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -740,7 +439,7 @@ const EventSchedule = () => {
                                   alt={festival.programName}
                                   className="w-full h-auto object-cover border rounded-lg"
                                   loading="lazy"
-                                  onError={onErrorImg}
+                                  onError={handleImageError}
                                 />
                               </div>
                               <div className="flex-1">
@@ -800,17 +499,16 @@ const EventSchedule = () => {
                   </p>
                 )}
               </ul>
-              {formattedFestivals.length > itemsPerPage && <Pagination />}
+              {formattedFestivals.length > itemsPerPage && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(
+                    formattedFestivals.length / itemsPerPage
+                  )}
+                  onPageChange={setCurrentPage}
+                />
+              )}
             </>
-          )}
-          {showScrollTop && (
-            <button
-              onClick={scrollToTop}
-              className="fixed bottom-8 right-8 bg-blue-900 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all duration-300 ease-in-out"
-              aria-label="맨 위로 가기"
-            >
-              <IoIosArrowUp size={24} />
-            </button>
           )}
         </div>
       </div>
@@ -818,6 +516,7 @@ const EventSchedule = () => {
       {selectedEvent && (
         <EventModal event={selectedEvent} onClose={handleCloseModal} />
       )}
+      <ScrollToTop />
     </div>
   );
 };
